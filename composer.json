@@ -1,0 +1,10 @@
+{
+  "name": "solandra/sigati",
+  "description": "SIGATI SOLANDRA - Gestión de activos TI Arequipa",
+  "require": {
+    "php": ">=8.2",
+    "dompdf/dompdf": "^3.1",
+    "chillerlan/php-qrcode": "^5.0"
+  },
+  "config": {"sort-packages": true}
+}

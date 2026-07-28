@@ -1,0 +1,2 @@
+# Por seguridad, abre la aplicación desde /sigati_solandra/public
+# La reescritura MVC está configurada en public/.htaccess

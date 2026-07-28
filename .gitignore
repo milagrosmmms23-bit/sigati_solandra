@@ -1,0 +1,13 @@
+/vendor/
+/node_modules/
+/.env
+/.env.*
+!.env.example
+/composer.phar
+/public/uploads/*
+!/public/uploads/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+*.log
+Thumbs.db
+.DS_Store
