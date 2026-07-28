@@ -1,35 +1,53 @@
-# SIGATI SOLANDRA — Sede Arequipa
+# SIGATI SOLANDRA
 
-Sistema web local para la gestión de activos tecnológicos de la planta SOLANDRA Arequipa.
+Sistema web local para la gestión de activos tecnológicos de SOLANDRA, sede Arequipa.
 
-## Funciones incluidas
+## Funcionalidades
 
-- Dashboard con indicadores por estado, tipo y área.
-- Inventario de PC, laptops, monitores, impresoras, celulares, radios y equipos de red.
-- Codificación automática `AQP-TIPO-000001` mediante procedimiento almacenado.
-- Registro de códigos anteriores vinculados a factura.
+- Dashboard con indicadores de inventario.
+- Registro y búsqueda de activos TI.
 - Trabajadores y áreas responsables.
-- Asignaciones múltiples con acta imprimible/PDF.
-- Devoluciones parciales o totales con evaluación del equipo.
+- Asignaciones con acta imprimible y PDF.
+- Devoluciones parciales o totales.
 - Mantenimientos preventivos y correctivos.
 - Historial de movimientos por activo.
-- Auditoría básica de operaciones.
 - Reporte consolidado y descarga CSV.
 - Importación inicial desde CSV.
-- Etiqueta QR cuando se instalan las dependencias de Composer.
 - Catálogos administrables.
+- Etiquetas QR cuando están instaladas las dependencias de Composer.
 
-## Acceso inicial
+## Requisitos
 
-- Usuario: `admin`
-- Contraseña: `Admin123*`
+- XAMPP con PHP 8.2 o superior.
+- MySQL/MariaDB.
+- Composer para instalar dependencias opcionales de PDF y QR.
 
-Cambia esta contraseña antes de usar el sistema con información real.
+## Instalación rápida
 
-## Instalación
+1. Copia el proyecto en `C:\xampp\htdocs\sigati_solandra`.
+2. Importa `database/schema.sql` en MySQL.
+3. Abre `http://localhost/sigati_solandra/public`.
+4. Ingresa con:
+   - Usuario: `admin`
+   - Contraseña: `Admin123*`
 
-Consulta [INSTALACION_XAMPP.md](INSTALACION_XAMPP.md).
+Cambia la contraseña inicial antes de registrar información real.
 
-## Alcance
+## Dependencias opcionales
 
-Esta entrega es una primera versión funcional orientada a inventario y movimientos internos de la sede Arequipa. Está preparada para crecer con módulos de préstamos, adjuntos firmados, gestión de usuarios, Active Directory, notificaciones y mesa de ayuda.
+Ejecuta:
+
+```bash
+composer install
+```
+
+También puedes usar `INSTALAR_DEPENDENCIAS.bat` en Windows.
+
+## Configuración
+
+Los valores por defecto están en `config/app.php` y `config/database.php`.
+También puedes usar variables de entorno como referencia en `.env.example`.
+
+## Seguridad
+
+El proyecto debe abrirse desde la carpeta `public`. La raíz incluye reglas `.htaccess` para bloquear carpetas internas como `app`, `config`, `database`, `storage` y `vendor`.

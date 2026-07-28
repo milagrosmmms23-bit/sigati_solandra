@@ -1,2 +1,11 @@
-# Por seguridad, abre la aplicación desde /sigati_solandra/public
-# La reescritura MVC está configurada en public/.htaccess
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteRule ^(app|config|database|scripts|storage|vendor)(/|$) - [F,L]
+    RewriteRule ^(\.env|\.git)(/|$) - [F,L]
+    RewriteRule ^(composer\.(json|lock)|\.gitignore|\.gitattributes)$ - [F,L]
+
+    RewriteRule ^$ public/ [L]
+</IfModule>

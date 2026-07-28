@@ -1,9 +1,9 @@
 <?php
 return [
-    'host' => '127.0.0.1',
-    'port' => '3306',
-    'database' => 'sigati_solandra',
-    'username' => 'root',
-    'password' => '',
-    'charset' => 'utf8mb4',
+    'host' => getenv('DB_HOST') ?: '127.0.0.1',
+    'port' => getenv('DB_PORT') ?: '3306',
+    'database' => getenv('DB_DATABASE') ?: 'sigati_solandra',
+    'username' => getenv('DB_USERNAME') ?: 'root',
+    'password' => getenv('DB_PASSWORD') ?: '',
+    'charset' => getenv('DB_CHARSET') ?: 'utf8mb4',
 ];
