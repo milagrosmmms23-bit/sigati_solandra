@@ -41,8 +41,6 @@ Ejecuta:
 composer install
 ```
 
-También puedes usar `INSTALAR_DEPENDENCIAS.bat` en Windows.
-
 ## Configuración
 
 Los valores por defecto están en `config/app.php` y `config/database.php`.

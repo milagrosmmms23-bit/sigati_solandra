@@ -17,8 +17,37 @@ if (is_file($root.'/vendor/autoload.php')) {
     require $root.'/vendor/autoload.php';
 }
 
-require $root.'/app/Models/models.php';
-require $root.'/app/Controllers/controllers.php';
+$modelFiles = [
+    'Model',
+    'Catalog',
+    'Employee',
+    'Asset',
+    'Assignment',
+    'AssetReturn',
+    'Maintenance',
+    'Dashboard',
+];
+
+foreach ($modelFiles as $file) {
+    require $root.'/app/Models/'.$file.'.php';
+}
+
+$controllerFiles = [
+    'AuthController',
+    'DashboardController',
+    'AssetController',
+    'EmployeeController',
+    'AssignmentController',
+    'ReturnController',
+    'MaintenanceController',
+    'CatalogController',
+    'ReportController',
+    'QrController',
+];
+
+foreach ($controllerFiles as $file) {
+    require $root.'/app/Controllers/'.$file.'.php';
+}
 
 date_default_timezone_set((string) config('app.timezone', 'America/Lima'));
 
