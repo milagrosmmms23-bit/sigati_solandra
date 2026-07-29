@@ -1,19 +1,154 @@
 <?php
 $doc = $doc ?? '';
 $item = $item ?? [];
+$isAssignment = $doc === 'assignment';
+$date = $isAssignment ? ($item['assigned_at'] ?? '') : ($item['returned_at'] ?? '');
 
-$isAssignment = ($doc ?? '') === 'assignment';
-$number = $isAssignment ? $item['assignment_number'] : $item['return_number'];
-$date = $isAssignment ? $item['assigned_at'] : $item['returned_at'];
-$titleText = $isAssignment
-    ? 'ACTA DE ASIGNACIÓN DE EQUIPOS TECNOLÓGICOS'
-    : 'ACTA DE DEVOLUCIÓN DE EQUIPOS TECNOLÓGICOS';
+$shortDate = static function (?string $value): string {
+    if (!$value || strtotime($value) === false) {
+        return '-';
+    }
+
+    return date('d/m/y', strtotime($value));
+};
+
+$clean = static function (mixed $value, string $default = '-'): string {
+    $text = trim((string) $value);
+
+    return $text !== '' ? $text : $default;
+};
+
+$upper = static function (mixed $value) use ($clean): string {
+    return mb_strtoupper($clean($value), 'UTF-8');
+};
+
+$assetText = static function (?array $asset, string $key, string $default = '-') use ($clean): string {
+    return $asset ? $clean($asset[$key] ?? '', $default) : $default;
+};
+
+$assetDescription = static function (?array $asset) use ($clean): string {
+    if (!$asset) {
+        return '-';
+    }
+
+    $parts = array_filter([
+        $asset['type_name'] ?? '',
+        $asset['brand_name'] ?? '',
+        $asset['model_name'] ?? '',
+    ], static fn ($value): bool => trim((string) $value) !== '');
+
+    return $clean(implode(' ', $parts));
+};
+
+$assetObservations = static function (?array $asset, array $assignment, string $default = '-') use ($clean): string {
+    if (!$asset) {
+        return $default;
+    }
+
+    $parts = [];
+
+    foreach (['specs_text', 'asset_notes'] as $key) {
+        $text = trim((string) ($asset[$key] ?? ''));
+
+        if ($text !== '') {
+            $parts[] = $text;
+        }
+    }
+
+    if (!$parts) {
+        $note = trim((string) ($assignment['notes'] ?? ''));
+
+        if ($note !== '') {
+            $parts[] = $note;
+        }
+    }
+
+    return $clean(implode(', ', array_unique($parts)), $default);
+};
+
+$isPhoneAsset = static function (array $asset): bool {
+    $text = mb_strtoupper(implode(' ', [
+        $asset['type_name'] ?? '',
+        $asset['brand_name'] ?? '',
+        $asset['model_name'] ?? '',
+        $asset['phone_number'] ?? '',
+        $asset['imei1'] ?? '',
+        $asset['imei2'] ?? '',
+    ]), 'UTF-8');
+
+    if (trim((string) ($asset['phone_number'] ?? '')) !== '' || trim((string) ($asset['imei1'] ?? '')) !== '' || trim((string) ($asset['imei2'] ?? '')) !== '') {
+        return true;
+    }
+
+    foreach (['CELULAR', 'SMARTPHONE', 'TELEFONO', 'TELÉFONO', 'MOVIL', 'MÓVIL', 'SIM CARD', 'SIM'] as $needle) {
+        if (str_contains($text, $needle)) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+$assignmentCss = <<<'CSS'
+<style>
+@page{size:A4 portrait;margin:12mm 18mm 8mm}
+*{box-sizing:border-box}
+body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:10px;margin:0;background:#fff}
+.print-actions{max-width:174mm;margin:0 auto 10px;padding:8px;background:#eef3f7;border-radius:4px}
+.print-actions a,.print-actions button{padding:7px 11px;border:0;border-radius:4px;text-decoration:none;background:#086a62;color:white;cursor:pointer}
+.quality-sheet{width:100%;max-width:174mm;min-height:277mm;margin:0 auto;background:#fff;display:flex;flex-direction:column}
+.quality-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.quality-table td,.quality-table th{border:1px solid #222;padding:3px 4px;vertical-align:middle}
+.quality-header{margin-bottom:10mm}
+.quality-logo{width:24%;text-align:center;padding:0 5px}
+.solandra-logo{width:30mm;height:auto;display:block;margin:0 auto}
+.quality-title{text-align:center;font-size:10px;font-weight:bold;color:#666;letter-spacing:0}
+.quality-subtitle{text-align:center;font-size:10px;font-weight:bold;color:#777;letter-spacing:0}
+.quality-meta{width:22%;font-size:7px;padding:0;line-height:1.05}
+.quality-meta div{border-bottom:1px solid #222;padding:1px 3px}
+.quality-meta div:last-child{border-bottom:0}
+.quality-sign td{font-size:7px;height:13px;line-height:1.05;vertical-align:bottom;padding:1px 4px}
+.quality-sign span{display:block;color:#7b0000;text-decoration:underline;text-align:center}
+.section-title{background:#dfe4ea;text-align:center;font-weight:bold;font-size:8px}
+.field-label{font-weight:bold;width:20%;font-size:8px}
+.field-value{font-weight:bold}
+.equipment-table{margin-bottom:8mm}
+.equipment-table td{height:14px}
+.observations{height:30px;vertical-align:top}
+.assigned-title{font-weight:bold;margin:3mm 0 1mm 5mm}
+.assigned-table{margin-bottom:7mm}
+.legal-text{font-size:9px;line-height:1.35;text-align:justify;margin:0 0 2.2mm}
+.signature-line{width:39mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:auto 3mm 5mm auto;padding-top:1px}
+.quality-footer{border:1px solid #999;text-align:center;color:#777;font-size:7px;padding:1px;margin:0 4mm}
+.return-title{text-align:center;font-weight:bold;font-size:14px;margin:8mm 0 4mm}
+.doc-table{width:100%;border-collapse:collapse;margin:4mm 0}
+.doc-table th,.doc-table td{border:1px solid #555;padding:5px;text-align:left;vertical-align:top}
+.doc-table th{background:#e8edf2}
+@media print{.print-actions{display:none}.quality-sheet{margin:0 auto}}
+</style>
+CSS;
+
+$logoSrc = '';
+$logoCandidates = [
+    dirname(__DIR__, 2).'/public/assets/img/solandra-logo.png',
+    dirname(__DIR__, 2).'/public/assets/img/solandra-logo.jpg',
+    dirname(__DIR__, 2).'/public/assets/img/solandra-logo.jpeg',
+];
+
+foreach ($logoCandidates as $logoPath) {
+    if (!is_file($logoPath)) {
+        continue;
+    }
+
+    $extension = strtolower(pathinfo($logoPath, PATHINFO_EXTENSION));
+    $mime = $extension === 'png' ? 'image/png' : 'image/jpeg';
+    $logoSrc = 'data:'.$mime.';base64,'.base64_encode((string) file_get_contents($logoPath));
+    break;
+}
 ?>
 
 <?php if (!empty($pdf)): ?>
-    <style>
-        @page{margin:20mm 15mm}body{font-family:DejaVu Sans,Arial,sans-serif;color:#182235;font-size:10px}.doc-header{border-bottom:3px solid #0d7369;padding-bottom:10px;margin-bottom:16px}.logo-box{font-size:22px;font-weight:bold;color:#0d7369}.logo-box span{display:block;font-size:9px;color:#666}.doc-meta{text-align:right;margin-top:-35px}.doc-title{text-align:center;margin:20px 0}.doc-title h1{font-size:16px}.info-grid{width:100%;margin-bottom:14px}.info-row{display:inline-block;width:48%;padding:5px 0;border-bottom:1px solid #ddd}.doc-table{width:100%;border-collapse:collapse}.doc-table th,.doc-table td{border:1px solid #aaa;padding:6px}.doc-table th{background:#edf3f2}.terms{font-size:9px;line-height:1.4;text-align:justify;margin-top:14px}.signatures{margin-top:65px;width:100%}.signature{display:inline-block;width:42%;margin:0 3%;text-align:center;border-top:1px solid #222;padding-top:6px}.doc-footer{text-align:center;font-size:8px;color:#777;margin-top:35px}
-    </style>
+    <?= $assignmentCss ?>
 <?php endif; ?>
 
 <?php if (empty($pdf)): ?>
@@ -25,115 +160,163 @@ $titleText = $isAssignment
     </div>
 <?php endif; ?>
 
-<header class="doc-header">
-    <div class="logo-box">
-        SOLANDRA
-        <span>TECNOLOGÍA DE LA INFORMACIÓN</span>
-    </div>
+<?php if ($isAssignment): ?>
+    <?php
+    $items = $item['items'] ?? [];
+    $phoneItems = array_values(array_filter($items, $isPhoneAsset));
+    $equipmentItems = array_values(array_filter($items, static fn (array $asset): bool => !$isPhoneAsset($asset)));
+    $equipment = $equipmentItems[0] ?? null;
+    $phone = $phoneItems[0] ?? null;
+    $extraEquipment = array_slice($equipmentItems, 1);
+    $equipmentAccessories = $assetText($equipment, 'condition_out', '');
+    $extraDescriptions = [];
 
-    <div class="doc-meta">
-        <b>Sede Arequipa</b><br>
-        Documento: <?= e($number) ?><br>
-        Fecha: <?= date_pe($date) ?>
-    </div>
-</header>
+    foreach ($extraEquipment as $extraAsset) {
+        $detail = $assetDescription($extraAsset);
+        $serial = $clean($extraAsset['serial_number'] ?? '', '');
 
-<div class="doc-title">
-    <h1><?= $titleText ?></h1>
-    <p>Control interno de activos tecnológicos — SIGATI SOLANDRA</p>
-</div>
+        if ($serial !== '') {
+            $detail .= ' S/N '.$serial;
+        }
 
-<div class="info-grid">
-    <div class="info-row">
-        <b>Trabajador:</b> <?= e($item['employee_name']) ?>
-    </div>
-    <div class="info-row">
-        <b>Código:</b> <?= e($item['employee_code']) ?>
-    </div>
-    <div class="info-row">
-        <b>Cargo:</b> <?= e($item['position'] ?: '—') ?>
-    </div>
-    <div class="info-row">
-        <b>Área:</b> <?= e($item['area_name'] ?: '—') ?>
-    </div>
-    <div class="info-row">
-        <b>Fecha y hora:</b> <?= datetime_pe($date) ?>
-    </div>
-    <div class="info-row">
-        <b>Responsable TI:</b> <?= e($item['created_by_name'] ?: 'TI Arequipa') ?>
-    </div>
-</div>
+        $extraDescriptions[] = $detail;
+    }
 
-<table class="doc-table">
-    <thead>
-        <tr>
-            <th>N.º</th>
-            <th>Código</th>
-            <th>Descripción</th>
-            <th>Serie</th>
-            <?php if ($isAssignment): ?>
-                <th>Condición de entrega</th>
-            <?php else: ?>
-                <th>Condición</th>
-                <th>Daños / faltantes</th>
-                <th>Destino</th>
-            <?php endif; ?>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($item['items'] as $index => $asset): ?>
-            <tr>
-                <td><?= $index + 1 ?></td>
-                <td><?= e($asset['asset_code']) ?></td>
-                <td><?= e($asset['type_name'].' '.trim(($asset['brand_name'] ?? '').' '.($asset['model_name'] ?? ''))) ?></td>
-                <td><?= e($asset['serial_number'] ?: '—') ?></td>
+    if ($extraDescriptions) {
+        $equipmentAccessories = $equipmentAccessories === '' || $equipmentAccessories === '-'
+            ? implode(', ', $extraDescriptions)
+            : $equipmentAccessories.', '.implode(', ', $extraDescriptions);
+    }
+    ?>
 
-                <?php if ($isAssignment): ?>
-                    <td><?= e($asset['condition_out']) ?></td>
-                <?php else: ?>
-                    <td><?= e($asset['condition_in']) ?></td>
-                    <td><?= e($asset['damage_notes'] ?: 'Sin observaciones') ?></td>
-                    <td><?= e($asset['next_status_name']) ?></td>
-                <?php endif; ?>
+    <section class="quality-sheet">
+        <table class="quality-table quality-header">
+            <tr>                <td class="quality-logo" rowspan="2">
+                    <?php if ($logoSrc !== ''): ?>
+                        <img class="solandra-logo" src="<?= e($logoSrc) ?>" alt="Solandra">
+                    <?php else: ?>
+                        <svg class="solandra-logo" viewBox="0 0 340 82" role="img" aria-label="Solandra">
+                            <circle cx="41" cy="41" r="36" fill="#78BE43"/>
+                            <path d="M24 20c17 3 26 12 29 27" fill="none" stroke="#071B16" stroke-width="5" stroke-linecap="round"/>
+                            <path d="M23 38c10 3 17 9 21 18" fill="none" stroke="#071B16" stroke-width="5" stroke-linecap="round"/>
+                            <path d="M54 22c-9 11-12 22-7 35" fill="none" stroke="#071B16" stroke-width="5" stroke-linecap="round"/>
+                            <circle cx="26" cy="58" r="4" fill="#071B16"/>
+                            <text x="88" y="55" fill="#00416B" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="700">Solandra</text>
+                        </svg>
+                    <?php endif; ?>
+                </td>
+                <td class="quality-title">SISTEMA DE GESTIÓN DE CALIDAD</td>
+                <td class="quality-meta" rowspan="2">
+                    <div>Código:<br><strong>SOL-TI-FO-01</strong></div>
+                    <div>Versión:<br><strong>02</strong></div>
+                    <div>Fecha de aprobación:<br><strong>23/04/2024</strong></div>
+                    <div>Página:<br><strong>1 de 1</strong></div>
+                </td>
             </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+            <tr><td class="quality-subtitle">ASIGNACIÓN DE EQUIPOS INFORMÁTICOS</td></tr>
+            <tr class="quality-sign">
+                <td>Elaborado por:<span>Jhonny Fernandez</span></td>
+                <td>Revisado por:<span>Benjamín Urbano</span></td>
+                <td>Aprobado por:<span>Rubén Camargo</span></td>
+            </tr>
+        </table>
 
-<div class="terms">
-    <?php if ($isAssignment): ?>
-        Declaro haber recibido los equipos descritos en el presente documento, en la condición señalada,
-        y asumo la responsabilidad de su uso exclusivamente para actividades autorizadas por SOLANDRA.
-        Me comprometo a conservarlos, no transferirlos a terceros sin autorización del área de TI y
-        comunicar inmediatamente cualquier pérdida, daño, incidente de seguridad o cambio de ubicación.
-    <?php else: ?>
-        El área de TI deja constancia de la recepción y evaluación inicial de los equipos detallados.
-        La condición, daños, faltantes y estado posterior consignados corresponden a la revisión efectuada
-        al momento de la devolución. Cualquier evaluación técnica complementaria será registrada en el
-        historial del activo.
-    <?php endif; ?>
-</div>
+        <table class="quality-table equipment-table">
+            <tr><th class="section-title" colspan="6">Datos del Equipo</th></tr>
+            <tr>
+                <td class="field-label">Nombre Equipo</td>
+                <td class="field-value" colspan="3"><?= e($assetText($equipment, 'asset_code', '')) ?></td>
+                <td class="field-label">Código</td>
+                <td class="field-value"><?= e($assetText($equipment, 'asset_code', '')) ?></td>
+            </tr>
+            <tr>
+                <td class="field-label">Marca</td>
+                <td class="field-value"><?= e($assetText($equipment, 'brand_name', '')) ?></td>
+                <td class="field-label">Serie</td>
+                <td class="field-value"><?= e($assetText($equipment, 'serial_number', '')) ?></td>
+                <td class="field-label">Modelo</td>
+                <td class="field-value"><?= e($assetText($equipment, 'model_name', '')) ?></td>
+            </tr>
+            <tr>
+                <td class="field-label">Tipo de Equipo</td>
+                <td class="field-value" colspan="5"><?= e($assetText($equipment, 'type_name', '')) ?></td>
+            </tr>
+            <tr>
+                <td class="field-label">Accesorios</td>
+                <td colspan="5"><?= e($equipmentAccessories) ?></td>
+            </tr>
+            <tr>
+                <td class="field-label">Observaciones</td>
+                <td class="observations" colspan="5"><?= nl2br(e($assetObservations($equipment, $item, ''))) ?></td>
+            </tr>
+        </table>
 
-<?php if (!empty($item['notes'])): ?>
-    <div class="terms">
-        <b>Observaciones:</b> <?= nl2br(e($item['notes'])) ?>
-    </div>
+        <table class="quality-table equipment-table">
+            <tr><th class="section-title" colspan="6">Descripción de Celular y SIM CARD (cuando aplique)</th></tr>
+            <tr>
+                <td class="field-label">Chip de Línea</td>
+                <td class="field-value"><?= e($assetText($phone, 'phone_number')) ?></td>
+                <td class="field-label">Marca</td>
+                <td class="field-value"><?= e($assetText($phone, 'brand_name')) ?></td>
+                <td class="field-label">IMEI</td>
+                <td class="field-value"><?= e($assetText($phone, 'imei1') !== '-' ? $assetText($phone, 'imei1') : $assetText($phone, 'imei2')) ?></td>
+            </tr>
+            <tr>
+                <td class="field-label">Modelo</td>
+                <td class="field-value" colspan="2"><?= e($assetText($phone, 'model_name')) ?></td>
+                <td class="field-label">Accesorios</td>
+                <td colspan="2"><?= e($assetText($phone, 'condition_out')) ?></td>
+            </tr>
+            <tr>
+                <td class="field-label">Observaciones</td>
+                <td class="observations" colspan="5"><?= nl2br(e($assetObservations($phone, $item))) ?></td>
+            </tr>
+        </table>
+
+        <div class="assigned-title">ASIGNADO A:</div>
+        <table class="quality-table assigned-table">
+            <tr>
+                <td class="field-label">Nombre y Apellidos</td>
+                <td class="field-value" colspan="3"><?= e($upper($item['employee_name'] ?? '')) ?></td>
+                <td class="field-label">Fecha</td>
+                <td class="field-value"><?= e($shortDate($date)) ?></td>
+            </tr>
+            <tr>
+                <td class="field-label">Sede</td>
+                <td class="field-value" colspan="2"><?= e($upper(config('app.site', ''))) ?></td>
+                <td class="field-label">Área</td>
+                <td class="field-value" colspan="2"><?= e($upper($item['area_name'] ?? '')) ?></td>
+            </tr>
+        </table>
+
+        <p class="legal-text">El usuario, declara conocer y asume la responsabilidad del adecuado uso del equipo en mención el cual solo debe ser usado con fines laborales, y por lo tanto puede ser solicitado en cualquier momento por SOLANDRA S.A.C., para su revisión, sin lo cual no se estará afectando derecho alguno.</p>
+        <p class="legal-text">El o los equipo(s) recepcionado(s) es y será propiedad de la empresa en todo momento; y en caso de concluido el contrato de trabajo de incremento de actividad, ME COMPROMETO a hacer la devolución inmediata del bien, y que en caso no lo haga tengo pleno conocimiento que estaré incurriendo en el DELITO DE APROPIACIÓN ILÍCITA.</p>
+        <p class="legal-text">En caso de daño por falta de deber de cuidado, extravío, pérdida o sustracción del equipo, el usuario será el único responsable para su reposición de igual o superior características. Así mismo en caso no lo reponga en un plazo de 72 horas, AUTORIZO EXPRESAMENTE a la empresa mediante este documento a descontar de mi salario o de mi pago por locación de servicios, por el valor total del costo de reposición del equipo cuando en cualesquiera de los casos no lo devuelva a la empresa.</p>
+        <p class="legal-text">En tal sentido se procede a firmar la presente acta en señal de conformidad.</p>
+
+        <div class="signature-line">Usuario</div>
+        <div class="quality-footer">Este documento es propiedad de SOLANDRA SAC. Queda prohibido su reproducción total o parcial</div>
+    </section>
+<?php else: ?>
+    <h1 class="return-title">ACTA DE DEVOLUCIÓN DE EQUIPOS TECNOLÓGICOS</h1>
+    <table class="quality-table assigned-table">
+        <tr><td class="field-label">Trabajador</td><td class="field-value"><?= e($item['employee_name'] ?? '') ?></td><td class="field-label">Fecha</td><td class="field-value"><?= e(date_pe($date)) ?></td></tr>
+        <tr><td class="field-label">Código</td><td><?= e($item['employee_code'] ?? '') ?></td><td class="field-label">Área</td><td><?= e($item['area_name'] ?? '') ?></td></tr>
+    </table>
+    <table class="doc-table">
+        <thead><tr><th>N.º</th><th>Código</th><th>Descripción</th><th>Serie</th><th>Condición</th><th>Daños / faltantes</th><th>Destino</th></tr></thead>
+        <tbody>
+            <?php foreach (($item['items'] ?? []) as $index => $asset): ?>
+                <tr>
+                    <td><?= $index + 1 ?></td>
+                    <td><?= e($asset['asset_code'] ?? '') ?></td>
+                    <td><?= e(($asset['type_name'] ?? '').' '.trim(($asset['brand_name'] ?? '').' '.($asset['model_name'] ?? ''))) ?></td>
+                    <td><?= e($asset['serial_number'] ?? '') ?></td>
+                    <td><?= e($asset['condition_in'] ?? '') ?></td>
+                    <td><?= e(($asset['damage_notes'] ?? '') ?: 'Sin observaciones') ?></td>
+                    <td><?= e($asset['next_status_name'] ?? '') ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 <?php endif; ?>
-
-<div class="signatures">
-    <div class="signature">
-        <b><?= e($item['employee_name']) ?></b><br>
-        Trabajador responsable<br>
-        DNI/Firma
-    </div>
-
-    <div class="signature">
-        <b><?= e($item['created_by_name'] ?: 'Área de TI') ?></b><br>
-        TI SOLANDRA Arequipa<br>
-        Firma
-    </div>
-</div>
-
-<div class="doc-footer">
-    Documento generado por SIGATI SOLANDRA · <?= date('d/m/Y H:i') ?> · Uso interno
-</div>

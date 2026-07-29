@@ -11,3 +11,8 @@
 *.log
 Thumbs.db
 .DS_Store
+/storage/*.html
+/storage/*.txt
+/public/assets/img/LEEME_LOGO.txt
+/.vscode/
+/app/Models/prueba.php

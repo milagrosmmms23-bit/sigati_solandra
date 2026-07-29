@@ -1,6 +1,7 @@
 Options -Indexes
+DirectoryIndex index.php
 
 RewriteEngine On
+RewriteRule ^assets/?$ index.php [QSA,L]
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
