@@ -1,4 +1,11 @@
-<?php $mode = $mode ?? 'index'; ?>
+<?php
+$mode = $mode ?? 'index';
+$rows = $rows ?? [];
+$assignments = $assignments ?? [];
+$assignment = $assignment ?? null;
+$statuses = $statuses ?? [];
+$item = $item ?? null;
+?>
 
 <?php if ($mode === 'index'): ?>
     <div class="page-actions">

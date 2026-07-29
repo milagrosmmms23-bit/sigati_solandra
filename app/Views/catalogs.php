@@ -1,3 +1,8 @@
+<?php
+$labels = $labels ?? [];
+$rows = $rows ?? [];
+?>
+
 <div class="page-actions">
     <div>
         <h2>Catálogos del sistema</h2>

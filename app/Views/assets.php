@@ -1,6 +1,16 @@
 <?php
 $mode = $mode ?? 'index';
 $errors = $_SESSION['_errors'] ?? [];
+$result = $result ?? ['rows' => [], 'total' => 0, 'page' => 1, 'pages' => 1];
+$filters = $filters ?? ['q' => '', 'type_id' => '', 'status_id' => '', 'area_id' => ''];
+$types = $types ?? [];
+$statuses = $statuses ?? [];
+$brands = $brands ?? [];
+$models = $models ?? [];
+$areas = $areas ?? [];
+$locations = $locations ?? [];
+$suppliers = $suppliers ?? [];
+$item = $item ?? null;
 ?>
 
 <?php if ($mode === 'index'): ?>

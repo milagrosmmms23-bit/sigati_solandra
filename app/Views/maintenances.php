@@ -1,4 +1,8 @@
-<?php $mode = $mode ?? 'index'; ?>
+<?php
+$mode = $mode ?? 'index';
+$rows = $rows ?? [];
+$assets = $assets ?? [];
+?>
 
 <?php if ($mode === 'index'): ?>
     <div class="page-actions">

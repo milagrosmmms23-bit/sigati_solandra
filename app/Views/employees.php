@@ -1,6 +1,10 @@
 <?php
 $mode = $mode ?? 'index';
 $errors = $_SESSION['_errors'] ?? [];
+$rows = $rows ?? [];
+$q = $q ?? '';
+$areas = $areas ?? [];
+$item = $item ?? null;
 ?>
 
 <?php if ($mode === 'index'): ?>

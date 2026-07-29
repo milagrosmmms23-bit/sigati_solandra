@@ -1,4 +1,10 @@
 <?php
+$summary = $summary ?? [];
+$byStatus = $byStatus ?? [];
+$byType = $byType ?? [];
+$byArea = $byArea ?? [];
+$recent = $recent ?? [];
+
 $total = max(1, (int) ($summary['total_assets'] ?? 0));
 
 $cards = [

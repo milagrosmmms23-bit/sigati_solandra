@@ -1,4 +1,7 @@
 <?php
+$doc = $doc ?? '';
+$item = $item ?? [];
+
 $isAssignment = ($doc ?? '') === 'assignment';
 $number = $isAssignment ? $item['assignment_number'] : $item['return_number'];
 $date = $isAssignment ? $item['assigned_at'] : $item['returned_at'];

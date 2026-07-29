@@ -1,3 +1,5 @@
+<?php $rows = $rows ?? []; ?>
+
 <div class="page-actions">
     <div>
         <h2>Reporte de inventario</h2>
