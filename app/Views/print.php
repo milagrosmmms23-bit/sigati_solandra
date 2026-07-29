@@ -26,6 +26,10 @@ $assetText = static function (?array $asset, string $key, string $default = '-')
     return $asset ? $clean($asset[$key] ?? '', $default) : $default;
 };
 
+$cellClass = static function (mixed $value): string {
+    return trim((string) $value) === '-' ? ' dash' : '';
+};
+
 $assetDescription = static function (?array $asset) use ($clean): string {
     if (!$asset) {
         return '-';
@@ -91,35 +95,36 @@ $isPhoneAsset = static function (array $asset): bool {
 
 $assignmentCss = <<<'CSS'
 <style>
-@page{size:A4 portrait;margin:12mm 18mm 8mm}
+@page{size:A4 portrait;margin:11mm 15mm 7mm}
 *{box-sizing:border-box}
-body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:10px;margin:0;background:#fff}
-.print-actions{max-width:174mm;margin:0 auto 10px;padding:8px;background:#eef3f7;border-radius:4px}
+body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:11px;margin:0;background:#fff}
+.print-actions{max-width:180mm;margin:0 auto 10px;padding:8px;background:#eef3f7;border-radius:4px}
 .print-actions a,.print-actions button{padding:7px 11px;border:0;border-radius:4px;text-decoration:none;background:#086a62;color:white;cursor:pointer}
-.quality-sheet{width:100%;max-width:174mm;min-height:277mm;margin:0 auto;background:#fff;display:flex;flex-direction:column}
+.quality-sheet{width:100%;max-width:180mm;min-height:279mm;margin:0 auto;background:#fff;display:flex;flex-direction:column}
 .quality-table{width:100%;border-collapse:collapse;table-layout:fixed}
-.quality-table td,.quality-table th{border:1px solid #222;padding:3px 4px;vertical-align:middle}
-.quality-header{margin-bottom:10mm}
+.quality-table td,.quality-table th{border:1px solid #222;padding:4px 5px;vertical-align:middle}
+.quality-header{margin-bottom:9mm}
 .quality-logo{width:24%;text-align:center;padding:0 5px}
-.solandra-logo{width:30mm;height:auto;display:block;margin:0 auto}
-.quality-title{text-align:center;font-size:10px;font-weight:bold;color:#666;letter-spacing:0}
-.quality-subtitle{text-align:center;font-size:10px;font-weight:bold;color:#777;letter-spacing:0}
-.quality-meta{width:22%;font-size:7px;padding:0;line-height:1.05}
-.quality-meta div{border-bottom:1px solid #222;padding:1px 3px}
+.solandra-logo{width:33mm;height:auto;display:block;margin:0 auto}
+.quality-title{text-align:center;font-size:11px;font-weight:bold;color:#666;letter-spacing:0}
+.quality-subtitle{text-align:center;font-size:11px;font-weight:bold;color:#777;letter-spacing:0}
+.quality-meta{width:22%;font-size:8px;padding:0;line-height:1.08}
+.quality-meta div{border-bottom:1px solid #222;padding:2px 3px}
 .quality-meta div:last-child{border-bottom:0}
-.quality-sign td{font-size:7px;height:13px;line-height:1.05;vertical-align:bottom;padding:1px 4px}
+.quality-sign td{font-size:8px;height:15px;line-height:1.08;vertical-align:bottom;padding:2px 4px}
 .quality-sign span{display:block;color:#7b0000;text-decoration:underline;text-align:center}
-.section-title{background:#dfe4ea;text-align:center;font-weight:bold;font-size:8px}
-.field-label{font-weight:bold;width:20%;font-size:8px}
+.section-title{background:#dfe4ea;text-align:center;font-weight:bold;font-size:9px}
+.field-label{font-weight:bold;width:20%;font-size:9px}
 .field-value{font-weight:bold}
+.dash{text-align:center!important}
 .equipment-table{margin-bottom:8mm}
-.equipment-table td{height:14px}
-.observations{height:30px;vertical-align:top}
-.assigned-title{font-weight:bold;margin:3mm 0 1mm 5mm}
+.equipment-table td{height:18px}
+.observations{height:34px;vertical-align:top}
+.assigned-title{font-weight:bold;margin:3mm 0 1.2mm 5mm}
 .assigned-table{margin-bottom:7mm}
-.legal-text{font-size:9px;line-height:1.35;text-align:justify;margin:0 0 2.2mm}
-.signature-line{width:39mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:auto 3mm 5mm auto;padding-top:1px}
-.quality-footer{border:1px solid #999;text-align:center;color:#777;font-size:7px;padding:1px;margin:0 4mm}
+.legal-text{font-size:10px;line-height:1.38;text-align:justify;margin:0 0 2.1mm}
+.signature-line{width:42mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:auto 3mm 4mm auto;padding-top:1px}
+.quality-footer{border:1px solid #999;text-align:center;color:#777;font-size:8px;padding:1px;margin:0 4mm}
 .return-title{text-align:center;font-weight:bold;font-size:14px;margin:8mm 0 4mm}
 .doc-table{width:100%;border-collapse:collapse;margin:4mm 0}
 .doc-table th,.doc-table td{border:1px solid #555;padding:5px;text-align:left;vertical-align:top}
@@ -255,21 +260,21 @@ foreach ($logoCandidates as $logoPath) {
             <tr><th class="section-title" colspan="6">Descripción de Celular y SIM CARD (cuando aplique)</th></tr>
             <tr>
                 <td class="field-label">Chip de Línea</td>
-                <td class="field-value"><?= e($assetText($phone, 'phone_number')) ?></td>
+                <td class="field-value<?= $cellClass($assetText($phone, 'phone_number')) ?>"><?= e($assetText($phone, 'phone_number')) ?></td>
                 <td class="field-label">Marca</td>
-                <td class="field-value"><?= e($assetText($phone, 'brand_name')) ?></td>
+                <td class="field-value<?= $cellClass($assetText($phone, 'brand_name')) ?>"><?= e($assetText($phone, 'brand_name')) ?></td>
                 <td class="field-label">IMEI</td>
-                <td class="field-value"><?= e($assetText($phone, 'imei1') !== '-' ? $assetText($phone, 'imei1') : $assetText($phone, 'imei2')) ?></td>
+                <td class="field-value<?= $cellClass($assetText($phone, 'imei1') !== '-' ? $assetText($phone, 'imei1') : $assetText($phone, 'imei2')) ?>"><?= e($assetText($phone, 'imei1') !== '-' ? $assetText($phone, 'imei1') : $assetText($phone, 'imei2')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Modelo</td>
-                <td class="field-value" colspan="2"><?= e($assetText($phone, 'model_name')) ?></td>
+                <td class="field-value<?= $cellClass($assetText($phone, 'model_name')) ?>" colspan="2"><?= e($assetText($phone, 'model_name')) ?></td>
                 <td class="field-label">Accesorios</td>
-                <td colspan="2"><?= e($assetText($phone, 'condition_out')) ?></td>
+                <td class="<?= trim($cellClass($assetText($phone, 'condition_out'))) ?>" colspan="2"><?= e($assetText($phone, 'condition_out')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Observaciones</td>
-                <td class="observations" colspan="5"><?= nl2br(e($assetObservations($phone, $item))) ?></td>
+                <td class="observations<?= $cellClass($assetObservations($phone, $item)) ?>" colspan="5"><?= nl2br(e($assetObservations($phone, $item))) ?></td>
             </tr>
         </table>
 
