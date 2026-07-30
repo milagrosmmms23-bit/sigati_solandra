@@ -20,8 +20,8 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14px;margin:0
 .quality-meta{width:22%;font-size:12.5px;padding:0;line-height:0.98;text-align:center}
 .quality-meta div{border-bottom:1px solid #222;padding:1px 4px;text-align:center}
 .quality-meta div:last-child{border-bottom:0}
-.quality-sign td{font-size:12.5px;height:auto;line-height:1;vertical-align:bottom;padding:1px 4px}
-.quality-sign span{display:block;color:#7b0000;text-decoration:underline;text-align:center}
+.quality-sign td{font-size:14px;height:auto;line-height:1.05;vertical-align:bottom;padding:2px 4px;color:#000}
+.quality-sign span{display:block;color:#000;text-decoration:none;text-align:center;font-weight:bold}
 .section-title{background:#dfe4ea;text-align:center;font-weight:bold;font-size:14.5px}
 .field-label{font-weight:bold;width:20%;font-size:14.5px}
 .field-value{font-weight:bold}
