@@ -99,7 +99,7 @@ $assignmentCss = <<<'CSS'
 *{box-sizing:border-box}
 body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14px;margin:0;background:#fff}
 .print-actions{max-width:180mm;margin:0 auto 10px;padding:8px;background:#eef3f7;border-radius:4px}
-.print-actions a,.print-actions button{padding:7px 11px;border:0;border-radius:4px;text-decoration:none;background:#086a62;color:white;cursor:pointer}
+.print-actions a,.print-actions button{padding:7px 11px;border:0;border-radius:4px;text-decoration:none;background:#086a62;color:white;cursor:pointer}.format-version{display:inline-block;margin-left:12px;color:#111;font-weight:bold;font-size:14px}
 .quality-sheet{width:100%;max-width:196mm;min-height:0;margin:0 auto;background:#fff;display:block}
 .quality-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .quality-table td,.quality-table th{border:1px solid #222;padding:4.5px 6px;vertical-align:middle;line-height:1.14}
@@ -162,6 +162,7 @@ foreach ($logoCandidates as $logoPath) {
         <a href="<?= $isAssignment ? url('assignments/'.$item['id'].'/pdf') : url('returns/'.$item['id'].'/pdf') ?>">
             Descargar PDF
         </a>
+        <span class="format-version">FORMATO XL ACTIVO</span>
     </div>
 <?php endif; ?>
 
