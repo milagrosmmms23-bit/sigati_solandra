@@ -113,7 +113,7 @@ final class Auth
     {
         $statement = DB::pdo()->prepare(
             'SELECT u.*, r.name role_name
-             FROM users u
+             FROM usuarios u
              JOIN roles r ON r.id = u.role_id
              WHERE u.username = ? AND u.active = 1
              LIMIT 1'
@@ -130,7 +130,7 @@ final class Auth
         $_SESSION['user'] = $user;
 
         DB::pdo()
-            ->prepare('UPDATE users SET last_login_at = NOW() WHERE id = ?')
+            ->prepare('UPDATE usuarios SET last_login_at = NOW() WHERE id = ?')
             ->execute([$user['id']]);
 
         return true;
@@ -160,7 +160,7 @@ final class Auth
     {
         if (!self::check()) {
             Flash::warning('Inicia sesión para continuar.');
-            \redirect('login');
+            \redirect('ingreso');
         }
     }
 
@@ -192,7 +192,7 @@ final class Audit
     ): void {
         try {
             $statement = DB::pdo()->prepare(
-                'INSERT INTO audit_logs
+                'INSERT INTO registros_auditoria
                     (user_id, module, action, entity_type, entity_id, old_values, new_values, ip_address, user_agent, created_at)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())'
             );
@@ -216,7 +216,7 @@ final class Audit
 
 final class View
 {
-    public static function render(string $view, array $data = [], string $layout = 'layout'): void
+    public static function render(string $view, array $data = [], string $layout = 'plantilla'): void
     {
         $file = dirname(__DIR__).'/Views/'.$view.'.php';
 
@@ -249,7 +249,7 @@ final class View
 
 abstract class Controller
 {
-    protected function view(string $view, array $data = [], string $layout = 'layout'): void
+    protected function view(string $view, array $data = [], string $layout = 'plantilla'): void
     {
         View::render($view, $data, $layout);
     }

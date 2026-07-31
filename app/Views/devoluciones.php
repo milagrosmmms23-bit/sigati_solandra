@@ -1,7 +1,7 @@
 <?php
 $mode = $mode ?? 'index';
 $rows = $rows ?? [];
-$assignments = $assignments ?? [];
+$asignaciones = $asignaciones ?? [];
 $assignment = $assignment ?? null;
 $statuses = $statuses ?? [];
 $item = $item ?? null;
@@ -69,7 +69,7 @@ $item = $item ?? null;
             <p>Selecciona una asignación vigente y evalúa cada equipo.</p>
         </div>
 
-        <a class="btn btn-light" href="<?= url('returns') ?>">Cancelar</a>
+        <a class="btn btn-light" href="<?= url('devoluciones') ?>">Cancelar</a>
     </div>
 
     <form class="form-card" method="get" action="<?= url('returns/create') ?>">
@@ -78,7 +78,7 @@ $item = $item ?? null;
                 Asignación vigente
                 <select name="assignment_id" onchange="this.form.submit()">
                     <option value="">Seleccionar</option>
-                    <?php foreach ($assignments as $activeAssignment): ?>
+                    <?php foreach ($asignaciones as $activeAssignment): ?>
                         <option
                             value="<?= $activeAssignment['id'] ?>"
                             <?= selected($assignment['id'] ?? '', $activeAssignment['id']) ?>
@@ -98,7 +98,7 @@ $item = $item ?? null;
     </form>
 
     <?php if ($assignment): ?>
-        <form class="form-card" method="post" action="<?= url('returns') ?>">
+        <form class="form-card" method="post" action="<?= url('devoluciones') ?>">
             <?= csrf_field() ?>
             <input type="hidden" name="assignment_id" value="<?= $assignment['id'] ?>">
 
@@ -170,7 +170,7 @@ $item = $item ?? null;
             </label>
 
             <div class="form-footer">
-                <a class="btn btn-light" href="<?= url('returns') ?>">Cancelar</a>
+                <a class="btn btn-light" href="<?= url('devoluciones') ?>">Cancelar</a>
                 <button class="btn btn-primary">Registrar devolución y generar acta</button>
             </div>
         </form>
@@ -235,7 +235,7 @@ $item = $item ?? null;
                     <?php foreach ($item['items'] as $asset): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('assets/'.$asset['asset_id']) ?>">
+                                <a class="asset-code" href="<?= url('activos/'.$asset['asset_id']) ?>">
                                     <?= e($asset['asset_code']) ?>
                                 </a>
                             </td>

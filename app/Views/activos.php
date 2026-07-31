@@ -5,11 +5,11 @@ $result = $result ?? ['rows' => [], 'total' => 0, 'page' => 1, 'pages' => 1];
 $filters = $filters ?? ['q' => '', 'type_id' => '', 'status_id' => '', 'area_id' => ''];
 $types = $types ?? [];
 $statuses = $statuses ?? [];
-$brands = $brands ?? [];
-$models = $models ?? [];
+$marcas = $marcas ?? [];
+$modelos = $modelos ?? [];
 $areas = $areas ?? [];
-$locations = $locations ?? [];
-$suppliers = $suppliers ?? [];
+$ubicaciones = $ubicaciones ?? [];
+$proveedores = $proveedores ?? [];
 $item = $item ?? null;
 ?>
 
@@ -21,8 +21,8 @@ $item = $item ?? null;
         </div>
 
         <div class="actions">
-            <a class="btn btn-light" href="<?= url('assets/import') ?>">Importar CSV</a>
-            <a class="btn btn-primary" href="<?= url('assets/create') ?>">+ Nuevo activo</a>
+            <a class="btn btn-light" href="<?= url('activos/import') ?>">Importar CSV</a>
+            <a class="btn btn-primary" href="<?= url('activos/create') ?>">+ Nuevo activo</a>
         </div>
     </div>
 
@@ -93,7 +93,7 @@ $item = $item ?? null;
                     <?php foreach ($result['rows'] as $asset): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('assets/'.$asset['id']) ?>">
+                                <a class="asset-code" href="<?= url('activos/'.$asset['id']) ?>">
                                     <?= e($asset['asset_code']) ?>
                                 </a>
                                 <small><?= e($asset['legacy_code'] ?: 'Sin código anterior') ?></small>
@@ -115,7 +115,7 @@ $item = $item ?? null;
                             <td><?= badge($asset['status_name']) ?></td>
                             <td><?= date_pe($asset['updated_at'] ?: $asset['created_at']) ?></td>
                             <td class="text-right">
-                                <a class="icon-btn" href="<?= url('assets/'.$asset['id'].'/edit') ?>">Editar</a>
+                                <a class="icon-btn" href="<?= url('activos/'.$asset['id'].'/edit') ?>">Editar</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -160,7 +160,7 @@ $item = $item ?? null;
             <p>Los campos con * son obligatorios.</p>
         </div>
 
-        <a class="btn btn-light" href="<?= $isEdit ? url('assets/'.$item['id']) : url('assets') ?>">
+        <a class="btn btn-light" href="<?= $isEdit ? url('activos/'.$item['id']) : url('activos') ?>">
             Cancelar
         </a>
     </div>
@@ -168,7 +168,7 @@ $item = $item ?? null;
     <form
         class="form-card"
         method="post"
-        action="<?= $isEdit ? url('assets/'.$item['id']) : url('assets') ?>"
+        action="<?= $isEdit ? url('activos/'.$item['id']) : url('activos') ?>"
     >
         <?= csrf_field() ?>
 
@@ -232,7 +232,7 @@ $item = $item ?? null;
                     Marca
                     <select name="brand_id">
                         <option value="">Sin definir</option>
-                        <?php foreach ($brands as $brand): ?>
+                        <?php foreach ($marcas as $brand): ?>
                             <option
                                 value="<?= $brand['id'] ?>"
                                 <?= selected(old('brand_id', $item['brand_id'] ?? ''), $brand['id']) ?>
@@ -247,7 +247,7 @@ $item = $item ?? null;
                     Modelo
                     <select name="model_id">
                         <option value="">Sin definir</option>
-                        <?php foreach ($models as $model): ?>
+                        <?php foreach ($modelos as $model): ?>
                             <option
                                 value="<?= $model['id'] ?>"
                                 <?= selected(old('model_id', $item['model_id'] ?? ''), $model['id']) ?>
@@ -298,7 +298,7 @@ $item = $item ?? null;
                     Ubicación
                     <select name="location_id">
                         <option value="">Sin ubicación</option>
-                        <?php foreach ($locations as $location): ?>
+                        <?php foreach ($ubicaciones as $location): ?>
                             <option
                                 value="<?= $location['id'] ?>"
                                 <?= selected(old('location_id', $item['location_id'] ?? ''), $location['id']) ?>
@@ -388,7 +388,7 @@ $item = $item ?? null;
                     Proveedor
                     <select name="supplier_id">
                         <option value="">Sin definir</option>
-                        <?php foreach ($suppliers as $supplier): ?>
+                        <?php foreach ($proveedores as $supplier): ?>
                             <option
                                 value="<?= $supplier['id'] ?>"
                                 <?= selected(old('supplier_id', $item['supplier_id'] ?? ''), $supplier['id']) ?>
@@ -463,7 +463,7 @@ $item = $item ?? null;
         </div>
 
         <div class="form-footer">
-            <a class="btn btn-light" href="<?= url('assets') ?>">Cancelar</a>
+            <a class="btn btn-light" href="<?= url('activos') ?>">Cancelar</a>
             <button class="btn btn-primary" type="submit">
                 <?= $isEdit ? 'Guardar cambios' : 'Registrar activo' ?>
             </button>
@@ -494,8 +494,8 @@ $item = $item ?? null;
         </div>
 
         <div class="actions">
-            <a class="btn btn-light" href="<?= url('assets/'.$item['id'].'/edit') ?>">Editar</a>
-            <a class="btn btn-primary" href="<?= url('assignments/create') ?>">Asignar equipo</a>
+            <a class="btn btn-light" href="<?= url('activos/'.$item['id'].'/edit') ?>">Editar</a>
+            <a class="btn btn-primary" href="<?= url('asignaciones/create') ?>">Asignar equipo</a>
         </div>
     </div>
 
@@ -509,7 +509,7 @@ $item = $item ?? null;
                 </div>
             </div>
 
-            <img class="qr-image" src="<?= url('assets/'.$item['id'].'/qr') ?>" alt="QR">
+            <img class="qr-image" src="<?= url('activos/'.$item['id'].'/qr') ?>" alt="QR">
             <small>Escanea para abrir la ficha</small>
 
             <div class="summary-lines">
@@ -626,7 +626,7 @@ $item = $item ?? null;
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($item['maintenances'] as $maintenance): ?>
+                            <?php foreach ($item['mantenimientos'] as $maintenance): ?>
                                 <tr>
                                     <td><?= e($maintenance['type']) ?></td>
                                     <td><?= badge($maintenance['status']) ?></td>
@@ -636,7 +636,7 @@ $item = $item ?? null;
                                 </tr>
                             <?php endforeach; ?>
 
-                            <?php if (!$item['maintenances']): ?>
+                            <?php if (!$item['mantenimientos']): ?>
                                 <tr>
                                     <td colspan="5">
                                         <div class="empty">Sin mantenimientos.</div>
@@ -657,7 +657,7 @@ $item = $item ?? null;
             <p>Carga activos desde una plantilla CSV separada por comas.</p>
         </div>
 
-        <a class="btn btn-light" href="<?= url('assets') ?>">Volver</a>
+        <a class="btn btn-light" href="<?= url('activos') ?>">Volver</a>
     </div>
 
     <div class="two-columns">
@@ -665,7 +665,7 @@ $item = $item ?? null;
             class="form-card compact-card"
             method="post"
             enctype="multipart/form-data"
-            action="<?= url('assets/import') ?>"
+            action="<?= url('activos/import') ?>"
         >
             <?= csrf_field() ?>
             <h3>Seleccionar archivo</h3>

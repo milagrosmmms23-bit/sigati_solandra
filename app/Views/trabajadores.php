@@ -14,7 +14,7 @@ $item = $item ?? null;
             <p>Personas que pueden recibir activos tecnológicos.</p>
         </div>
 
-        <a class="btn btn-primary" href="<?= url('employees/create') ?>">+ Nuevo trabajador</a>
+        <a class="btn btn-primary" href="<?= url('trabajadores/create') ?>">+ Nuevo trabajador</a>
     </div>
 
     <form class="filter-panel" method="get">
@@ -50,7 +50,7 @@ $item = $item ?? null;
                                 <small><?= e($employee['phone'] ?: '') ?></small>
                             </td>
                             <td class="text-right">
-                                <a class="icon-btn" href="<?= url('employees/'.$employee['id'].'/edit') ?>">
+                                <a class="icon-btn" href="<?= url('trabajadores/'.$employee['id'].'/edit') ?>">
                                     Editar
                                 </a>
                             </td>
@@ -78,13 +78,13 @@ $item = $item ?? null;
             <p>Registra al responsable que recibirá los equipos.</p>
         </div>
 
-        <a class="btn btn-light" href="<?= url('employees') ?>">Cancelar</a>
+        <a class="btn btn-light" href="<?= url('trabajadores') ?>">Cancelar</a>
     </div>
 
     <form
         class="form-card compact-card"
         method="post"
-        action="<?= $isEdit ? url('employees/'.$item['id']) : url('employees') ?>"
+        action="<?= $isEdit ? url('trabajadores/'.$item['id']) : url('trabajadores') ?>"
     >
         <?= csrf_field() ?>
 
@@ -144,7 +144,7 @@ $item = $item ?? null;
         </div>
 
         <div class="form-footer">
-            <a class="btn btn-light" href="<?= url('employees') ?>">Cancelar</a>
+            <a class="btn btn-light" href="<?= url('trabajadores') ?>">Cancelar</a>
             <button class="btn btn-primary">
                 <?= $isEdit ? 'Guardar cambios' : 'Registrar trabajador' ?>
             </button>

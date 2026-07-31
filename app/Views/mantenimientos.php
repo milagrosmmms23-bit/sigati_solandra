@@ -1,7 +1,7 @@
 <?php
 $mode = $mode ?? 'index';
 $rows = $rows ?? [];
-$assets = $assets ?? [];
+$activos = $activos ?? [];
 ?>
 
 <?php if ($mode === 'index'): ?>
@@ -11,7 +11,7 @@ $assets = $assets ?? [];
             <p>Control preventivo y correctivo de los equipos.</p>
         </div>
 
-        <a class="btn btn-primary" href="<?= url('maintenances/create') ?>">+ Nuevo mantenimiento</a>
+        <a class="btn btn-primary" href="<?= url('mantenimientos/create') ?>">+ Nuevo mantenimiento</a>
     </div>
 
     <section class="panel table-panel">
@@ -32,7 +32,7 @@ $assets = $assets ?? [];
                     <?php foreach ($rows as $maintenance): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('assets/'.$maintenance['asset_id']) ?>">
+                                <a class="asset-code" href="<?= url('activos/'.$maintenance['asset_id']) ?>">
                                     <?= e($maintenance['asset_code']) ?>
                                 </a>
                                 <small>
@@ -63,7 +63,7 @@ $assets = $assets ?? [];
                             <tr class="modal-row">
                                 <td colspan="7">
                                     <dialog id="close-<?= $maintenance['id'] ?>" class="modal">
-                                        <form method="post" action="<?= url('maintenances/'.$maintenance['id'].'/close') ?>">
+                                        <form method="post" action="<?= url('mantenimientos/'.$maintenance['id'].'/close') ?>">
                                             <?= csrf_field() ?>
 
                                             <div class="modal-head">
@@ -139,10 +139,10 @@ $assets = $assets ?? [];
             <p>Abre una orden técnica y cambia el equipo a mantenimiento.</p>
         </div>
 
-        <a class="btn btn-light" href="<?= url('maintenances') ?>">Cancelar</a>
+        <a class="btn btn-light" href="<?= url('mantenimientos') ?>">Cancelar</a>
     </div>
 
-    <form class="form-card compact-card" method="post" action="<?= url('maintenances') ?>">
+    <form class="form-card compact-card" method="post" action="<?= url('mantenimientos') ?>">
         <?= csrf_field() ?>
 
         <div class="form-grid cols-2">
@@ -150,7 +150,7 @@ $assets = $assets ?? [];
                 Activo *
                 <select name="asset_id" required>
                     <option value="">Seleccionar equipo</option>
-                    <?php foreach ($assets as $asset): ?>
+                    <?php foreach ($activos as $asset): ?>
                         <option value="<?= $asset['id'] ?>">
                             <?= e($asset['asset_code'].' · '.$asset['type_name'].' · '.trim(($asset['brand_name'] ?? '').' '.($asset['model_name'] ?? '')).' · Serie '.($asset['serial_number'] ?: '—')) ?>
                         </option>
@@ -188,7 +188,7 @@ $assets = $assets ?? [];
         </div>
 
         <div class="form-footer">
-            <a class="btn btn-light" href="<?= url('maintenances') ?>">Cancelar</a>
+            <a class="btn btn-light" href="<?= url('mantenimientos') ?>">Cancelar</a>
             <button class="btn btn-primary">Abrir mantenimiento</button>
         </div>
     </form>

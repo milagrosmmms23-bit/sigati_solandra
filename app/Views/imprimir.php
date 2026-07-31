@@ -168,9 +168,9 @@ CSS;
 
 $logoSrc = '';
 $logoCandidates = [
-    dirname(__DIR__, 2).'/public/assets/img/solandra-logo.png',
-    dirname(__DIR__, 2).'/public/assets/img/solandra-logo.jpg',
-    dirname(__DIR__, 2).'/public/assets/img/solandra-logo.jpeg',
+    dirname(__DIR__, 2).'/public/activos/img/solandra-logo.png',
+    dirname(__DIR__, 2).'/public/activos/img/solandra-logo.jpg',
+    dirname(__DIR__, 2).'/public/activos/img/solandra-logo.jpeg',
 ];
 
 foreach ($logoCandidates as $logoPath) {
@@ -192,7 +192,7 @@ foreach ($logoCandidates as $logoPath) {
 <?php if (empty($pdf)): ?>
     <div class="print-actions">
         <button onclick="window.print()">Imprimir</button>
-        <a href="<?= $isAssignment ? url('assignments/'.$item['id'].'/pdf') : url('returns/'.$item['id'].'/pdf') ?>">
+        <a href="<?= $isAssignment ? url('asignaciones/'.$item['id'].'/pdf') : url('returns/'.$item['id'].'/pdf') ?>">
             Descargar PDF
         </a>
     </div>

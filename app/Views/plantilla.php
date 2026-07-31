@@ -34,24 +34,24 @@ function nav_active(string $needle, string $current): string
 
         <nav>
             <a class="<?= $current === trim(config('app.base_url'), '/') ? 'active' : '' ?>" href="<?= url() ?>">
-                <span>▦</span> Dashboard
+                <span>▦</span> Panel
             </a>
 
             <div class="nav-label">GESTIÓN</div>
 
-            <a class="<?= nav_active('assets', $current) ?>" href="<?= url('assets') ?>">
+            <a class="<?= nav_active('activos', $current) ?>" href="<?= url('activos') ?>">
                 <span>▣</span> Inventario
             </a>
-            <a class="<?= nav_active('employees', $current) ?>" href="<?= url('employees') ?>">
+            <a class="<?= nav_active('trabajadores', $current) ?>" href="<?= url('trabajadores') ?>">
                 <span>◎</span> Trabajadores
             </a>
-            <a class="<?= nav_active('assignments', $current) ?>" href="<?= url('assignments') ?>">
+            <a class="<?= nav_active('asignaciones', $current) ?>" href="<?= url('asignaciones') ?>">
                 <span>⇢</span> Asignaciones
             </a>
-            <a class="<?= nav_active('returns', $current) ?>" href="<?= url('returns') ?>">
+            <a class="<?= nav_active('devoluciones', $current) ?>" href="<?= url('devoluciones') ?>">
                 <span>↩</span> Devoluciones
             </a>
-            <a class="<?= nav_active('maintenances', $current) ?>" href="<?= url('maintenances') ?>">
+            <a class="<?= nav_active('mantenimientos', $current) ?>" href="<?= url('mantenimientos') ?>">
                 <span>⚙</span> Mantenimientos
             </a>
 
@@ -62,7 +62,7 @@ function nav_active(string $needle, string $current): string
             </a>
 
             <?php if (Auth::role() === 'ADMIN'): ?>
-                <a class="<?= nav_active('catalogs', $current) ?>" href="<?= url('catalogs') ?>">
+                <a class="<?= nav_active('catalogos', $current) ?>" href="<?= url('catalogos') ?>">
                     <span>☷</span> Catálogos
                 </a>
             <?php endif; ?>

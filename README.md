@@ -4,7 +4,7 @@ Sistema web local para la gestión de activos tecnológicos de SOLANDRA, sede Ar
 
 ## Funcionalidades
 
-- Dashboard con indicadores de inventario.
+- Panel con indicadores de inventario.
 - Registro y búsqueda de activos TI.
 - Trabajadores y áreas responsables.
 - Asignaciones con acta imprimible y PDF.

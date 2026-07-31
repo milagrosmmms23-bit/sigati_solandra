@@ -17,13 +17,13 @@
             <div class="login-features">
                 <span>✓ Historial trazable</span>
                 <span>✓ Actas descargables</span>
-                <span>✓ Dashboard operativo</span>
+                <span>✓ Panel operativo</span>
             </div>
         </div>
     </section>
 
     <section class="login-panel">
-        <form class="login-card" action="<?= url('login') ?>" method="post" autocomplete="off">
+        <form class="login-card" action="<?= url('ingreso') ?>" method="post" autocomplete="off">
             <?= csrf_field() ?>
 
             <div class="mobile-brand">

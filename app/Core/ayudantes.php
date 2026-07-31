@@ -18,7 +18,7 @@ function url(string $path = ''): string
 
 function asset(string $path): string
 {
-    return url('assets/'.ltrim($path, '/'));
+    return url('activos/'.ltrim($path, '/'));
 }
 
 function e(mixed $value): string

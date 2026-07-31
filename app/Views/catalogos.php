@@ -23,16 +23,16 @@ $rows = $rows ?? [];
             <form class="inline-form" method="post" action="<?= url('catalogs/'.$table) ?>">
                 <?= csrf_field() ?>
 
-                <?php if ($table === 'models'): ?>
+                <?php if ($table === 'modelos'): ?>
                     <select name="brand_id">
                         <option value="">Sin marca</option>
-                        <?php foreach ($rows['brands'] as $brand): ?>
+                        <?php foreach ($rows['marcas'] as $brand): ?>
                             <option value="<?= $brand['id'] ?>"><?= e($brand['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 <?php endif; ?>
 
-                <?php if ($table === 'locations'): ?>
+                <?php if ($table === 'ubicaciones'): ?>
                     <select name="area_id">
                         <option value="">Sin área</option>
                         <?php foreach ($rows['areas'] as $area): ?>
@@ -43,11 +43,11 @@ $rows = $rows ?? [];
 
                 <input name="name" required placeholder="Nuevo registro">
 
-                <?php if ($table === 'asset_types'): ?>
+                <?php if ($table === 'tipos_activo'): ?>
                     <input name="prefix" maxlength="5" required placeholder="Prefijo">
                 <?php endif; ?>
 
-                <?php if ($table === 'asset_statuses'): ?>
+                <?php if ($table === 'estados_activo'): ?>
                     <input name="code" maxlength="40" placeholder="Código (opcional)">
                     <select name="color">
                         <option value="secondary">Gris</option>

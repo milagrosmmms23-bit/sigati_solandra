@@ -1,8 +1,8 @@
 <?php
 $mode = $mode ?? 'index';
 $rows = $rows ?? [];
-$employees = $employees ?? [];
-$assets = $assets ?? [];
+$trabajadores = $trabajadores ?? [];
+$activos = $activos ?? [];
 $item = $item ?? null;
 ?>
 
@@ -13,7 +13,7 @@ $item = $item ?? null;
             <p>Actas de entrega de equipos a trabajadores.</p>
         </div>
 
-        <a class="btn btn-primary" href="<?= url('assignments/create') ?>">+ Nueva asignación</a>
+        <a class="btn btn-primary" href="<?= url('asignaciones/create') ?>">+ Nueva asignación</a>
     </div>
 
     <section class="panel table-panel">
@@ -34,7 +34,7 @@ $item = $item ?? null;
                     <?php foreach ($rows as $assignment): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('assignments/'.$assignment['id']) ?>">
+                                <a class="asset-code" href="<?= url('asignaciones/'.$assignment['id']) ?>">
                                     <?= e($assignment['assignment_number']) ?>
                                 </a>
                             </td>
@@ -46,7 +46,7 @@ $item = $item ?? null;
                             <td class="text-right">
                                 <a
                                     class="icon-btn"
-                                    href="<?= url('assignments/'.$assignment['id'].'/print') ?>"
+                                    href="<?= url('asignaciones/'.$assignment['id'].'/print') ?>"
                                     target="_blank"
                                 >
                                     Imprimir
@@ -74,10 +74,10 @@ $item = $item ?? null;
             <p>Selecciona trabajador y equipos disponibles.</p>
         </div>
 
-        <a class="btn btn-light" href="<?= url('assignments') ?>">Cancelar</a>
+        <a class="btn btn-light" href="<?= url('asignaciones') ?>">Cancelar</a>
     </div>
 
-    <form class="form-card" method="post" action="<?= url('assignments') ?>">
+    <form class="form-card" method="post" action="<?= url('asignaciones') ?>">
         <?= csrf_field() ?>
 
         <div class="form-section">
@@ -94,7 +94,7 @@ $item = $item ?? null;
                     Trabajador *
                     <select name="employee_id" id="employeeSelect" required>
                         <option value="">Seleccionar trabajador</option>
-                        <?php foreach ($employees as $employee): ?>
+                        <?php foreach ($trabajadores as $employee): ?>
                             <option value="<?= $employee['id'] ?>" data-area="<?= e($employee['area_id']) ?>">
                                 <?= e($employee['employee_code'].' · '.$employee['first_name'].' '.$employee['last_name'].' · '.($employee['area_name'] ?? 'Sin área')) ?>
                             </option>
@@ -126,11 +126,11 @@ $item = $item ?? null;
 
             <div class="asset-picker">
                 <div class="picker-search">
-                    <input type="search" placeholder="Filtrar por código, tipo, marca o serie" data-filter-assets>
+                    <input type="search" placeholder="Filtrar por código, tipo, marca o serie" data-filter-activos>
                     <span><b data-selected-count>0</b> seleccionados</span>
                 </div>
 
-                <?php foreach ($assets as $asset): ?>
+                <?php foreach ($activos as $asset): ?>
                     <label class="picker-item" data-asset-row>
                         <input type="checkbox" name="asset_ids[]" value="<?= $asset['id'] ?>" data-asset-check>
                         <div>
@@ -147,14 +147,14 @@ $item = $item ?? null;
                     </label>
                 <?php endforeach; ?>
 
-                <?php if (!$assets): ?>
+                <?php if (!$activos): ?>
                     <div class="empty">No hay equipos disponibles.</div>
                 <?php endif; ?>
             </div>
         </div>
 
         <div class="form-footer">
-            <a class="btn btn-light" href="<?= url('assignments') ?>">Cancelar</a>
+            <a class="btn btn-light" href="<?= url('asignaciones') ?>">Cancelar</a>
             <button class="btn btn-primary" type="submit">Confirmar y generar acta</button>
         </div>
     </form>
@@ -168,10 +168,10 @@ $item = $item ?? null;
         </div>
 
         <div class="actions">
-            <a class="btn btn-light" target="_blank" href="<?= url('assignments/'.$item['id'].'/print') ?>">
+            <a class="btn btn-light" target="_blank" href="<?= url('asignaciones/'.$item['id'].'/print') ?>">
                 Imprimir
             </a>
-            <a class="btn btn-primary" href="<?= url('assignments/'.$item['id'].'/pdf') ?>">
+            <a class="btn btn-primary" href="<?= url('asignaciones/'.$item['id'].'/pdf') ?>">
                 Descargar PDF
             </a>
         </div>
@@ -218,7 +218,7 @@ $item = $item ?? null;
                 <b>↩ Registrar devolución</b>
                 <small>Devolver uno o varios equipos</small>
             </a>
-            <a class="action-link" target="_blank" href="<?= url('assignments/'.$item['id'].'/print') ?>">
+            <a class="action-link" target="_blank" href="<?= url('asignaciones/'.$item['id'].'/print') ?>">
                 <b>▤ Vista imprimible</b>
                 <small>Firmar manualmente el documento</small>
             </a>
@@ -249,7 +249,7 @@ $item = $item ?? null;
                     <?php foreach ($item['items'] as $asset): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('assets/'.$asset['asset_id']) ?>">
+                                <a class="asset-code" href="<?= url('activos/'.$asset['asset_id']) ?>">
                                     <?= e($asset['asset_code']) ?>
                                 </a>
                             </td>

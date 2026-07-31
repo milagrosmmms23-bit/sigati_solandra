@@ -25,7 +25,7 @@ $cards = [
 
     <div class="actions">
         <a class="btn btn-light" href="<?= url('reports/inventory') ?>">Ver reporte</a>
-        <a class="btn btn-primary" href="<?= url('assets/create') ?>">+ Registrar activo</a>
+        <a class="btn btn-primary" href="<?= url('activos/create') ?>">+ Registrar activo</a>
     </div>
 </div>
 
