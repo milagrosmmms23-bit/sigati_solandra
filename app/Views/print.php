@@ -103,15 +103,20 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .quality-sheet{width:100%;max-width:205mm;min-height:293mm;margin:0 auto;background:#fff;padding:7.5mm 5mm 24mm;position:relative;display:block;overflow:hidden}
 .quality-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .quality-table td,.quality-table th{border:1px solid #222;padding:4.6px 5.8px;vertical-align:middle;line-height:1.16}
-.quality-header{margin-bottom:5mm}
-.quality-logo{width:22%;text-align:center;padding:0 4px;overflow:hidden}
-.solandra-logo{width:42mm;max-width:100%;height:auto;display:block;margin:0 auto}
-.quality-title{text-align:center;font-size:17.5px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
-.quality-subtitle{text-align:center;font-size:16.5px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
-.quality-meta{width:18%;font-size:11.8px;padding:0;line-height:0.96;text-align:center}
-.quality-meta div{border-bottom:1px solid #222;padding:0.8px 3px;text-align:center}
-.quality-meta div:last-child{border-bottom:0}
-.quality-sign td{font-size:12.5px;height:auto;line-height:1;vertical-align:bottom;padding:1.2px 4px;color:#000;text-align:center}
+.quality-header{width:171mm;margin:0 auto 5mm;table-layout:fixed}
+.quality-header col:nth-child(1){width:41mm}
+.quality-header col:nth-child(2){width:16mm}
+.quality-header col:nth-child(3){width:57mm}
+.quality-header col:nth-child(4){width:20mm}
+.quality-header col:nth-child(5){width:37mm}
+.quality-header td{height:7mm;padding:0 3px}
+.quality-logo{text-align:center;overflow:hidden}
+.solandra-logo{width:38mm;max-width:100%;height:auto;display:block;margin:0 auto}
+.quality-title{text-align:center;font-size:16.4px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
+.quality-subtitle{text-align:center;font-size:15.8px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
+.quality-meta{font-size:10.8px;padding:0;line-height:0.96;text-align:center}
+.quality-meta div{padding:0.8px 2px;text-align:center}
+.quality-sign td{font-size:12.3px;height:7mm;line-height:1;vertical-align:bottom;padding:1px 4px;color:#000;text-align:center}
 .quality-sign span{display:block;color:#000;text-decoration:none;text-align:center;font-weight:bold}
 .section-title{background:#dfe4ea;text-align:center;font-weight:bold;font-size:14px}
 .field-label{font-weight:bold;width:20%;font-size:13.8px}
