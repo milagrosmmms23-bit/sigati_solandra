@@ -112,8 +112,8 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .quality-header td{height:7mm;padding:0 3px}
 .quality-logo{text-align:center;overflow:hidden;padding:0 4px}
 .solandra-logo{width:36mm;max-width:100%;height:auto;display:block;margin:0 auto}
-.quality-title{text-align:center;font-size:16.4px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
-.quality-subtitle{text-align:center;font-size:15.8px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
+.quality-title{text-align:center;font-size:16.4px;font-weight:900;color:#333;letter-spacing:0;white-space:nowrap}
+.quality-subtitle{text-align:center;font-size:15.8px;font-weight:900;color:#333;letter-spacing:0;white-space:nowrap}
 .quality-meta{font-size:10.8px;padding:0;line-height:0.96;text-align:center}
 .quality-meta div{padding:0.8px 2px;text-align:center}
 .quality-sign td{font-size:12.3px;height:7mm;line-height:1;vertical-align:bottom;padding:1px 4px;color:#000;text-align:center}
@@ -149,6 +149,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .assignment-table col:nth-child(5){width:17.5mm}
 .assignment-table col:nth-child(6){width:27.5mm}
 .asset-table .field-label,.phone-table .field-label,.assignment-table .field-label{width:auto}
+.asset-table .dash{text-align:center!important}
 .observations{height:10mm;vertical-align:middle;line-height:1.16}
 .assigned-title{width:170mm;margin:4.2mm auto 0.9mm;font-weight:bold;font-size:15.2px}
 .assigned-table{margin-bottom:4.2mm;font-size:15.2px}
@@ -156,7 +157,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .assignment-table .field-label{white-space:nowrap}
 .legal-text{width:170mm;margin:0 auto 1.55mm;font-size:14.4px;line-height:1.32;text-align:justify}
 .signature-line{width:43mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:0;padding-top:1px;font-size:15px;position:absolute;right:9mm;bottom:22mm}
-.quality-footer{width:172mm;border:0.75pt solid #999;text-align:center;color:#777;font-size:12px;padding:2px 1.4px;margin:0;position:absolute;left:50%;transform:translateX(-50%);bottom:9mm}
+.quality-footer{width:172mm;border:0.75pt solid #222;text-align:center;color:#000;font-weight:bold;font-size:12px;padding:2px 1.4px;margin:0;position:absolute;left:50%;transform:translateX(-50%);bottom:9mm}
 .return-title{text-align:center;font-weight:bold;font-size:14px;margin:8mm 0 4mm}
 .doc-table{width:100%;border-collapse:collapse;margin:4mm 0}
 .doc-table th,.doc-table td{border:1px solid #555;padding:5px;text-align:left;vertical-align:top}
@@ -262,25 +263,25 @@ foreach ($logoCandidates as $logoPath) {
             <tr><th class="section-title" colspan="7">Datos del Equipo</th></tr>
             <tr>
                 <td class="field-label">Nombre Equipo</td>
-                <td class="field-value" colspan="3"><?= e($assetText($equipment, 'asset_code')) ?></td>
+                <td class="field-value<?= $cellClass($assetText($equipment, 'asset_code')) ?>" colspan="3"><?= e($assetText($equipment, 'asset_code')) ?></td>
                 <td class="field-label">Código</td>
-                <td class="field-value" colspan="2"><?= e($assetText($equipment, 'asset_code')) ?></td>
+                <td class="field-value<?= $cellClass($assetText($equipment, 'asset_code')) ?>" colspan="2"><?= e($assetText($equipment, 'asset_code')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Marca</td>
-                <td class="field-value"><?= e($assetText($equipment, 'brand_name')) ?></td>
+                <td class="field-value<?= $cellClass($assetText($equipment, 'brand_name')) ?>"><?= e($assetText($equipment, 'brand_name')) ?></td>
                 <td class="field-label">Serie</td>
-                <td class="field-value"><?= e($assetText($equipment, 'serial_number')) ?></td>
+                <td class="field-value<?= $cellClass($assetText($equipment, 'serial_number')) ?>"><?= e($assetText($equipment, 'serial_number')) ?></td>
                 <td class="field-label" colspan="2">Modelo</td>
-                <td class="field-value"><?= e($assetText($equipment, 'model_name')) ?></td>
+                <td class="field-value<?= $cellClass($assetText($equipment, 'model_name')) ?>"><?= e($assetText($equipment, 'model_name')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Tipo de Equipo</td>
-                <td class="field-value" colspan="6"><?= e($assetText($equipment, 'type_name')) ?></td>
+                <td class="field-value<?= $cellClass($assetText($equipment, 'type_name')) ?>" colspan="6"><?= e($assetText($equipment, 'type_name')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Accesorios</td>
-                <td colspan="6"><?= e($equipmentAccessories) ?></td>
+                <td class="<?= trim($cellClass($equipmentAccessories)) ?>" colspan="6"><?= e($equipmentAccessories) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Observaciones</td>
