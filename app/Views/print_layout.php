@@ -58,7 +58,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .assignment-table col:nth-child(6){width:27.5mm}
 .asset-table .field-label,.phone-table .field-label,.assignment-table .field-label{width:auto}
 .observations{height:10mm;vertical-align:middle;line-height:1.16}
-.assigned-title{font-weight:bold;margin:4.2mm 0 0.9mm 5mm;font-size:15.2px}
+.assigned-title{width:170mm;margin:4.2mm auto 0.9mm;font-weight:bold;font-size:15.2px}
 .assigned-table{margin-bottom:4.2mm;font-size:15.2px}
 .assignment-table tr:first-child td:nth-child(3),.assignment-table tr:first-child td:nth-child(4),.assignment-table tr:nth-child(2) td:nth-child(3){text-align:center}
 .assignment-table .field-label{white-space:nowrap}
