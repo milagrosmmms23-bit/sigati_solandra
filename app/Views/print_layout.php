@@ -12,7 +12,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .quality-sheet{width:100%;max-width:205mm;min-height:293mm;margin:0 auto;background:#fff;padding:7.5mm 5mm 24mm;position:relative;display:block;overflow:hidden}
 .quality-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .quality-table td,.quality-table th{border:0.75pt solid #222;padding:4.6px 5.8px;vertical-align:middle;line-height:1.16}
-.quality-header{width:171mm;margin:0 auto 5mm;table-layout:fixed}
+.quality-header{width:171mm;margin:0 auto 8.5mm;table-layout:fixed}
 .quality-header col:nth-child(1){width:41mm}
 .quality-header col:nth-child(2){width:16mm}
 .quality-header col:nth-child(3){width:57mm}
@@ -33,6 +33,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .dash{text-align:center!important}
 .equipment-table{margin-bottom:4.2mm;font-size:15.2px}
 .equipment-table td{height:auto;min-height:0}
+.asset-table{margin-bottom:7.5mm}
 .asset-table,.phone-table{width:172.5mm;margin-left:auto;margin-right:auto}
 .assignment-table{width:170mm;margin-left:auto;margin-right:auto}
 .asset-table col:nth-child(1){width:34.9mm}
