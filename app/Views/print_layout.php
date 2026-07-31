@@ -11,7 +11,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .print-actions a,.print-actions button{padding:7px 11px;border:0;border-radius:4px;text-decoration:none;background:#086a62;color:white;cursor:pointer}
 .quality-sheet{width:100%;max-width:205mm;min-height:293mm;margin:0 auto;background:#fff;padding:7.5mm 5mm 24mm;position:relative;display:block;overflow:hidden}
 .quality-table{width:100%;border-collapse:collapse;table-layout:fixed}
-.quality-table td,.quality-table th{border:1px solid #222;padding:4.6px 5.8px;vertical-align:middle;line-height:1.16}
+.quality-table td,.quality-table th{border:0.75pt solid #222;padding:4.6px 5.8px;vertical-align:middle;line-height:1.16}
 .quality-header{width:171mm;margin:0 auto 5mm;table-layout:fixed}
 .quality-header col:nth-child(1){width:41mm}
 .quality-header col:nth-child(2){width:16mm}
@@ -19,15 +19,15 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .quality-header col:nth-child(4){width:20mm}
 .quality-header col:nth-child(5){width:37mm}
 .quality-header td{height:7mm;padding:0 3px}
-.quality-logo{text-align:center;overflow:hidden}
-.solandra-logo{width:38mm;max-width:100%;height:auto;display:block;margin:0 auto}
+.quality-logo{text-align:center;overflow:hidden;padding:0 4px}
+.solandra-logo{width:36mm;max-width:100%;height:auto;display:block;margin:0 auto}
 .quality-title{text-align:center;font-size:16.4px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
 .quality-subtitle{text-align:center;font-size:15.8px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
 .quality-meta{font-size:10.8px;padding:0;line-height:0.96;text-align:center}
 .quality-meta div{padding:0.8px 2px;text-align:center}
 .quality-sign td{font-size:12.3px;height:7mm;line-height:1;vertical-align:bottom;padding:1px 4px;color:#000;text-align:center}
 .quality-sign span{display:block;color:#000;text-decoration:none;text-align:center;font-weight:bold}
-.section-title{background:#dfe4ea;text-align:center;font-weight:bold;font-size:14px}
+.section-title{background:#e3e7ec;text-align:center;font-weight:bold;font-size:14px}
 .field-label{font-weight:bold;width:20%;font-size:13.8px}
 .field-value{font-weight:500}
 .dash{text-align:center!important}
@@ -64,7 +64,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .assignment-table .field-label{white-space:nowrap}
 .legal-text{width:170mm;margin:0 auto 1.45mm;font-size:16.3px;line-height:1.36;text-align:justify}
 .signature-line{width:43mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:0;padding-top:1px;font-size:15px;position:absolute;right:9mm;bottom:17mm}
-.quality-footer{width:170mm;border:1px solid #999;text-align:center;color:#777;font-size:11.4px;padding:1.2px;margin:0;position:absolute;left:50%;transform:translateX(-50%);bottom:4mm}
+.quality-footer{width:170mm;border:0.75pt solid #999;text-align:center;color:#777;font-size:11.4px;padding:1.2px;margin:0;position:absolute;left:50%;transform:translateX(-50%);bottom:4mm}
 .return-title{text-align:center;font-weight:bold;font-size:14px;margin:8mm 0 4mm}
 .doc-table{width:100%;border-collapse:collapse;margin:4mm 0}
 .doc-table th,.doc-table td{border:1px solid #555;padding:5px;text-align:left;vertical-align:top}
