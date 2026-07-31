@@ -125,12 +125,10 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .asset-table col:nth-child(4){width:18%}
 .asset-table col:nth-child(5){width:9%}
 .asset-table col:nth-child(6){width:25%}
-.assignment-table col:nth-child(1){width:24%}
-.assignment-table col:nth-child(2){width:28%}
-.assignment-table col:nth-child(3){width:18%}
-.assignment-table col:nth-child(4){width:9%}
-.assignment-table col:nth-child(5){width:7%}
-.assignment-table col:nth-child(6){width:14%}
+.assignment-table col:nth-child(1){width:23%}
+.assignment-table col:nth-child(2){width:50%}
+.assignment-table col:nth-child(3){width:8%}
+.assignment-table col:nth-child(4){width:19%}
 .phone-table col:nth-child(1){width:20%}
 .phone-table col:nth-child(2){width:19%}
 .phone-table col:nth-child(3){width:12%}
@@ -140,7 +138,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .observations{height:10mm;vertical-align:middle;line-height:1.16}
 .assigned-title{font-weight:bold;margin:4.2mm 0 0.9mm 5mm;font-size:15.2px}
 .assigned-table{margin-bottom:4.2mm;font-size:15.2px}
-.assignment-table tr:first-child td:nth-child(5),.assignment-table tr:first-child td:nth-child(6){text-align:center}
+.assignment-table td:nth-child(3),.assignment-table td:nth-child(4){text-align:center}
 .assignment-table .field-label{white-space:nowrap}
 .legal-text{font-size:16.3px;line-height:1.36;text-align:justify;margin:0 0 1.45mm}
 .signature-line{width:43mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:0;padding-top:1px;font-size:15px;position:absolute;right:9mm;bottom:17mm}
@@ -302,18 +300,18 @@ foreach ($logoCandidates as $logoPath) {
 
         <div class="assigned-title">ASIGNADO A:</div>
         <table class="quality-table assigned-table assignment-table">
-            <colgroup><col><col><col><col><col><col></colgroup>
+            <colgroup><col><col><col><col></colgroup>
             <tr>
                 <td class="field-label">Nombre y Apellidos</td>
-                <td class="field-value" colspan="3"><?= e($upper($item['employee_name'] ?? '')) ?></td>
+                <td class="field-value"><?= e($upper($item['employee_name'] ?? '')) ?></td>
                 <td class="field-label">Fecha</td>
                 <td class="field-value"><?= e($shortDate($date)) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Sede</td>
-                <td class="field-value" colspan="2"><?= e($upper(config('app.site', ''))) ?></td>
+                <td class="field-value"><?= e($upper(config('app.site', ''))) ?></td>
                 <td class="field-label">Área</td>
-                <td class="field-value" colspan="2"><?= e($upper($item['area_name'] ?? '')) ?></td>
+                <td class="field-value"><?= e($upper($item['area_name'] ?? '')) ?></td>
             </tr>
         </table>
 
