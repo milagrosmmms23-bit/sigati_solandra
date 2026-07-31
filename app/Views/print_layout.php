@@ -9,7 +9,7 @@
 body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin:0;background:#fff}
 .print-actions{max-width:176mm;margin:0 auto 10px;padding:8px;background:#eef3f7;border-radius:4px}
 .print-actions a,.print-actions button{padding:7px 11px;border:0;border-radius:4px;text-decoration:none;background:#086a62;color:white;cursor:pointer}
-.quality-sheet{width:100%;max-width:205mm;min-height:293mm;margin:0 auto;background:#fff;padding:4.5mm 5mm 4.5mm;position:relative;display:block;overflow:hidden}
+.quality-sheet{width:100%;max-width:205mm;min-height:293mm;margin:0 auto;background:#fff;padding:4.5mm 5mm 31mm;position:relative;display:block;overflow:hidden}
 .quality-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .quality-table td,.quality-table th{border:1px solid #222;padding:3.4px 5px;vertical-align:middle;line-height:1.04}
 .quality-header{margin-bottom:3.2mm}
@@ -31,9 +31,9 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .observations{height:6mm;vertical-align:middle;line-height:1.02}
 .assigned-title{font-weight:bold;margin:2.5mm 0 0.5mm 5mm;font-size:15px}
 .assigned-table{margin-bottom:2.5mm;font-size:15px}
-.legal-text{font-size:14.8px;line-height:1.04;text-align:justify;margin:0 0 0.65mm}
-.signature-line{width:40mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:2.5mm 4mm 2.4mm auto;padding-top:1px;font-size:13.8px}
-.quality-footer{border:1px solid #999;text-align:center;color:#777;font-size:10px;padding:1px;margin:0;position:absolute;left:5mm;right:5mm;bottom:4mm}
+.legal-text{font-size:15.8px;line-height:1.12;text-align:justify;margin:0 0 0.9mm}
+.signature-line{width:42mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:0;padding-top:1px;font-size:14.5px;position:absolute;right:9mm;bottom:20mm}
+.quality-footer{border:1px solid #999;text-align:center;color:#777;font-size:10.2px;padding:1px;margin:0;position:absolute;left:5mm;right:5mm;bottom:4mm}
 .return-title{text-align:center;font-weight:bold;font-size:14px;margin:8mm 0 4mm}
 .doc-table{width:100%;border-collapse:collapse;margin:4mm 0}
 .doc-table th,.doc-table td{border:1px solid #555;padding:5px;text-align:left;vertical-align:top}
