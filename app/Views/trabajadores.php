@@ -14,7 +14,7 @@ $item = $item ?? null;
             <p>Personas que pueden recibir activos tecnológicos.</p>
         </div>
 
-        <a class="btn btn-primary" href="<?= url('trabajadores/create') ?>">+ Nuevo trabajador</a>
+        <a class="btn btn-primary" href="<?= url('trabajadores/crear') ?>">+ Nuevo trabajador</a>
     </div>
 
     <form class="filter-panel" method="get">
@@ -50,7 +50,7 @@ $item = $item ?? null;
                                 <small><?= e($employee['phone'] ?: '') ?></small>
                             </td>
                             <td class="text-right">
-                                <a class="icon-btn" href="<?= url('trabajadores/'.$employee['id'].'/edit') ?>">
+                                <a class="icon-btn" href="<?= url('trabajadores/'.$employee['id'].'/editar') ?>">
                                     Editar
                                 </a>
                             </td>

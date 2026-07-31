@@ -11,7 +11,7 @@ $activos = $activos ?? [];
             <p>Control preventivo y correctivo de los equipos.</p>
         </div>
 
-        <a class="btn btn-primary" href="<?= url('mantenimientos/create') ?>">+ Nuevo mantenimiento</a>
+        <a class="btn btn-primary" href="<?= url('mantenimientos/crear') ?>">+ Nuevo mantenimiento</a>
     </div>
 
     <section class="panel table-panel">
@@ -63,7 +63,7 @@ $activos = $activos ?? [];
                             <tr class="modal-row">
                                 <td colspan="7">
                                     <dialog id="close-<?= $maintenance['id'] ?>" class="modal">
-                                        <form method="post" action="<?= url('mantenimientos/'.$maintenance['id'].'/close') ?>">
+                                        <form method="post" action="<?= url('mantenimientos/'.$maintenance['id'].'/cerrar') ?>">
                                             <?= csrf_field() ?>
 
                                             <div class="modal-head">

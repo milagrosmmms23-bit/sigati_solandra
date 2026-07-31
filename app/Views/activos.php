@@ -21,8 +21,8 @@ $item = $item ?? null;
         </div>
 
         <div class="actions">
-            <a class="btn btn-light" href="<?= url('activos/import') ?>">Importar CSV</a>
-            <a class="btn btn-primary" href="<?= url('activos/create') ?>">+ Nuevo activo</a>
+            <a class="btn btn-light" href="<?= url('activos/importar') ?>">Importar CSV</a>
+            <a class="btn btn-primary" href="<?= url('activos/crear') ?>">+ Nuevo activo</a>
         </div>
     </div>
 
@@ -115,7 +115,7 @@ $item = $item ?? null;
                             <td><?= badge($asset['status_name']) ?></td>
                             <td><?= date_pe($asset['updated_at'] ?: $asset['created_at']) ?></td>
                             <td class="text-right">
-                                <a class="icon-btn" href="<?= url('activos/'.$asset['id'].'/edit') ?>">Editar</a>
+                                <a class="icon-btn" href="<?= url('activos/'.$asset['id'].'/editar') ?>">Editar</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -494,8 +494,8 @@ $item = $item ?? null;
         </div>
 
         <div class="actions">
-            <a class="btn btn-light" href="<?= url('activos/'.$item['id'].'/edit') ?>">Editar</a>
-            <a class="btn btn-primary" href="<?= url('asignaciones/create') ?>">Asignar equipo</a>
+            <a class="btn btn-light" href="<?= url('activos/'.$item['id'].'/editar') ?>">Editar</a>
+            <a class="btn btn-primary" href="<?= url('asignaciones/crear') ?>">Asignar equipo</a>
         </div>
     </div>
 
@@ -665,7 +665,7 @@ $item = $item ?? null;
             class="form-card compact-card"
             method="post"
             enctype="multipart/form-data"
-            action="<?= url('activos/import') ?>"
+            action="<?= url('activos/importar') ?>"
         >
             <?= csrf_field() ?>
             <h3>Seleccionar archivo</h3>

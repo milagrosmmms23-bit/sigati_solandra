@@ -14,7 +14,7 @@ $item = $item ?? null;
             <p>Recepción y evaluación de equipos entregados.</p>
         </div>
 
-        <a class="btn btn-primary" href="<?= url('returns/create') ?>">+ Nueva devolución</a>
+        <a class="btn btn-primary" href="<?= url('devoluciones/crear') ?>">+ Nueva devolución</a>
     </div>
 
     <section class="panel table-panel">
@@ -34,7 +34,7 @@ $item = $item ?? null;
                     <?php foreach ($rows as $return): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('returns/'.$return['id']) ?>">
+                                <a class="asset-code" href="<?= url('devoluciones/'.$return['id']) ?>">
                                     <?= e($return['return_number']) ?>
                                 </a>
                             </td>
@@ -43,7 +43,7 @@ $item = $item ?? null;
                             <td><?= (int) $return['item_count'] ?></td>
                             <td><?= datetime_pe($return['returned_at']) ?></td>
                             <td class="text-right">
-                                <a class="icon-btn" target="_blank" href="<?= url('returns/'.$return['id'].'/print') ?>">
+                                <a class="icon-btn" target="_blank" href="<?= url('devoluciones/'.$return['id'].'/imprimir') ?>">
                                     Imprimir
                                 </a>
                             </td>
@@ -72,7 +72,7 @@ $item = $item ?? null;
         <a class="btn btn-light" href="<?= url('devoluciones') ?>">Cancelar</a>
     </div>
 
-    <form class="form-card" method="get" action="<?= url('returns/create') ?>">
+    <form class="form-card" method="get" action="<?= url('devoluciones/crear') ?>">
         <div class="form-grid cols-2">
             <label>
                 Asignación vigente
@@ -189,10 +189,10 @@ $item = $item ?? null;
         </div>
 
         <div class="actions">
-            <a class="btn btn-light" target="_blank" href="<?= url('returns/'.$item['id'].'/print') ?>">
+            <a class="btn btn-light" target="_blank" href="<?= url('devoluciones/'.$item['id'].'/imprimir') ?>">
                 Imprimir
             </a>
-            <a class="btn btn-primary" href="<?= url('returns/'.$item['id'].'/pdf') ?>">
+            <a class="btn btn-primary" href="<?= url('devoluciones/'.$item['id'].'/pdf') ?>">
                 Descargar PDF
             </a>
         </div>

@@ -8,7 +8,7 @@
 
     <div class="actions">
         <a class="btn btn-light" href="javascript:window.print()">Imprimir</a>
-        <a class="btn btn-primary" href="<?= url('reports/inventory/csv') ?>">Descargar CSV</a>
+        <a class="btn btn-primary" href="<?= url('reportes/inventario/csv') ?>">Descargar CSV</a>
     </div>
 </div>
 

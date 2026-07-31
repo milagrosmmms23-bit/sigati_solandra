@@ -13,7 +13,7 @@ $item = $item ?? null;
             <p>Actas de entrega de equipos a trabajadores.</p>
         </div>
 
-        <a class="btn btn-primary" href="<?= url('asignaciones/create') ?>">+ Nueva asignación</a>
+        <a class="btn btn-primary" href="<?= url('asignaciones/crear') ?>">+ Nueva asignación</a>
     </div>
 
     <section class="panel table-panel">
@@ -46,7 +46,7 @@ $item = $item ?? null;
                             <td class="text-right">
                                 <a
                                     class="icon-btn"
-                                    href="<?= url('asignaciones/'.$assignment['id'].'/print') ?>"
+                                    href="<?= url('asignaciones/'.$assignment['id'].'/imprimir') ?>"
                                     target="_blank"
                                 >
                                     Imprimir
@@ -168,7 +168,7 @@ $item = $item ?? null;
         </div>
 
         <div class="actions">
-            <a class="btn btn-light" target="_blank" href="<?= url('asignaciones/'.$item['id'].'/print') ?>">
+            <a class="btn btn-light" target="_blank" href="<?= url('asignaciones/'.$item['id'].'/imprimir') ?>">
                 Imprimir
             </a>
             <a class="btn btn-primary" href="<?= url('asignaciones/'.$item['id'].'/pdf') ?>">
@@ -214,11 +214,11 @@ $item = $item ?? null;
 
         <aside class="panel action-panel">
             <h3>Acciones</h3>
-            <a class="action-link" href="<?= url('returns/create?assignment_id='.$item['id']) ?>">
+            <a class="action-link" href="<?= url('devoluciones/crear?assignment_id='.$item['id']) ?>">
                 <b>↩ Registrar devolución</b>
                 <small>Devolver uno o varios equipos</small>
             </a>
-            <a class="action-link" target="_blank" href="<?= url('asignaciones/'.$item['id'].'/print') ?>">
+            <a class="action-link" target="_blank" href="<?= url('asignaciones/'.$item['id'].'/imprimir') ?>">
                 <b>▤ Vista imprimible</b>
                 <small>Firmar manualmente el documento</small>
             </a>

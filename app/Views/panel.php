@@ -24,8 +24,8 @@ $cards = [
     </div>
 
     <div class="actions">
-        <a class="btn btn-light" href="<?= url('reports/inventory') ?>">Ver reporte</a>
-        <a class="btn btn-primary" href="<?= url('activos/create') ?>">+ Registrar activo</a>
+        <a class="btn btn-light" href="<?= url('reportes/inventario') ?>">Ver reporte</a>
+        <a class="btn btn-primary" href="<?= url('activos/crear') ?>">+ Registrar activo</a>
     </div>
 </div>
 
@@ -101,7 +101,7 @@ $cards = [
                 <h3>Distribución por área</h3>
                 <p>Diez áreas con más activos</p>
             </div>
-            <a href="<?= url('reports/inventory') ?>">Detalle</a>
+            <a href="<?= url('reportes/inventario') ?>">Detalle</a>
         </div>
 
         <div class="area-list">

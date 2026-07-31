@@ -20,7 +20,7 @@ $rows = $rows ?? [];
                 </div>
             </div>
 
-            <form class="inline-form" method="post" action="<?= url('catalogs/'.$table) ?>">
+            <form class="inline-form" method="post" action="<?= url('catalogos/'.$table) ?>">
                 <?= csrf_field() ?>
 
                 <?php if ($table === 'modelos'): ?>

@@ -28,42 +28,42 @@ function nav_active(string $needle, string $current): string
             <div class="brand-mark">S</div>
             <div>
                 <strong>SIGATI</strong>
-                <small>SOLANDRA · Arequipa</small>
+                <small>SOLANDRA - Arequipa</small>
             </div>
         </div>
 
         <nav>
             <a class="<?= $current === trim(config('app.base_url'), '/') ? 'active' : '' ?>" href="<?= url() ?>">
-                <span>▦</span> Panel
+                <span>P</span> Panel
             </a>
 
             <div class="nav-label">GESTIÓN</div>
 
             <a class="<?= nav_active('activos', $current) ?>" href="<?= url('activos') ?>">
-                <span>▣</span> Inventario
+                <span>I</span> Inventario
             </a>
             <a class="<?= nav_active('trabajadores', $current) ?>" href="<?= url('trabajadores') ?>">
-                <span>◎</span> Trabajadores
+                <span>T</span> Trabajadores
             </a>
             <a class="<?= nav_active('asignaciones', $current) ?>" href="<?= url('asignaciones') ?>">
-                <span>⇢</span> Asignaciones
+                <span>A</span> Asignaciones
             </a>
             <a class="<?= nav_active('devoluciones', $current) ?>" href="<?= url('devoluciones') ?>">
-                <span>↩</span> Devoluciones
+                <span>D</span> Devoluciones
             </a>
             <a class="<?= nav_active('mantenimientos', $current) ?>" href="<?= url('mantenimientos') ?>">
-                <span>⚙</span> Mantenimientos
+                <span>M</span> Mantenimientos
             </a>
 
             <div class="nav-label">CONTROL</div>
 
-            <a class="<?= nav_active('reports', $current) ?>" href="<?= url('reports/inventory') ?>">
-                <span>▤</span> Reportes
+            <a class="<?= nav_active('reportes', $current) ?>" href="<?= url('reportes/inventario') ?>">
+                <span>R</span> Reportes
             </a>
 
             <?php if (Auth::role() === 'ADMIN'): ?>
                 <a class="<?= nav_active('catalogos', $current) ?>" href="<?= url('catalogos') ?>">
-                    <span>☷</span> Catálogos
+                    <span>C</span> Catálogos
                 </a>
             <?php endif; ?>
         </nav>
@@ -76,11 +76,11 @@ function nav_active(string $needle, string $current): string
 
     <main class="main">
         <header class="topbar">
-            <button class="menu-button" type="button" data-toggle-sidebar>☰</button>
+            <button class="menu-button" type="button" data-toggle-sidebar>Menu</button>
 
             <div>
                 <h1><?= e($title ?? 'SIGATI') ?></h1>
-                <p><?= e(config('app.company')) ?> · <?= e(config('app.site')) ?></p>
+                <p><?= e(config('app.company')) ?> - <?= e(config('app.site')) ?></p>
             </div>
 
             <div class="user-menu">
@@ -90,7 +90,7 @@ function nav_active(string $needle, string $current): string
                     <small><?= e($user['role_name'] ?? '') ?></small>
                 </div>
 
-                <form action="<?= url('logout') ?>" method="post">
+                <form action="<?= url('salir') ?>" method="post">
                     <?= csrf_field() ?>
                     <button class="link-button" title="Cerrar sesión">Salir</button>
                 </form>

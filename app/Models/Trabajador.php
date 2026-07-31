@@ -3,12 +3,77 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Core\DB;
-use PDO;
-use Throwable;
+final class Trabajador extends ModeloBase
+{
+    public function all(string $q = ''): array
+    {
+        $sql = "SELECT e.*, a.name area_name
+                FROM trabajadores e
+                LEFT JOIN areas a ON a.id = e.area_id
+                WHERE e.active = 1";
+        $params = [];
 
-final class Trabajador extends ModeloBase {
-    public function all(string $q=''):array{$sql='SELECT e.*,a.name area_name FROM trabajadores e LEFT JOIN areas a ON a.id=e.area_id WHERE e.active=1';$p=[];if($q!==''){$sql.=' AND (e.employee_code LIKE ? OR CONCAT(e.first_name," ",e.last_name) LIKE ? OR e.position LIKE ?)';$x="%$q%";$p=[$x,$x,$x];}$sql.=' ORDER BY e.last_name,e.first_name';$s=$this->db->prepare($sql);$s->execute($p);return $s->fetchAll();}
-    public function find(int $id):?array{$s=$this->db->prepare('SELECT * FROM trabajadores WHERE id=?');$s->execute([$id]);return $s->fetch()?:null;}
-    public function save(array $d,?int $id=null):int{if($id){$s=$this->db->prepare('UPDATE trabajadores SET employee_code=?,first_name=?,last_name=?,email=?,phone=?,position=?,area_id=?,updated_at=NOW() WHERE id=?');$s->execute([$d['employee_code'],$d['first_name'],$d['last_name'],$d['email']?:null,$d['phone']?:null,$d['position']?:null,$d['area_id']?:null,$id]);return $id;}$s=$this->db->prepare('INSERT INTO trabajadores(employee_code,first_name,last_name,email,phone,position,area_id,active) VALUES(?,?,?,?,?,?,?,1)');$s->execute([$d['employee_code'],$d['first_name'],$d['last_name'],$d['email']?:null,$d['phone']?:null,$d['position']?:null,$d['area_id']?:null]);return (int)$this->db->lastInsertId();}
+        if ($q !== '') {
+            $sql .= ' AND (e.employee_code LIKE ? OR CONCAT(e.first_name, " ", e.last_name) LIKE ? OR e.position LIKE ?)';
+            $like = "%$q%";
+            $params = [$like, $like, $like];
+        }
+
+        $sql .= ' ORDER BY e.last_name, e.first_name';
+
+        $statement = $this->db->prepare($sql);
+        $statement->execute($params);
+
+        return $statement->fetchAll();
+    }
+
+    public function find(int $id): ?array
+    {
+        $statement = $this->db->prepare('SELECT * FROM trabajadores WHERE id = ?');
+        $statement->execute([$id]);
+
+        return $statement->fetch() ?: null;
+    }
+
+    public function save(array $data, ?int $id = null): int
+    {
+        if ($id) {
+            $statement = $this->db->prepare(
+                'UPDATE trabajadores
+                 SET employee_code = ?, first_name = ?, last_name = ?, email = ?, phone = ?,
+                     position = ?, area_id = ?, updated_at = NOW()
+                 WHERE id = ?'
+            );
+            $statement->execute($this->arguments($data, $id));
+
+            return $id;
+        }
+
+        $statement = $this->db->prepare(
+            'INSERT INTO trabajadores(employee_code, first_name, last_name, email, phone, position, area_id, active)
+             VALUES(?, ?, ?, ?, ?, ?, ?, 1)'
+        );
+        $statement->execute($this->arguments($data));
+
+        return (int) $this->db->lastInsertId();
+    }
+
+    private function arguments(array $data, ?int $id = null): array
+    {
+        $arguments = [
+            $data['employee_code'],
+            $data['first_name'],
+            $data['last_name'],
+            $data['email'] ?: null,
+            $data['phone'] ?: null,
+            $data['position'] ?: null,
+            $data['area_id'] ?: null,
+        ];
+
+        if ($id) {
+            $arguments[] = $id;
+        }
+
+        return $arguments;
+    }
 }
