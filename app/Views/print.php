@@ -119,7 +119,12 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .dash{text-align:center!important}
 .equipment-table{margin-bottom:4.2mm;font-size:15.2px}
 .equipment-table td{height:auto;min-height:0}
-.observations{height:10mm;vertical-align:middle;line-height:1.16}
+.phone-table col:nth-child(1){width:20%}
+.phone-table col:nth-child(2){width:19%}
+.phone-table col:nth-child(3){width:12%}
+.phone-table col:nth-child(4){width:20%}
+.phone-table col:nth-child(5){width:9%}
+.phone-table col:nth-child(6){width:20%}.observations{height:10mm;vertical-align:middle;line-height:1.16}
 .assigned-title{font-weight:bold;margin:4.2mm 0 0.9mm 5mm;font-size:15.2px}
 .assigned-table{margin-bottom:4.2mm;font-size:15.2px}
 .legal-text{font-size:16.3px;line-height:1.36;text-align:justify;margin:0 0 1.45mm}
@@ -256,7 +261,8 @@ foreach ($logoCandidates as $logoPath) {
             </tr>
         </table>
 
-        <table class="quality-table equipment-table">
+        <table class="quality-table equipment-table phone-table">
+            <colgroup><col><col><col><col><col><col></colgroup>
             <tr><th class="section-title" colspan="6">Descripción de Celular y SIM CARD (cuando aplique)</th></tr>
             <tr>
                 <td class="field-label">Chip de Línea</td>
