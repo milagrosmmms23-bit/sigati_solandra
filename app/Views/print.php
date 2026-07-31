@@ -155,8 +155,8 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .assignment-table tr:first-child td:nth-child(3),.assignment-table tr:first-child td:nth-child(4),.assignment-table tr:nth-child(2) td:nth-child(3){text-align:center}
 .assignment-table .field-label{white-space:nowrap}
 .legal-text{width:170mm;margin:0 auto 1.55mm;font-size:14.4px;line-height:1.32;text-align:justify}
-.signature-line{width:43mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:0;padding-top:1px;font-size:15px;position:absolute;right:9mm;bottom:17mm}
-.quality-footer{width:170mm;border:0.75pt solid #999;text-align:center;color:#777;font-size:11.4px;padding:1.2px;margin:0;position:absolute;left:50%;transform:translateX(-50%);bottom:4mm}
+.signature-line{width:46mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:0;padding-top:1.5px;font-size:16px;position:absolute;right:9mm;bottom:22mm}
+.quality-footer{width:170mm;border:0.75pt solid #999;text-align:center;color:#777;font-size:12px;padding:1.4px;margin:0;position:absolute;left:50%;transform:translateX(-50%);bottom:7mm}
 .return-title{text-align:center;font-weight:bold;font-size:14px;margin:8mm 0 4mm}
 .doc-table{width:100%;border-collapse:collapse;margin:4mm 0}
 .doc-table th,.doc-table td{border:1px solid #555;padding:5px;text-align:left;vertical-align:top}
@@ -205,7 +205,7 @@ foreach ($logoCandidates as $logoPath) {
     $equipment = $equipmentItems[0] ?? null;
     $phone = $phoneItems[0] ?? null;
     $extraEquipment = array_slice($equipmentItems, 1);
-    $equipmentAccessories = $assetText($equipment, 'condition_out', '');
+    $equipmentAccessories = $assetText($equipment, 'condition_out');
     $extraDescriptions = [];
 
     foreach ($extraEquipment as $extraAsset) {
@@ -262,21 +262,21 @@ foreach ($logoCandidates as $logoPath) {
             <tr><th class="section-title" colspan="7">Datos del Equipo</th></tr>
             <tr>
                 <td class="field-label">Nombre Equipo</td>
-                <td class="field-value" colspan="3"><?= e($assetText($equipment, 'asset_code', '')) ?></td>
+                <td class="field-value" colspan="3"><?= e($assetText($equipment, 'asset_code')) ?></td>
                 <td class="field-label">Código</td>
-                <td class="field-value" colspan="2"><?= e($assetText($equipment, 'asset_code', '')) ?></td>
+                <td class="field-value" colspan="2"><?= e($assetText($equipment, 'asset_code')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Marca</td>
-                <td class="field-value"><?= e($assetText($equipment, 'brand_name', '')) ?></td>
+                <td class="field-value"><?= e($assetText($equipment, 'brand_name')) ?></td>
                 <td class="field-label">Serie</td>
-                <td class="field-value"><?= e($assetText($equipment, 'serial_number', '')) ?></td>
+                <td class="field-value"><?= e($assetText($equipment, 'serial_number')) ?></td>
                 <td class="field-label" colspan="2">Modelo</td>
-                <td class="field-value"><?= e($assetText($equipment, 'model_name', '')) ?></td>
+                <td class="field-value"><?= e($assetText($equipment, 'model_name')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Tipo de Equipo</td>
-                <td class="field-value" colspan="6"><?= e($assetText($equipment, 'type_name', '')) ?></td>
+                <td class="field-value" colspan="6"><?= e($assetText($equipment, 'type_name')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Accesorios</td>
@@ -284,7 +284,7 @@ foreach ($logoCandidates as $logoPath) {
             </tr>
             <tr>
                 <td class="field-label">Observaciones</td>
-                <td class="observations" colspan="6"><?= nl2br(e($assetObservations($equipment, $item, ''))) ?></td>
+                <td class="observations" colspan="6"><?= nl2br(e($assetObservations($equipment, $item))) ?></td>
             </tr>
         </table>
 
