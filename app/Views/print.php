@@ -236,19 +236,17 @@ foreach ($logoCandidates as $logoPath) {
                         <strong>Solandra</strong>
                     <?php endif; ?>
                 </td>
-                <td class="quality-title" colspan="3">SISTEMA DE GESTIÓN DE CALIDAD</td>
+                <td class="quality-title" colspan="3" rowspan="2">SISTEMA DE GESTIÓN DE CALIDAD</td>
                 <td class="quality-meta"><div>Código:<br><strong>SOL-TI-FO-01</strong></div></td>
             </tr>
             <tr>
-                <td colspan="3"></td>
                 <td class="quality-meta"><div>Versión:<br><strong>02</strong></div></td>
             </tr>
             <tr>
-                <td class="quality-subtitle" colspan="3">ASIGNACIÓN DE EQUIPOS INFORMÁTICOS</td>
+                <td class="quality-subtitle" colspan="3" rowspan="2">ASIGNACIÓN DE EQUIPOS INFORMÁTICOS</td>
                 <td class="quality-meta"><div>Fecha de aprobación:<br><strong>23/04/2024</strong></div></td>
             </tr>
             <tr>
-                <td colspan="3"></td>
                 <td class="quality-meta"><div>Página:<br><strong>1 de 1</strong></div></td>
             </tr>
             <tr class="quality-sign">
