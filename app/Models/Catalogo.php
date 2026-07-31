@@ -17,18 +17,18 @@ final class Catalogo extends ModeloBase
         'proveedores' => 'Proveedores',
     ];
 
-    public function all(string $table): array
+    public function listar(string $table): array
     {
-        $this->ensureAllowed($table);
+        $this->validarTablaPermitida($table);
 
         return $this->db
             ->query("SELECT * FROM $table WHERE active = 1 ORDER BY name")
             ->fetchAll();
     }
 
-    public function create(string $table, array $data): int
+    public function crear(string $table, array $data): int
     {
-        $this->ensureAllowed($table);
+        $this->validarTablaPermitida($table);
 
         if ($table === 'tipos_activo') {
             $statement = $this->db->prepare(
@@ -40,7 +40,7 @@ final class Catalogo extends ModeloBase
         }
 
         if ($table === 'estados_activo') {
-            $code = $this->statusCode($data);
+            $code = $this->codigoEstado($data);
             $statement = $this->db->prepare(
                 'INSERT INTO estados_activo(code, name, color, active) VALUES(?, ?, ?, 1)'
             );
@@ -73,14 +73,14 @@ final class Catalogo extends ModeloBase
         return (int) $this->db->lastInsertId();
     }
 
-    private function ensureAllowed(string $table): void
+    private function validarTablaPermitida(string $table): void
     {
         if (!isset($this->allowed[$table])) {
             throw new InvalidArgumentException('Catálogo inválido');
         }
     }
 
-    private function statusCode(array $data): string
+    private function codigoEstado(array $data): string
     {
         $code = strtoupper(trim((string) ($data['code'] ?? '')));
 

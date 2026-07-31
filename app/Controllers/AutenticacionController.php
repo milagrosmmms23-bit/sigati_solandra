@@ -7,7 +7,7 @@ use App\Core\{Auth, Controller, Csrf, Flash};
 
 final class AutenticacionController extends Controller
 {
-    public function loginForm(): void
+    public function formularioIngreso(): void
     {
         if (Auth::check()) {
             redirect('');
@@ -16,7 +16,7 @@ final class AutenticacionController extends Controller
         $this->view('ingreso', ['title' => 'Iniciar sesión'], 'autenticacion');
     }
 
-    public function login(): void
+    public function ingresar(): void
     {
         Csrf::verify();
 
@@ -32,7 +32,7 @@ final class AutenticacionController extends Controller
         redirect('ingreso');
     }
 
-    public function logout(): void
+    public function salir(): void
     {
         Csrf::verify();
         Auth::logout();

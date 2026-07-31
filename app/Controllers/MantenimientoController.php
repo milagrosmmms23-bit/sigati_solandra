@@ -17,16 +17,16 @@ final class MantenimientoController extends Controller
         $this->model = new Mantenimiento();
     }
 
-    public function index(): void
+    public function listado(): void
     {
         $this->view('mantenimientos', [
-            'mode' => 'index',
+            'mode' => 'listado',
             'title' => 'Mantenimientos',
-            'rows' => $this->model->all(),
+            'rows' => $this->model->listar(),
         ]);
     }
 
-    public function create(): void
+    public function crear(): void
     {
         $activos = DB::pdo()
             ->query(
@@ -39,13 +39,13 @@ final class MantenimientoController extends Controller
             ->fetchAll();
 
         $this->view('mantenimientos', [
-            'mode' => 'form',
+            'mode' => 'formulario',
             'title' => 'Nuevo mantenimiento',
             'activos' => $activos,
         ]);
     }
 
-    public function store(): void
+    public function guardar(): void
     {
         Csrf::verify();
 
@@ -59,7 +59,7 @@ final class MantenimientoController extends Controller
         ];
 
         try {
-            $this->model->open($data, Auth::id());
+            $this->model->abrir($data, Auth::id());
             Flash::success('Mantenimiento abierto.');
             redirect('mantenimientos');
         } catch (Throwable $exception) {
@@ -68,7 +68,7 @@ final class MantenimientoController extends Controller
         }
     }
 
-    public function close(string $id): void
+    public function cerrar(string $id): void
     {
         Csrf::verify();
 
@@ -81,7 +81,7 @@ final class MantenimientoController extends Controller
         ];
 
         try {
-            $this->model->close((int) $id, $data, Auth::id());
+            $this->model->cerrar((int) $id, $data, Auth::id());
             Flash::success('Mantenimiento cerrado.');
         } catch (Throwable $exception) {
             Flash::error($exception->getMessage());

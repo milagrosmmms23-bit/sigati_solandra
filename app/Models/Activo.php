@@ -7,9 +7,9 @@ use Throwable;
 
 final class Activo extends ModeloBase
 {
-    public function list(array $filters, int $page, int $perPage): array
+    public function listar(array $filters, int $page, int $perPage): array
     {
-        [$where, $params] = $this->buildFilters($filters);
+        [$where, $params] = $this->armarFiltros($filters);
         $offset = ($page - 1) * $perPage;
 
         $count = $this->db->prepare("SELECT COUNT(*) FROM activos a WHERE $where");
@@ -42,7 +42,7 @@ final class Activo extends ModeloBase
         ];
     }
 
-    public function find(int $id): ?array
+    public function buscar(int $id): ?array
     {
         $statement = $this->db->prepare(
             "SELECT a.*, t.name type_name, s.name status_name, s.color,
@@ -67,14 +67,14 @@ final class Activo extends ModeloBase
             return null;
         }
 
-        $activo['specs'] = $this->specs($id);
-        $activo['movements'] = $this->movements($id);
+        $activo['specs'] = $this->especificacionesGuardadas($id);
+        $activo['movements'] = $this->movimientos($id);
         $activo['mantenimientos'] = $this->mantenimientos($id);
 
         return $activo;
     }
 
-    public function available(): array
+    public function disponibles(): array
     {
         return $this->db
             ->query(
@@ -91,18 +91,18 @@ final class Activo extends ModeloBase
             ->fetchAll();
     }
 
-    public function save(array $data, array $specs, int $user, ?int $id = null): int
+    public function guardar(array $data, array $specs, int $user, ?int $id = null): int
     {
         $this->db->beginTransaction();
 
         try {
             if ($id) {
-                $this->update($id, $data, $user);
+                $this->actualizar($id, $data, $user);
             } else {
-                $id = $this->insert($data, $user);
+                $id = $this->insertar($data, $user);
             }
 
-            $this->saveSpecs($id, $specs);
+            $this->guardarEspecificaciones($id, $specs);
             $this->db->commit();
 
             return $id;
@@ -112,14 +112,14 @@ final class Activo extends ModeloBase
         }
     }
 
-    public function export(): array
+    public function exportar(): array
     {
         return $this->db
             ->query('SELECT * FROM vw_inventario_general ORDER BY asset_code')
             ->fetchAll();
     }
 
-    private function buildFilters(array $filters): array
+    private function armarFiltros(array $filters): array
     {
         $where = ['a.active = 1'];
         $params = [];
@@ -145,7 +145,7 @@ final class Activo extends ModeloBase
         return [implode(' AND ', $where), $params];
     }
 
-    private function insert(array $data, int $user): int
+    private function insertar(array $data, int $user): int
     {
         $statement = $this->db->prepare('CALL sp_generar_codigo_activo(?, @code)');
         $statement->execute([$data['asset_type_id']]);
@@ -160,15 +160,15 @@ final class Activo extends ModeloBase
                 cost, warranty_end, notes, active, created_by, updated_by
              ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)'
         );
-        $statement->execute(array_merge([$code], $this->arguments($data), [$user, $user]));
+        $statement->execute(array_merge([$code], $this->argumentos($data), [$user, $user]));
 
         $id = (int) $this->db->lastInsertId();
-        $this->registerInitialMovement($id, $data, $user);
+        $this->registrarMovimientoInicial($id, $data, $user);
 
         return $id;
     }
 
-    private function update(int $id, array $data, int $user): void
+    private function actualizar(int $id, array $data, int $user): void
     {
         $statement = $this->db->prepare(
             'UPDATE activos
@@ -180,7 +180,7 @@ final class Activo extends ModeloBase
              WHERE id = ?'
         );
 
-        $arguments = $this->arguments($data);
+        $arguments = $this->argumentos($data);
         $arguments[] = $user;
         $arguments[] = $id;
         $statement->execute($arguments);
@@ -190,7 +190,7 @@ final class Activo extends ModeloBase
             ->execute([$id]);
     }
 
-    private function arguments(array $data): array
+    private function argumentos(array $data): array
     {
         return [
             $data['legacy_code'] ?: null,
@@ -216,7 +216,7 @@ final class Activo extends ModeloBase
         ];
     }
 
-    private function saveSpecs(int $assetId, array $specs): void
+    private function guardarEspecificaciones(int $assetId, array $specs): void
     {
         $statement = $this->db->prepare(
             'INSERT INTO especificaciones_activo(asset_id, spec_key, spec_value) VALUES(?, ?, ?)'
@@ -232,7 +232,7 @@ final class Activo extends ModeloBase
         }
     }
 
-    private function registerInitialMovement(int $assetId, array $data, int $user): void
+    private function registrarMovimientoInicial(int $assetId, array $data, int $user): void
     {
         $statement = $this->db->prepare(
             "INSERT INTO movimientos_activo(asset_id, movement_type, to_status_id, to_area_id, notes, user_id)
@@ -247,7 +247,7 @@ final class Activo extends ModeloBase
         ]);
     }
 
-    private function specs(int $assetId): array
+    private function especificacionesGuardadas(int $assetId): array
     {
         $statement = $this->db->prepare(
             'SELECT spec_key, spec_value FROM especificaciones_activo WHERE asset_id = ? ORDER BY spec_key'
@@ -257,7 +257,7 @@ final class Activo extends ModeloBase
         return $statement->fetchAll();
     }
 
-    private function movements(int $assetId): array
+    private function movimientos(int $assetId): array
     {
         $statement = $this->db->prepare(
             "SELECT am.*, u.name user_name

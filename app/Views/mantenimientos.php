@@ -1,18 +1,18 @@
 <?php
-$mode = $mode ?? 'index';
+$modo = $modo ?? $mode ?? 'listado';
 $rows = $rows ?? [];
 $activos = $activos ?? [];
 
-$partials = [
-    'index' => 'index',
-    'form' => 'formulario',
+$parciales = [
+    'listado' => 'index',
+    'formulario' => 'formulario',
 ];
 
-$partial = $partials[$mode] ?? $partials['index'];
-$partialPath = __DIR__.'/mantenimientos/'.$partial.'.php';
+$parcial = $parciales[$modo] ?? $parciales['listado'];
+$rutaParcial = __DIR__.'/mantenimientos/'.$parcial.'.php';
 
-if (!is_file($partialPath)) {
-    abort(500, 'Vista no encontrada: mantenimientos/'.$partial);
+if (!is_file($rutaParcial)) {
+    abort(500, 'Vista no encontrada: mantenimientos/'.$parcial);
 }
 
-require $partialPath;
+require $rutaParcial;

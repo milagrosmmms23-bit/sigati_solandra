@@ -17,26 +17,26 @@ final class AsignacionController extends Controller
         $this->model = new Asignacion();
     }
 
-    public function index(): void
+    public function listado(): void
     {
         $this->view('asignaciones', [
-            'mode' => 'index',
+            'mode' => 'listado',
             'title' => 'Asignaciones',
-            'rows' => $this->model->all(),
+            'rows' => $this->model->listar(),
         ]);
     }
 
-    public function create(): void
+    public function crear(): void
     {
         $this->view('asignaciones', [
-            'mode' => 'form',
+            'mode' => 'formulario',
             'title' => 'Nueva asignación',
-            'trabajadores' => (new Trabajador())->all(),
-            'activos' => (new Activo())->available(),
+            'trabajadores' => (new Trabajador())->listar(),
+            'activos' => (new Activo())->disponibles(),
         ]);
     }
 
-    public function store(): void
+    public function guardar(): void
     {
         Csrf::verify();
 
@@ -57,7 +57,7 @@ final class AsignacionController extends Controller
         }
 
         try {
-            $id = $this->model->create(
+            $id = $this->model->crear(
                 $trabajadorId,
                 (int) ($_POST['area_id'] ?? 0) ?: null,
                 trim($_POST['notes'] ?? ''),
@@ -73,24 +73,24 @@ final class AsignacionController extends Controller
         }
     }
 
-    public function show(string $id): void
+    public function ver(string $id): void
     {
-        $asignacion = $this->model->find((int) $id);
+        $asignacion = $this->model->buscar((int) $id);
 
         if (!$asignacion) {
             abort(404);
         }
 
         $this->view('asignaciones', [
-            'mode' => 'show',
+            'mode' => 'detalle',
             'title' => $asignacion['assignment_number'],
             'item' => $asignacion,
         ]);
     }
 
-    public function print(string $id): void
+    public function imprimir(string $id): void
     {
-        $asignacion = $this->model->find((int) $id);
+        $asignacion = $this->model->buscar((int) $id);
 
         if (!$asignacion) {
             abort(404);
@@ -105,7 +105,7 @@ final class AsignacionController extends Controller
 
     public function pdf(string $id): void
     {
-        $asignacion = $this->model->find((int) $id);
+        $asignacion = $this->model->buscar((int) $id);
 
         if (!$asignacion) {
             abort(404);

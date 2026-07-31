@@ -13,17 +13,17 @@ final class ReporteController extends Controller
         Auth::requireLogin();
     }
 
-    public function inventory(): void
+    public function inventario(): void
     {
         $this->view('reporte', [
             'title' => 'Reporte de inventario',
-            'rows' => (new Activo())->export(),
+            'rows' => (new Activo())->exportar(),
         ]);
     }
 
-    public function csv(): never
+    public function exportarCsv(): never
     {
-        $rows = (new Activo())->export();
+        $rows = (new Activo())->exportar();
 
         header('Content-Type: text/csv; charset=UTF-8');
         header('Content-Disposition: attachment; filename="inventario_solandra_'.date('Ymd_His').'.csv"');

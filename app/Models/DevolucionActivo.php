@@ -7,7 +7,7 @@ use Throwable;
 
 final class DevolucionActivo extends ModeloBase
 {
-    public function all(): array
+    public function listar(): array
     {
         return $this->db
             ->query(
@@ -23,7 +23,7 @@ final class DevolucionActivo extends ModeloBase
             ->fetchAll();
     }
 
-    public function find(int $id): ?array
+    public function buscar(int $id): ?array
     {
         $statement = $this->db->prepare(
             "SELECT r.*, a.assignment_number, CONCAT(e.first_name, ' ', e.last_name) employee_name,
@@ -60,7 +60,7 @@ final class DevolucionActivo extends ModeloBase
         return $devolucion;
     }
 
-    public function create(int $assignment, string $notes, array $items, int $user): int
+    public function crear(int $assignment, string $notes, array $items, int $user): int
     {
         $this->db->beginTransaction();
 

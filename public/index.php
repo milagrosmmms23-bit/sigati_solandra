@@ -89,102 +89,58 @@ set_exception_handler(function (Throwable $exception): void {
 $router = new Router();
 
 // Autenticación
-$router->get('/ingreso', [AutenticacionController::class, 'loginForm']);
-$router->get('/login', [AutenticacionController::class, 'loginForm']);
-$router->post('/ingreso', [AutenticacionController::class, 'login']);
-$router->post('/login', [AutenticacionController::class, 'login']);
-$router->post('/salir', [AutenticacionController::class, 'logout']);
-$router->post('/logout', [AutenticacionController::class, 'logout']);
+$router->get('/ingreso', [AutenticacionController::class, 'formularioIngreso']);
+$router->post('/ingreso', [AutenticacionController::class, 'ingresar']);
+$router->post('/salir', [AutenticacionController::class, 'salir']);
 
 // Panel
-$router->get('/', [PanelController::class, 'index']);
+$router->get('/', [PanelController::class, 'inicio']);
 
 // Activos
-$router->get('/activos', [ActivoController::class, 'index']);
-$router->get('/activos/crear', [ActivoController::class, 'create']);
-$router->post('/activos', [ActivoController::class, 'store']);
-$router->get('/activos/importar', [ActivoController::class, 'importForm']);
-$router->post('/activos/importar', [ActivoController::class, 'importCsv']);
-$router->get('/activos/{id}/editar', [ActivoController::class, 'edit']);
-$router->post('/activos/{id}', [ActivoController::class, 'update']);
-$router->get('/activos/{id}/qr', [CodigoQrController::class, 'show']);
-$router->get('/activos/{id}', [ActivoController::class, 'show']);
+$router->get('/activos', [ActivoController::class, 'listado']);
+$router->get('/activos/crear', [ActivoController::class, 'crear']);
+$router->post('/activos', [ActivoController::class, 'guardar']);
+$router->get('/activos/importar', [ActivoController::class, 'formularioImportacion']);
+$router->post('/activos/importar', [ActivoController::class, 'importarCsv']);
+$router->get('/activos/{id}/editar', [ActivoController::class, 'editar']);
+$router->post('/activos/{id}', [ActivoController::class, 'actualizar']);
+$router->get('/activos/{id}/qr', [CodigoQrController::class, 'ver']);
+$router->get('/activos/{id}', [ActivoController::class, 'ver']);
 
 // Trabajadores
-$router->get('/trabajadores', [TrabajadorController::class, 'index']);
-$router->get('/trabajadores/crear', [TrabajadorController::class, 'create']);
-$router->post('/trabajadores', [TrabajadorController::class, 'store']);
-$router->get('/trabajadores/{id}/editar', [TrabajadorController::class, 'edit']);
-$router->post('/trabajadores/{id}', [TrabajadorController::class, 'update']);
+$router->get('/trabajadores', [TrabajadorController::class, 'listado']);
+$router->get('/trabajadores/crear', [TrabajadorController::class, 'crear']);
+$router->post('/trabajadores', [TrabajadorController::class, 'guardar']);
+$router->get('/trabajadores/{id}/editar', [TrabajadorController::class, 'editar']);
+$router->post('/trabajadores/{id}', [TrabajadorController::class, 'actualizar']);
 
 // Asignaciones
-$router->get('/asignaciones', [AsignacionController::class, 'index']);
-$router->get('/asignaciones/crear', [AsignacionController::class, 'create']);
-$router->post('/asignaciones', [AsignacionController::class, 'store']);
-$router->get('/asignaciones/{id}/imprimir', [AsignacionController::class, 'print']);
+$router->get('/asignaciones', [AsignacionController::class, 'listado']);
+$router->get('/asignaciones/crear', [AsignacionController::class, 'crear']);
+$router->post('/asignaciones', [AsignacionController::class, 'guardar']);
+$router->get('/asignaciones/{id}/imprimir', [AsignacionController::class, 'imprimir']);
 $router->get('/asignaciones/{id}/pdf', [AsignacionController::class, 'pdf']);
-$router->get('/asignaciones/{id}', [AsignacionController::class, 'show']);
+$router->get('/asignaciones/{id}', [AsignacionController::class, 'ver']);
 
 // Devoluciones
-$router->get('/devoluciones', [DevolucionController::class, 'index']);
-$router->get('/devoluciones/crear', [DevolucionController::class, 'create']);
-$router->post('/devoluciones', [DevolucionController::class, 'store']);
-$router->get('/devoluciones/{id}/imprimir', [DevolucionController::class, 'print']);
+$router->get('/devoluciones', [DevolucionController::class, 'listado']);
+$router->get('/devoluciones/crear', [DevolucionController::class, 'crear']);
+$router->post('/devoluciones', [DevolucionController::class, 'guardar']);
+$router->get('/devoluciones/{id}/imprimir', [DevolucionController::class, 'imprimir']);
 $router->get('/devoluciones/{id}/pdf', [DevolucionController::class, 'pdf']);
-$router->get('/devoluciones/{id}', [DevolucionController::class, 'show']);
+$router->get('/devoluciones/{id}', [DevolucionController::class, 'ver']);
 
 // Mantenimientos
-$router->get('/mantenimientos', [MantenimientoController::class, 'index']);
-$router->get('/mantenimientos/crear', [MantenimientoController::class, 'create']);
-$router->post('/mantenimientos', [MantenimientoController::class, 'store']);
-$router->post('/mantenimientos/{id}/cerrar', [MantenimientoController::class, 'close']);
+$router->get('/mantenimientos', [MantenimientoController::class, 'listado']);
+$router->get('/mantenimientos/crear', [MantenimientoController::class, 'crear']);
+$router->post('/mantenimientos', [MantenimientoController::class, 'guardar']);
+$router->post('/mantenimientos/{id}/cerrar', [MantenimientoController::class, 'cerrar']);
 
 // Catálogos y reportes
-$router->get('/catalogos', [CatalogoController::class, 'index']);
-$router->post('/catalogos/{table}', [CatalogoController::class, 'store']);
-$router->get('/reportes/inventario', [ReporteController::class, 'inventory']);
-$router->get('/reportes/inventario/csv', [ReporteController::class, 'csv']);
-
-// Alias antiguos para no romper enlaces guardados.
-$router->get('/assets', [ActivoController::class, 'index']);
-$router->get('/assets/create', [ActivoController::class, 'create']);
-$router->post('/assets', [ActivoController::class, 'store']);
-$router->get('/assets/import', [ActivoController::class, 'importForm']);
-$router->post('/assets/import', [ActivoController::class, 'importCsv']);
-$router->get('/assets/{id}/edit', [ActivoController::class, 'edit']);
-$router->post('/assets/{id}', [ActivoController::class, 'update']);
-$router->get('/assets/{id}/qr', [CodigoQrController::class, 'show']);
-$router->get('/assets/{id}', [ActivoController::class, 'show']);
-
-$router->get('/employees', [TrabajadorController::class, 'index']);
-$router->get('/employees/create', [TrabajadorController::class, 'create']);
-$router->post('/employees', [TrabajadorController::class, 'store']);
-$router->get('/employees/{id}/edit', [TrabajadorController::class, 'edit']);
-$router->post('/employees/{id}', [TrabajadorController::class, 'update']);
-
-$router->get('/assignments', [AsignacionController::class, 'index']);
-$router->get('/assignments/create', [AsignacionController::class, 'create']);
-$router->post('/assignments', [AsignacionController::class, 'store']);
-$router->get('/assignments/{id}/print', [AsignacionController::class, 'print']);
-$router->get('/assignments/{id}/pdf', [AsignacionController::class, 'pdf']);
-$router->get('/assignments/{id}', [AsignacionController::class, 'show']);
-
-$router->get('/returns', [DevolucionController::class, 'index']);
-$router->get('/returns/create', [DevolucionController::class, 'create']);
-$router->post('/returns', [DevolucionController::class, 'store']);
-$router->get('/returns/{id}/print', [DevolucionController::class, 'print']);
-$router->get('/returns/{id}/pdf', [DevolucionController::class, 'pdf']);
-$router->get('/returns/{id}', [DevolucionController::class, 'show']);
-
-$router->get('/maintenances', [MantenimientoController::class, 'index']);
-$router->get('/maintenances/create', [MantenimientoController::class, 'create']);
-$router->post('/maintenances', [MantenimientoController::class, 'store']);
-$router->post('/maintenances/{id}/close', [MantenimientoController::class, 'close']);
-
-$router->get('/catalogs', [CatalogoController::class, 'index']);
-$router->post('/catalogs/{table}', [CatalogoController::class, 'store']);
-$router->get('/reports/inventory', [ReporteController::class, 'inventory']);
-$router->get('/reports/inventory/csv', [ReporteController::class, 'csv']);
+$router->get('/catalogos', [CatalogoController::class, 'listado']);
+$router->post('/catalogos/{table}', [CatalogoController::class, 'guardar']);
+$router->get('/reportes/inventario', [ReporteController::class, 'inventario']);
+$router->get('/reportes/inventario/csv', [ReporteController::class, 'exportarCsv']);
 
 $router->dispatch();
 

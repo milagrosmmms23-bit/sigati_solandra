@@ -5,7 +5,7 @@ namespace App\Models;
 
 final class Trabajador extends ModeloBase
 {
-    public function all(string $q = ''): array
+    public function listar(string $q = ''): array
     {
         $sql = "SELECT e.*, a.name area_name
                 FROM trabajadores e
@@ -27,7 +27,7 @@ final class Trabajador extends ModeloBase
         return $statement->fetchAll();
     }
 
-    public function find(int $id): ?array
+    public function buscar(int $id): ?array
     {
         $statement = $this->db->prepare('SELECT * FROM trabajadores WHERE id = ?');
         $statement->execute([$id]);
@@ -35,7 +35,7 @@ final class Trabajador extends ModeloBase
         return $statement->fetch() ?: null;
     }
 
-    public function save(array $data, ?int $id = null): int
+    public function guardar(array $data, ?int $id = null): int
     {
         if ($id) {
             $statement = $this->db->prepare(
@@ -44,7 +44,7 @@ final class Trabajador extends ModeloBase
                      position = ?, area_id = ?, updated_at = NOW()
                  WHERE id = ?'
             );
-            $statement->execute($this->arguments($data, $id));
+            $statement->execute($this->argumentos($data, $id));
 
             return $id;
         }
@@ -53,12 +53,12 @@ final class Trabajador extends ModeloBase
             'INSERT INTO trabajadores(employee_code, first_name, last_name, email, phone, position, area_id, active)
              VALUES(?, ?, ?, ?, ?, ?, ?, 1)'
         );
-        $statement->execute($this->arguments($data));
+        $statement->execute($this->argumentos($data));
 
         return (int) $this->db->lastInsertId();
     }
 
-    private function arguments(array $data, ?int $id = null): array
+    private function argumentos(array $data, ?int $id = null): array
     {
         $arguments = [
             $data['employee_code'],

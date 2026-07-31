@@ -5,7 +5,7 @@ namespace App\Models;
 
 final class Mantenimiento extends ModeloBase
 {
-    public function all(): array
+    public function listar(): array
     {
         return $this->db
             ->query(
@@ -20,7 +20,7 @@ final class Mantenimiento extends ModeloBase
             ->fetchAll();
     }
 
-    public function open(array $data, int $user): int
+    public function abrir(array $data, int $user): int
     {
         $statement = $this->db->prepare('CALL sp_abrir_mantenimiento(?,?,?,?,?,?,?,@id)');
         $statement->execute([
@@ -37,7 +37,7 @@ final class Mantenimiento extends ModeloBase
         return (int) $this->db->query('SELECT @id')->fetchColumn();
     }
 
-    public function close(int $id, array $data, int $user): void
+    public function cerrar(int $id, array $data, int $user): void
     {
         $statement = $this->db->prepare('CALL sp_cerrar_mantenimiento(?,?,?,?,?,?,?)');
         $statement->execute([

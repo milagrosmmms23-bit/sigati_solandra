@@ -17,30 +17,30 @@ final class DevolucionController extends Controller
         $this->model = new DevolucionActivo();
     }
 
-    public function index(): void
+    public function listado(): void
     {
         $this->view('devoluciones', [
-            'mode' => 'index',
+            'mode' => 'listado',
             'title' => 'Devoluciones',
-            'rows' => $this->model->all(),
+            'rows' => $this->model->listar(),
         ]);
     }
 
-    public function create(): void
+    public function crear(): void
     {
         $asignacionId = (int) ($_GET['assignment_id'] ?? 0);
-        $asignacion = $asignacionId ? (new Asignacion())->find($asignacionId) : null;
+        $asignacion = $asignacionId ? (new Asignacion())->buscar($asignacionId) : null;
 
         $this->view('devoluciones', [
-            'mode' => 'form',
+            'mode' => 'formulario',
             'title' => 'Nueva devolución',
-            'asignaciones' => (new Asignacion())->active(),
+            'asignaciones' => (new Asignacion())->activas(),
             'assignment' => $asignacion,
-            'statuses' => (new Catalogo())->all('estados_activo'),
+            'statuses' => (new Catalogo())->listar('estados_activo'),
         ]);
     }
 
-    public function store(): void
+    public function guardar(): void
     {
         Csrf::verify();
 
@@ -63,7 +63,7 @@ final class DevolucionController extends Controller
         }
 
         try {
-            $id = $this->model->create(
+            $id = $this->model->crear(
                 $asignacionId,
                 trim($_POST['notes'] ?? ''),
                 $items,
@@ -78,24 +78,24 @@ final class DevolucionController extends Controller
         }
     }
 
-    public function show(string $id): void
+    public function ver(string $id): void
     {
-        $devolucion = $this->model->find((int) $id);
+        $devolucion = $this->model->buscar((int) $id);
 
         if (!$devolucion) {
             abort(404);
         }
 
         $this->view('devoluciones', [
-            'mode' => 'show',
+            'mode' => 'detalle',
             'title' => $devolucion['return_number'],
             'item' => $devolucion,
         ]);
     }
 
-    public function print(string $id): void
+    public function imprimir(string $id): void
     {
-        $devolucion = $this->model->find((int) $id);
+        $devolucion = $this->model->buscar((int) $id);
 
         if (!$devolucion) {
             abort(404);
@@ -110,7 +110,7 @@ final class DevolucionController extends Controller
 
     public function pdf(string $id): void
     {
-        $devolucion = $this->model->find((int) $id);
+        $devolucion = $this->model->buscar((int) $id);
 
         if (!$devolucion) {
             abort(404);

@@ -8,25 +8,25 @@ use App\Models\Activo;
 
 final class CodigoQrController
 {
-    public function show(string $id): void
+    public function ver(string $id): void
     {
         Auth::requireLogin();
 
-        $activo = (new Activo())->find((int) $id);
+        $activo = (new Activo())->buscar((int) $id);
 
         if (!$activo) {
             abort(404);
         }
 
         if (!class_exists('chillerlan\\QRCode\\QRCode')) {
-            $this->renderFallbackSvg($activo['asset_code']);
+            $this->mostrarSvgAlternativo($activo['asset_code']);
             return;
         }
 
         $qr = (new \chillerlan\QRCode\QRCode())->render(url('activos/'.$activo['id']));
 
         if (str_starts_with($qr, 'data:')) {
-            $this->renderDataUri($qr);
+            $this->mostrarDataUri($qr);
             return;
         }
 
@@ -34,7 +34,7 @@ final class CodigoQrController
         echo $qr;
     }
 
-    private function renderFallbackSvg(string $codigo): void
+    private function mostrarSvgAlternativo(string $codigo): void
     {
         header('Content-Type: image/svg+xml');
         echo '<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220">';
@@ -45,7 +45,7 @@ final class CodigoQrController
         echo '</svg>';
     }
 
-    private function renderDataUri(string $dataUri): void
+    private function mostrarDataUri(string $dataUri): void
     {
         [$meta, $data] = explode(',', $dataUri, 2);
         $mime = str_contains($meta, 'svg') ? 'image/svg+xml' : 'image/png';

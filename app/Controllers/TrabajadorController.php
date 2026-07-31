@@ -19,29 +19,29 @@ final class TrabajadorController extends Controller
         $this->catalogo = new Catalogo();
     }
 
-    public function index(): void
+    public function listado(): void
     {
         $q = trim($_GET['q'] ?? '');
 
         $this->view('trabajadores', [
-            'mode' => 'index',
+            'mode' => 'listado',
             'title' => 'Trabajadores',
-            'rows' => $this->model->all($q),
+            'rows' => $this->model->listar($q),
             'q' => $q,
         ]);
     }
 
-    public function create(): void
+    public function crear(): void
     {
         $this->view('trabajadores', [
-            'mode' => 'form',
+            'mode' => 'formulario',
             'title' => 'Nuevo trabajador',
             'item' => null,
-            'areas' => $this->catalogo->all('areas'),
+            'areas' => $this->catalogo->listar('areas'),
         ]);
     }
 
-    public function store(): void
+    public function guardar(): void
     {
         Csrf::verify();
 
@@ -58,7 +58,7 @@ final class TrabajadorController extends Controller
         }
 
         try {
-            $id = $this->model->save($data);
+            $id = $this->model->guardar($data);
             Audit::log('Trabajadores', 'CREAR', 'trabajador', $id, null, $data);
             Flash::success('Trabajador registrado.');
             redirect('trabajadores');
@@ -68,27 +68,27 @@ final class TrabajadorController extends Controller
         }
     }
 
-    public function edit(string $id): void
+    public function editar(string $id): void
     {
-        $trabajador = $this->model->find((int) $id);
+        $trabajador = $this->model->buscar((int) $id);
 
         if (!$trabajador) {
             abort(404);
         }
 
         $this->view('trabajadores', [
-            'mode' => 'form',
+            'mode' => 'formulario',
             'title' => 'Editar trabajador',
             'item' => $trabajador,
-            'areas' => $this->catalogo->all('areas'),
+            'areas' => $this->catalogo->listar('areas'),
         ]);
     }
 
-    public function update(string $id): void
+    public function actualizar(string $id): void
     {
         Csrf::verify();
 
-        $anterior = $this->model->find((int) $id);
+        $anterior = $this->model->buscar((int) $id);
 
         if (!$anterior) {
             abort(404);
@@ -106,7 +106,7 @@ final class TrabajadorController extends Controller
             $this->errors($errors, $_POST, 'trabajadores/'.$id.'/editar');
         }
 
-        $this->model->save($data, (int) $id);
+        $this->model->guardar($data, (int) $id);
         Audit::log('Trabajadores', 'ACTUALIZAR', 'trabajador', (int) $id, $anterior, $data);
         Flash::success('Trabajador actualizado.');
         redirect('trabajadores');

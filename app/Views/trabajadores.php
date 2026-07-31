@@ -1,21 +1,21 @@
 <?php
-$mode = $mode ?? 'index';
+$modo = $modo ?? $mode ?? 'listado';
 $errors = $_SESSION['_errors'] ?? [];
 $rows = $rows ?? [];
 $q = $q ?? '';
 $areas = $areas ?? [];
 $item = $item ?? null;
 
-$partials = [
-    'index' => 'index',
-    'form' => 'formulario',
+$parciales = [
+    'listado' => 'index',
+    'formulario' => 'formulario',
 ];
 
-$partial = $partials[$mode] ?? $partials['index'];
-$partialPath = __DIR__.'/trabajadores/'.$partial.'.php';
+$parcial = $parciales[$modo] ?? $parciales['listado'];
+$rutaParcial = __DIR__.'/trabajadores/'.$parcial.'.php';
 
-if (!is_file($partialPath)) {
-    abort(500, 'Vista no encontrada: trabajadores/'.$partial);
+if (!is_file($rutaParcial)) {
+    abort(500, 'Vista no encontrada: trabajadores/'.$parcial);
 }
 
-require $partialPath;
+require $rutaParcial;

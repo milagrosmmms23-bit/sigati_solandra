@@ -7,7 +7,7 @@ use Throwable;
 
 final class Asignacion extends ModeloBase
 {
-    public function all(): array
+    public function listar(): array
     {
         return $this->db
             ->query("SELECT a.*, CONCAT(e.first_name,' ',e.last_name) employee_name, ar.name area_name, COUNT(ai.id) item_count
@@ -20,7 +20,7 @@ final class Asignacion extends ModeloBase
             ->fetchAll();
     }
 
-    public function active(): array
+    public function activas(): array
     {
         return $this->db
             ->query("SELECT a.id, a.assignment_number, CONCAT(e.first_name,' ',e.last_name) employee_name,
@@ -35,7 +35,7 @@ final class Asignacion extends ModeloBase
             ->fetchAll();
     }
 
-    public function find(int $id): ?array
+    public function buscar(int $id): ?array
     {
         $statement = $this->db->prepare(
             "SELECT a.*, CONCAT(e.first_name,' ',e.last_name) employee_name, e.employee_code, e.position,
@@ -75,7 +75,7 @@ final class Asignacion extends ModeloBase
         return $assignment;
     }
 
-    public function create(int $employee, ?int $area, string $notes, array $items, int $user): int
+    public function crear(int $employee, ?int $area, string $notes, array $items, int $user): int
     {
         $this->db->beginTransaction();
 

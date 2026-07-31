@@ -1,22 +1,22 @@
 <?php
-$mode = $mode ?? 'index';
+$modo = $modo ?? $mode ?? 'listado';
 $rows = $rows ?? [];
 $asignaciones = $asignaciones ?? [];
 $assignment = $assignment ?? null;
 $statuses = $statuses ?? [];
 $item = $item ?? null;
 
-$partials = [
-    'index' => 'index',
-    'show' => 'detalle',
-    'form' => 'formulario',
+$parciales = [
+    'listado' => 'index',
+    'detalle' => 'detalle',
+    'formulario' => 'formulario',
 ];
 
-$partial = $partials[$mode] ?? $partials['index'];
-$partialPath = __DIR__.'/devoluciones/'.$partial.'.php';
+$parcial = $parciales[$modo] ?? $parciales['listado'];
+$rutaParcial = __DIR__.'/devoluciones/'.$parcial.'.php';
 
-if (!is_file($partialPath)) {
-    abort(500, 'Vista no encontrada: devoluciones/'.$partial);
+if (!is_file($rutaParcial)) {
+    abort(500, 'Vista no encontrada: devoluciones/'.$parcial);
 }
 
-require $partialPath;
+require $rutaParcial;

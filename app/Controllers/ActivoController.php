@@ -19,7 +19,7 @@ final class ActivoController extends Controller
         $this->catalogo = new Catalogo();
     }
 
-    public function index(): void
+    public function listado(): void
     {
         $filters = [
             'q' => trim($_GET['q'] ?? ''),
@@ -32,23 +32,23 @@ final class ActivoController extends Controller
         $perPage = (int) config('app.items_per_page', 15);
 
         $this->view('activos', [
-            'mode' => 'index',
+            'mode' => 'listado',
             'title' => 'Inventario',
-            'result' => $this->model->list($filters, $page, $perPage),
+            'result' => $this->model->listar($filters, $page, $perPage),
             'filters' => $filters,
         ] + $this->catalogos());
     }
 
-    public function create(): void
+    public function crear(): void
     {
         $this->view('activos', [
-            'mode' => 'form',
+            'mode' => 'formulario',
             'title' => 'Nuevo activo',
             'item' => null,
         ] + $this->catalogos());
     }
 
-    public function store(): void
+    public function guardar(): void
     {
         Csrf::verify();
 
@@ -64,7 +64,7 @@ final class ActivoController extends Controller
         }
 
         try {
-            $id = $this->model->save($data, $this->especificaciones(), Auth::id());
+            $id = $this->model->guardar($data, $this->especificaciones(), Auth::id());
             Audit::log('Inventario', 'CREAR', 'activo', $id, null, $data);
             Flash::success('Activo registrado correctamente.');
             redirect('activos/'.$id);
@@ -75,41 +75,41 @@ final class ActivoController extends Controller
         }
     }
 
-    public function show(string $id): void
+    public function ver(string $id): void
     {
-        $activo = $this->model->find((int) $id);
+        $activo = $this->model->buscar((int) $id);
 
         if (!$activo) {
             abort(404, 'Activo no encontrado.');
         }
 
         $this->view('activos', [
-            'mode' => 'show',
+            'mode' => 'detalle',
             'title' => $activo['asset_code'],
             'item' => $activo,
         ]);
     }
 
-    public function edit(string $id): void
+    public function editar(string $id): void
     {
-        $activo = $this->model->find((int) $id);
+        $activo = $this->model->buscar((int) $id);
 
         if (!$activo) {
             abort(404);
         }
 
         $this->view('activos', [
-            'mode' => 'form',
+            'mode' => 'formulario',
             'title' => 'Editar '.$activo['asset_code'],
             'item' => $activo,
         ] + $this->catalogos());
     }
 
-    public function update(string $id): void
+    public function actualizar(string $id): void
     {
         Csrf::verify();
 
-        $anterior = $this->model->find((int) $id);
+        $anterior = $this->model->buscar((int) $id);
 
         if (!$anterior) {
             abort(404);
@@ -126,7 +126,7 @@ final class ActivoController extends Controller
         }
 
         try {
-            $this->model->save($data, $this->especificaciones(), Auth::id(), (int) $id);
+            $this->model->guardar($data, $this->especificaciones(), Auth::id(), (int) $id);
             Audit::log('Inventario', 'ACTUALIZAR', 'activo', (int) $id, $anterior, $data);
             Flash::success('Activo actualizado.');
             redirect('activos/'.$id);
@@ -136,15 +136,15 @@ final class ActivoController extends Controller
         }
     }
 
-    public function importForm(): void
+    public function formularioImportacion(): void
     {
         $this->view('activos', [
-            'mode' => 'import',
+            'mode' => 'importar',
             'title' => 'Importar inventario',
         ]);
     }
 
-    public function importCsv(): void
+    public function importarCsv(): void
     {
         Csrf::verify();
 
@@ -173,7 +173,7 @@ final class ActivoController extends Controller
             $registro = array_combine($headers, $row);
 
             try {
-                $this->model->save($this->mapearFilaCsv($registro), [], Auth::id());
+                $this->model->guardar($this->mapearFilaCsv($registro), [], Auth::id());
                 $importados++;
             } catch (Throwable $exception) {
                 $errores[] = $exception->getMessage();
@@ -194,13 +194,13 @@ final class ActivoController extends Controller
     private function catalogos(): array
     {
         return [
-            'types' => $this->catalogo->all('tipos_activo'),
-            'statuses' => $this->catalogo->all('estados_activo'),
-            'marcas' => $this->catalogo->all('marcas'),
-            'modelos' => $this->catalogo->all('modelos'),
-            'areas' => $this->catalogo->all('areas'),
-            'ubicaciones' => $this->catalogo->all('ubicaciones'),
-            'proveedores' => $this->catalogo->all('proveedores'),
+            'types' => $this->catalogo->listar('tipos_activo'),
+            'statuses' => $this->catalogo->listar('estados_activo'),
+            'marcas' => $this->catalogo->listar('marcas'),
+            'modelos' => $this->catalogo->listar('modelos'),
+            'areas' => $this->catalogo->listar('areas'),
+            'ubicaciones' => $this->catalogo->listar('ubicaciones'),
+            'proveedores' => $this->catalogo->listar('proveedores'),
         ];
     }
 

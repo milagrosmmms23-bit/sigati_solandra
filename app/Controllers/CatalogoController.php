@@ -17,12 +17,12 @@ final class CatalogoController extends Controller
         $this->model = new Catalogo();
     }
 
-    public function index(): void
+    public function listado(): void
     {
         $rows = [];
 
         foreach ($this->model->allowed as $table => $label) {
-            $rows[$table] = $this->model->all($table);
+            $rows[$table] = $this->model->listar($table);
         }
 
         $this->view('catalogos', [
@@ -32,12 +32,12 @@ final class CatalogoController extends Controller
         ]);
     }
 
-    public function store(string $table): void
+    public function guardar(string $table): void
     {
         Csrf::verify();
 
         try {
-            $this->model->create($table, $_POST);
+            $this->model->crear($table, $_POST);
             Flash::success('Registro agregado.');
         } catch (Throwable $exception) {
             Flash::error($exception->getMessage());

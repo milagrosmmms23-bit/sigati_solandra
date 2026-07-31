@@ -5,18 +5,18 @@ namespace App\Models;
 
 final class Panel extends ModeloBase
 {
-    public function data(): array
+    public function datos(): array
     {
         return [
             'summary' => $this->db->query('SELECT * FROM vw_resumen_panel')->fetch(),
             'byStatus' => $this->db->query('SELECT * FROM vw_activos_por_estado')->fetchAll(),
             'byType' => $this->db->query('SELECT * FROM vw_activos_por_tipo')->fetchAll(),
             'byArea' => $this->db->query('SELECT * FROM vw_activos_por_area LIMIT 10')->fetchAll(),
-            'recent' => $this->recentMovements(),
+            'recent' => $this->movimientosRecientes(),
         ];
     }
 
-    private function recentMovements(): array
+    private function movimientosRecientes(): array
     {
         return $this->db
             ->query(
