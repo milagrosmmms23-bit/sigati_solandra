@@ -66,7 +66,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .assignment-table .field-label{white-space:nowrap}
 .legal-text{width:170mm;margin:0 auto 1.55mm;font-size:14.4px;line-height:1.32;text-align:justify}
 .signature-line{width:43mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:0;padding-top:1px;font-size:15px;position:absolute;right:9mm;bottom:22mm}
-.quality-footer{width:172mm;border:1px solid #000;text-align:center;color:#000;font-size:12px;padding:2px 1.4px;margin:0;position:absolute;left:50%;margin-left:-86mm;bottom:9mm}
+.quality-footer{width:172mm;border-collapse:collapse;position:absolute;left:50%;margin-left:-86mm;bottom:9mm;font-size:12px;color:#000}.quality-footer td{border:0.75pt solid #222;text-align:center;color:#000;padding:2px 1.4px;line-height:1.16;background:#fff}
 .return-title{text-align:center;font-weight:bold;font-size:14px;margin:8mm 0 4mm}
 .doc-table{width:100%;border-collapse:collapse;margin:4mm 0}
 .doc-table th,.doc-table td{border:1px solid #555;padding:5px;text-align:left;vertical-align:top}
