@@ -31,9 +31,9 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .observations{height:6mm;vertical-align:middle;line-height:1.02}
 .assigned-title{font-weight:bold;margin:2.5mm 0 0.5mm 5mm;font-size:15px}
 .assigned-table{margin-bottom:2.5mm;font-size:15px}
-.legal-text{font-size:13.6px;line-height:1.02;text-align:justify;margin:0 0 0.55mm}
-.signature-line{width:40mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:3mm 4mm 2.8mm auto;padding-top:1px;font-size:13.3px}
-.quality-footer{border:1px solid #999;text-align:center;color:#777;font-size:10px;padding:1px;margin:0;position:absolute;left:5mm;right:5mm;bottom:4.5mm}
+.legal-text{font-size:14.8px;line-height:1.04;text-align:justify;margin:0 0 0.65mm}
+.signature-line{width:40mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:2.5mm 4mm 2.4mm auto;padding-top:1px;font-size:13.8px}
+.quality-footer{border:1px solid #999;text-align:center;color:#777;font-size:10px;padding:1px;margin:0;position:absolute;left:5mm;right:5mm;bottom:4mm}
 .return-title{text-align:center;font-weight:bold;font-size:14px;margin:8mm 0 4mm}
 .doc-table{width:100%;border-collapse:collapse;margin:4mm 0}
 .doc-table th,.doc-table td{border:1px solid #555;padding:5px;text-align:left;vertical-align:top}
