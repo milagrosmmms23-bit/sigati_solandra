@@ -227,33 +227,34 @@ foreach ($logoCandidates as $logoPath) {
 
     <section class="quality-sheet">
         <table class="quality-table quality-header">
-            <tr>                <td class="quality-logo" rowspan="2">
+            <colgroup><col><col><col><col><col></colgroup>
+            <tr>
+                <td class="quality-logo" rowspan="4">
                     <?php if ($logoSrc !== ''): ?>
                         <img class="solandra-logo" src="<?= e($logoSrc) ?>" alt="Solandra">
                     <?php else: ?>
-                        <svg class="solandra-logo" viewBox="0 0 340 82" role="img" aria-label="Solandra">
-                            <circle cx="41" cy="41" r="36" fill="#78BE43"/>
-                            <path d="M24 20c17 3 26 12 29 27" fill="none" stroke="#071B16" stroke-width="5" stroke-linecap="round"/>
-                            <path d="M23 38c10 3 17 9 21 18" fill="none" stroke="#071B16" stroke-width="5" stroke-linecap="round"/>
-                            <path d="M54 22c-9 11-12 22-7 35" fill="none" stroke="#071B16" stroke-width="5" stroke-linecap="round"/>
-                            <circle cx="26" cy="58" r="4" fill="#071B16"/>
-                            <text x="88" y="55" fill="#00416B" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="700">Solandra</text>
-                        </svg>
+                        <strong>Solandra</strong>
                     <?php endif; ?>
                 </td>
-                <td class="quality-title">SISTEMA DE GESTIÓN DE CALIDAD</td>
-                <td class="quality-meta" rowspan="2">
-                    <div>Código:<br><strong>SOL-TI-FO-01</strong></div>
-                    <div>Versión:<br><strong>02</strong></div>
-                    <div>Fecha de aprobación:<br><strong>23/04/2024</strong></div>
-                    <div>Página:<br><strong>1 de 1</strong></div>
-                </td>
+                <td class="quality-title" colspan="3">SISTEMA DE GESTIÓN DE CALIDAD</td>
+                <td class="quality-meta"><div>Código:<br><strong>SOL-TI-FO-01</strong></div></td>
             </tr>
-            <tr><td class="quality-subtitle">ASIGNACIÓN DE EQUIPOS INFORMÁTICOS</td></tr>
+            <tr>
+                <td colspan="3"></td>
+                <td class="quality-meta"><div>Versión:<br><strong>02</strong></div></td>
+            </tr>
+            <tr>
+                <td class="quality-subtitle" colspan="3">ASIGNACIÓN DE EQUIPOS INFORMÁTICOS</td>
+                <td class="quality-meta"><div>Fecha de aprobación:<br><strong>23/04/2024</strong></div></td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td class="quality-meta"><div>Página:<br><strong>1 de 1</strong></div></td>
+            </tr>
             <tr class="quality-sign">
-                <td>Elaborado por:<span>Jhonny Fernandez</span></td>
+                <td colspan="2">Elaborado por:<span>Jhonny Fernandez</span></td>
                 <td>Revisado por:<span>Benjamín Urbano</span></td>
-                <td>Aprobado por:<span>Rubén Camargo</span></td>
+                <td colspan="2">Aprobado por:<span>Rubén Camargo</span></td>
             </tr>
         </table>
 
