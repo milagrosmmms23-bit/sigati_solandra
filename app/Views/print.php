@@ -154,7 +154,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .assigned-table{margin-bottom:4.2mm;font-size:15.2px}
 .assignment-table tr:first-child td:nth-child(3),.assignment-table tr:first-child td:nth-child(4),.assignment-table tr:nth-child(2) td:nth-child(3){text-align:center}
 .assignment-table .field-label{white-space:nowrap}
-.legal-text{width:170mm;margin:0 auto 1.45mm;font-size:16.3px;line-height:1.36;text-align:justify}
+.legal-text{width:170mm;margin:0 auto 1.55mm;font-size:14.4px;line-height:1.32;text-align:justify}
 .signature-line{width:43mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:0;padding-top:1px;font-size:15px;position:absolute;right:9mm;bottom:17mm}
 .quality-footer{width:170mm;border:0.75pt solid #999;text-align:center;color:#777;font-size:11.4px;padding:1.2px;margin:0;position:absolute;left:50%;transform:translateX(-50%);bottom:4mm}
 .return-title{text-align:center;font-weight:bold;font-size:14px;margin:8mm 0 4mm}
