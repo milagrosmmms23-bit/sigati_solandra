@@ -25,7 +25,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .quality-subtitle{text-align:center;font-size:15.8px;font-weight:bold;color:#000;letter-spacing:0;white-space:nowrap}
 .quality-meta{font-size:10.8px;padding:0;line-height:0.96;text-align:center}
 .quality-meta div{padding:0.8px 2px;text-align:center}
-.quality-sign td{font-size:12.3px;height:7mm;line-height:1;vertical-align:bottom;padding:1px 4px;color:#000;text-align:center}
+.quality-sign td{font-size:12.3px;height:7mm;line-height:1;vertical-align:bottom;padding:1px 4px;color:#000;text-align:center;font-weight:bold}
 .quality-sign span{display:block;color:#000;text-decoration:none;text-align:center;font-weight:bold}
 .section-title{background:#e3e7ec;text-align:center;font-weight:bold;font-size:14px}
 .field-label{font-weight:bold;width:20%;font-size:13.8px}
