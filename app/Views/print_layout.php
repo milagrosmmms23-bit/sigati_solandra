@@ -28,6 +28,18 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .dash{text-align:center!important}
 .equipment-table{margin-bottom:4.2mm;font-size:15.2px}
 .equipment-table td{height:auto;min-height:0}
+.asset-table col:nth-child(1){width:21%}
+.asset-table col:nth-child(2){width:18%}
+.asset-table col:nth-child(3){width:10%}
+.asset-table col:nth-child(4){width:25%}
+.asset-table col:nth-child(5){width:10%}
+.asset-table col:nth-child(6){width:16%}
+.assignment-table col:nth-child(1){width:22%}
+.assignment-table col:nth-child(2){width:26%}
+.assignment-table col:nth-child(3){width:16%}
+.assignment-table col:nth-child(4){width:11%}
+.assignment-table col:nth-child(5){width:10%}
+.assignment-table col:nth-child(6){width:15%}
 .phone-table col:nth-child(1){width:20%}
 .phone-table col:nth-child(2){width:19%}
 .phone-table col:nth-child(3){width:12%}
@@ -39,7 +51,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .assigned-table{margin-bottom:4.2mm;font-size:15.2px}
 .legal-text{font-size:16.3px;line-height:1.36;text-align:justify;margin:0 0 1.45mm}
 .signature-line{width:43mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:0;padding-top:1px;font-size:15px;position:absolute;right:9mm;bottom:17mm}
-.quality-footer{border:1px solid #999;text-align:center;color:#777;font-size:10.4px;padding:1px;margin:0;position:absolute;left:5mm;right:5mm;bottom:4mm}
+.quality-footer{border:1px solid #999;text-align:center;color:#777;font-size:11.4px;padding:1.2px;margin:0;position:absolute;left:5mm;right:5mm;bottom:4mm}
 .return-title{text-align:center;font-weight:bold;font-size:14px;margin:8mm 0 4mm}
 .doc-table{width:100%;border-collapse:collapse;margin:4mm 0}
 .doc-table th,.doc-table td{border:1px solid #555;padding:5px;text-align:left;vertical-align:top}
