@@ -125,12 +125,12 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .asset-table col:nth-child(4){width:18%}
 .asset-table col:nth-child(5){width:9%}
 .asset-table col:nth-child(6){width:25%}
-.assignment-table col:nth-child(1){width:21%}
-.assignment-table col:nth-child(2){width:31%}
-.assignment-table col:nth-child(3){width:23%}
+.assignment-table col:nth-child(1){width:24%}
+.assignment-table col:nth-child(2){width:28%}
+.assignment-table col:nth-child(3){width:18%}
 .assignment-table col:nth-child(4){width:9%}
-.assignment-table col:nth-child(5){width:6%}
-.assignment-table col:nth-child(6){width:10%}
+.assignment-table col:nth-child(5){width:7%}
+.assignment-table col:nth-child(6){width:14%}
 .phone-table col:nth-child(1){width:20%}
 .phone-table col:nth-child(2){width:19%}
 .phone-table col:nth-child(3){width:12%}
@@ -141,6 +141,7 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .assigned-title{font-weight:bold;margin:4.2mm 0 0.9mm 5mm;font-size:15.2px}
 .assigned-table{margin-bottom:4.2mm;font-size:15.2px}
 .assignment-table tr:first-child td:nth-child(5),.assignment-table tr:first-child td:nth-child(6){text-align:center}
+.assignment-table .field-label{white-space:nowrap}
 .legal-text{font-size:16.3px;line-height:1.36;text-align:justify;margin:0 0 1.45mm}
 .signature-line{width:43mm;border-top:1px solid #000;text-align:center;font-weight:bold;margin:0;padding-top:1px;font-size:15px;position:absolute;right:9mm;bottom:17mm}
 .quality-footer{border:1px solid #999;text-align:center;color:#777;font-size:11.4px;padding:1.2px;margin:0;position:absolute;left:5mm;right:5mm;bottom:4mm}
