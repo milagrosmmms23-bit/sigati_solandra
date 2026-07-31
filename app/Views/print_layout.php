@@ -23,8 +23,8 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .solandra-logo{width:36mm;max-width:100%;height:auto;display:block;margin:0 auto}
 .quality-title{text-align:center;font-size:16.4px;font-weight:bold;color:#000;letter-spacing:0;white-space:nowrap}
 .quality-subtitle{text-align:center;font-size:15.8px;font-weight:bold;color:#000;letter-spacing:0;white-space:nowrap}
-.quality-meta{font-size:10.8px;padding:0;line-height:0.96;text-align:center}
-.quality-meta div{padding:0.8px 2px;text-align:center}
+.quality-meta{font-size:11.5px;padding:0;line-height:0.98;text-align:center}
+.quality-meta div{padding:0.8px 3px;text-align:left}.quality-meta strong{display:block;text-align:center;font-weight:bold}
 .quality-sign td{font-size:12.3px;height:7mm;line-height:1;vertical-align:bottom;padding:1px 4px;color:#000;text-align:center;font-weight:bold}
 .quality-sign span{display:block;color:#000;text-decoration:none;text-align:center;font-weight:bold}
 .section-title{background:#e3e7ec;text-align:center;font-weight:bold;font-size:14px}
