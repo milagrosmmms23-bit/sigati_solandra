@@ -11,27 +11,27 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .print-actions a,.print-actions button{padding:7px 11px;border:0;border-radius:4px;text-decoration:none;background:#086a62;color:white;cursor:pointer}
 .quality-sheet{width:100%;max-width:205mm;min-height:293mm;margin:0 auto;background:#fff;padding:7.5mm 5mm 24mm;position:relative;display:block;overflow:hidden}
 .quality-table{width:100%;border-collapse:collapse;table-layout:fixed}
-.quality-table td,.quality-table th{border:1px solid #222;padding:2.6px 4.8px;vertical-align:middle;line-height:1.08}
+.quality-table td,.quality-table th{border:1px solid #222;padding:4.6px 5.8px;vertical-align:middle;line-height:1.16}
 .quality-header{width:171mm;margin:0 auto 5mm;table-layout:fixed}
 .quality-header col:nth-child(1){width:41mm}
 .quality-header col:nth-child(2){width:16mm}
 .quality-header col:nth-child(3){width:57mm}
 .quality-header col:nth-child(4){width:20mm}
 .quality-header col:nth-child(5){width:37mm}
-.quality-header td{height:7mm;padding:0 3px;line-height:1.02}
+.quality-header td{height:7mm;padding:0 3px}
 .quality-logo{text-align:center;overflow:hidden}
 .solandra-logo{width:38mm;max-width:100%;height:auto;display:block;margin:0 auto}
-.quality-title{text-align:center;font-size:15.7px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
-.quality-subtitle{text-align:center;font-size:15.1px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
-.quality-meta{font-size:10.2px;padding:0;line-height:0.96;text-align:center}
-.quality-meta div{padding:0.2px 2px;text-align:center}
-.quality-sign td{font-size:11.4px;height:7mm;line-height:0.98;vertical-align:bottom;padding:0.5px 4px;color:#000;text-align:center}
+.quality-title{text-align:center;font-size:16.4px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
+.quality-subtitle{text-align:center;font-size:15.8px;font-weight:bold;color:#666;letter-spacing:0;white-space:nowrap}
+.quality-meta{font-size:10.8px;padding:0;line-height:0.96;text-align:center}
+.quality-meta div{padding:0.8px 2px;text-align:center}
+.quality-sign td{font-size:12.3px;height:7mm;line-height:1;vertical-align:bottom;padding:1px 4px;color:#000;text-align:center}
 .quality-sign span{display:block;color:#000;text-decoration:none;text-align:center;font-weight:bold}
-.section-title{background:#dfe4ea;text-align:center;font-weight:bold;font-size:13.2px;line-height:1.05}
-.field-label{font-weight:bold;width:20%;font-size:12.6px}
+.section-title{background:#dfe4ea;text-align:center;font-weight:bold;font-size:14px}
+.field-label{font-weight:bold;width:20%;font-size:13.8px}
 .field-value{font-weight:500}
 .dash{text-align:center!important}
-.equipment-table{margin-bottom:4.2mm;font-size:13.8px}
+.equipment-table{margin-bottom:4.2mm;font-size:15.2px}
 .equipment-table td{height:auto;min-height:0}
 .asset-table,.phone-table{width:172.5mm;margin-left:auto;margin-right:auto}
 .assignment-table{width:170mm;margin-left:auto;margin-right:auto}
@@ -57,9 +57,9 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .assignment-table col:nth-child(5){width:17.5mm}
 .assignment-table col:nth-child(6){width:27.5mm}
 .asset-table .field-label,.phone-table .field-label,.assignment-table .field-label{width:auto}
-.observations{height:10mm;vertical-align:middle;line-height:1.08}
-.assigned-title{font-weight:bold;margin:4.2mm 0 0.9mm 5mm;font-size:14px}
-.assigned-table{margin-bottom:4.2mm;font-size:13.8px}
+.observations{height:10mm;vertical-align:middle;line-height:1.16}
+.assigned-title{font-weight:bold;margin:4.2mm 0 0.9mm 5mm;font-size:15.2px}
+.assigned-table{margin-bottom:4.2mm;font-size:15.2px}
 .assignment-table tr:first-child td:nth-child(3),.assignment-table tr:first-child td:nth-child(4),.assignment-table tr:nth-child(2) td:nth-child(3){text-align:center}
 .assignment-table .field-label{white-space:nowrap}
 .legal-text{font-size:16.3px;line-height:1.36;text-align:justify;margin:0 0 1.45mm}
