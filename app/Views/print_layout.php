@@ -29,17 +29,17 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 .equipment-table{margin-bottom:4.2mm;font-size:15.2px}
 .equipment-table td{height:auto;min-height:0}
 .asset-table col:nth-child(1){width:21%}
-.asset-table col:nth-child(2){width:18%}
+.asset-table col:nth-child(2){width:17%}
 .asset-table col:nth-child(3){width:10%}
-.asset-table col:nth-child(4){width:25%}
-.asset-table col:nth-child(5){width:10%}
-.asset-table col:nth-child(6){width:16%}
+.asset-table col:nth-child(4){width:18%}
+.asset-table col:nth-child(5){width:9%}
+.asset-table col:nth-child(6){width:25%}
 .assignment-table col:nth-child(1){width:22%}
-.assignment-table col:nth-child(2){width:26%}
-.assignment-table col:nth-child(3){width:16%}
-.assignment-table col:nth-child(4){width:11%}
-.assignment-table col:nth-child(5){width:10%}
-.assignment-table col:nth-child(6){width:15%}
+.assignment-table col:nth-child(2){width:30%}
+.assignment-table col:nth-child(3){width:18%}
+.assignment-table col:nth-child(4){width:10%}
+.assignment-table col:nth-child(5){width:8%}
+.assignment-table col:nth-child(6){width:12%}
 .phone-table col:nth-child(1){width:20%}
 .phone-table col:nth-child(2){width:19%}
 .phone-table col:nth-child(3){width:12%}
