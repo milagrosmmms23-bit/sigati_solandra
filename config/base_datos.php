@@ -1,6 +1,6 @@
 <?php
 return [
-    'servidor' => getenv('DB_HOST') ?: '127.0.0.1',
+    'servidor' => getenv('DB_HOST') ?: 'localhost',
     'puerto' => getenv('DB_PORT') ?: '3306',
     'nombre' => getenv('DB_DATABASE') ?: 'sigati_solandra',
     'usuario' => getenv('DB_USERNAME') ?: 'root',
