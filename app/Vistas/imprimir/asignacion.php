@@ -122,7 +122,7 @@
             </tr>
             <tr>
                 <td class="field-label">Sede</td>
-                <td class="field-value"><?= e($mayusculas(config('app.site', ''))) ?></td>
+                <td class="field-value"><?= e($mayusculas(config('aplicacion.sede', ''))) ?></td>
                 <td class="field-label">&Aacute;rea</td>
                 <td class="field-value" colspan="3"><?= e($mayusculas($registro['area_name'] ?? '')) ?></td>
             </tr>

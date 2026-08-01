@@ -1,20 +1,20 @@
 # SIGATI SOLANDRA
 
-Sistema web local para la gestión de activos tecnológicos de SOLANDRA, sede Arequipa.
+Sistema web local para la gestion de activos tecnologicos de SOLANDRA, sede Arequipa.
 
 ## Funcionalidades
 
 - Panel con indicadores de inventario.
-- Registro y búsqueda de activos TI.
-- Trabajadores y áreas responsables.
+- Registro y busqueda de activos TI.
+- Trabajadores y areas responsables.
 - Asignaciones con acta imprimible y PDF.
 - Devoluciones parciales o totales.
 - Mantenimientos preventivos y correctivos.
 - Historial de movimientos por activo.
 - Reporte consolidado y descarga CSV.
-- Importación inicial desde CSV.
-- Catálogos administrables.
-- Etiquetas QR cuando están instaladas las dependencias de Composer.
+- Importacion inicial desde CSV.
+- Catalogos administrables.
+- Etiquetas QR cuando estan instaladas las dependencias de Composer.
 
 ## Requisitos
 
@@ -22,16 +22,16 @@ Sistema web local para la gestión de activos tecnológicos de SOLANDRA, sede Ar
 - MySQL/MariaDB.
 - Composer para instalar dependencias opcionales de PDF y QR.
 
-## Instalación rápida
+## Instalacion rapida
 
-1. Copia el proyecto en `C:\xampp\htdocs\sigati_solandra`.
+1. Copia o clona el proyecto en `C:\xampp\htdocs\sigati_solandra_ok`.
 2. Importa `database/schema.sql` en MySQL.
-3. Abre `http://localhost/sigati_solandra/public`.
+3. Abre `http://localhost/sigati_solandra_ok/public/ingreso`.
 4. Ingresa con:
    - Usuario: `admin`
-   - Contraseña: `Admin123*`
+   - Contrasena: `Admin123*`
 
-Cambia la contraseña inicial antes de registrar información real.
+Cambia la contrasena inicial antes de registrar informacion real.
 
 ## Dependencias opcionales
 
@@ -41,11 +41,11 @@ Ejecuta:
 composer install
 ```
 
-## Configuración
+## Configuracion
 
-Los valores por defecto están en `config/app.php` y `config/database.php`.
-También puedes usar variables de entorno como referencia en `.env.example`.
+Los valores por defecto estan en `config/aplicacion.php` y `config/base_datos.php`.
+Tambien puedes usar variables de entorno como referencia en `.env.example`.
 
 ## Seguridad
 
-El proyecto debe abrirse desde la carpeta `public`. La raíz incluye reglas `.htaccess` para bloquear carpetas internas como `app`, `config`, `database`, `storage` y `vendor`.
+El proyecto debe abrirse desde la carpeta `public`. La raiz incluye reglas `.htaccess` para bloquear carpetas internas como `app`, `config`, `database`, `storage` y `vendor`.

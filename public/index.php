@@ -56,7 +56,7 @@ foreach ($archivosControladores as $file) {
     require $root.'/app/Controladores/'.$file.'.php';
 }
 
-date_default_timezone_set((string) config('app.timezone', 'America/Lima'));
+date_default_timezone_set((string) config('aplicacion.zona_horaria', 'America/Lima'));
 
 session_name('SIGATI_SOLANDRA');
 if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -66,7 +66,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 set_exception_handler(function (Throwable $exception): void {
     http_response_code(500);
 
-    $debug = (bool) config('app.debug', false);
+    $debug = (bool) config('aplicacion.depuracion', false);
     $message = $debug ? $exception->getMessage() : 'Ocurrió un error interno.';
 
     @file_put_contents(

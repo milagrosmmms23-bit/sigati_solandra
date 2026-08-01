@@ -33,7 +33,7 @@ function nav_activo(string $segmento, string $rutaActual): string
         </div>
 
         <nav>
-            <a class="<?= $rutaActual === trim(config('app.base_url'), '/') ? 'active' : '' ?>" href="<?= url() ?>">
+            <a class="<?= $rutaActual === trim(config('aplicacion.url_base'), '/') ? 'active' : '' ?>" href="<?= url() ?>">
                 <span>P</span> Panel
             </a>
 
@@ -80,7 +80,7 @@ function nav_activo(string $segmento, string $rutaActual): string
 
             <div>
                 <h1><?= e($titulo ?? 'SIGATI') ?></h1>
-                <p><?= e(config('app.company')) ?> - <?= e(config('app.site')) ?></p>
+                <p><?= e(config('aplicacion.empresa')) ?> - <?= e(config('aplicacion.sede')) ?></p>
             </div>
 
             <div class="user-menu">

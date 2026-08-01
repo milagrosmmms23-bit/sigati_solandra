@@ -29,7 +29,7 @@ final class ActivoControlador extends Controlador
         ];
 
         $pagina = max(1, (int) ($_GET['page'] ?? 1));
-        $porPagina = (int) config('app.items_per_page', 15);
+        $porPagina = (int) config('aplicacion.elementos_por_pagina', 15);
 
         $this->vista('activos', [
             'modo' => 'listado',

@@ -40,16 +40,16 @@ final class BD
             return self::$pdo;
         }
 
-        $config = Config::obtener('database');
+        $config = Config::obtener('base_datos');
         $dsn = sprintf(
             'mysql:host=%s;port=%s;dbname=%s;charset=%s',
-            $config['host'],
-            $config['port'],
-            $config['database'],
-            $config['charset']
+            $config['servidor'],
+            $config['puerto'],
+            $config['nombre'],
+            $config['codificacion']
         );
 
-        self::$pdo = new PDO($dsn, $config['username'], $config['password'], [
+        self::$pdo = new PDO($dsn, $config['usuario'], $config['clave'], [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
@@ -306,7 +306,7 @@ final class Router
     {
         $metodo = $_SERVER['REQUEST_METHOD'];
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
-        $base = rtrim((string) Config::obtener('app.base_url'), '/');
+        $base = rtrim((string) Config::obtener('aplicacion.url_base'), '/');
 
         if ($base !== '' && str_starts_with($uri, $base)) {
             $uri = substr($uri, strlen($base));

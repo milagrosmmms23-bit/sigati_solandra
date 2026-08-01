@@ -11,7 +11,7 @@ function config(string $clave, mixed $default = null): mixed
 
 function url(string $ruta = ''): string
 {
-    $base = rtrim((string) config('app.base_url'), '/');
+    $base = rtrim((string) config('aplicacion.url_base'), '/');
 
     return $base.($ruta !== '' ? '/'.ltrim($ruta, '/') : '');
 }
