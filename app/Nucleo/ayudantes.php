@@ -67,18 +67,18 @@ function datetime_pe(?string $fecha): string
 function format_date_pe(?string $fecha, string $formato): string
 {
     if ($fecha === null || trim($fecha) === '') {
-        return 'â€”';
+        return '-';
     }
 
     $marcaTiempo = strtotime($fecha);
 
-    return $marcaTiempo === false ? 'â€”' : date($formato, $marcaTiempo);
+    return $marcaTiempo === false ? '-' : date($formato, $marcaTiempo);
 }
 
 function money(mixed $valor): string
 {
     if ($valor === '' || $valor === null) {
-        return 'â€”';
+        return '-';
     }
 
     return 'S/ '.number_format((float) $valor, 2);

@@ -1,10 +1,10 @@
 <?php
 $doc = $doc ?? '';
 $registro = $registro ?? [];
-$isAssignment = $doc === 'assignment';
-$fecha = $isAssignment ? ($registro['assigned_at'] ?? '') : ($registro['returned_at'] ?? '');
+$esAsignacion = $doc === 'assignment';
+$fecha = $esAsignacion ? ($registro['assigned_at'] ?? '') : ($registro['returned_at'] ?? '');
 
-$shortDate = static function (?string $valor): string {
+$fechaCorta = static function (?string $valor): string {
     if (!$valor || strtotime($valor) === false) {
         return '-';
     }
@@ -12,66 +12,66 @@ $shortDate = static function (?string $valor): string {
     return date('d/m/y', strtotime($valor));
 };
 
-$clean = static function (mixed $valor, string $default = '-'): string {
-    $text = trim((string) $valor);
+$limpiar = static function (mixed $valor, string $default = '-'): string {
+    $texto = trim((string) $valor);
 
-    return $text !== '' ? $text : $default;
+    return $texto !== '' ? $texto : $default;
 };
 
-$upper = static function (mixed $valor) use ($clean): string {
-    return mb_strtoupper($clean($valor), 'UTF-8');
+$mayusculas = static function (mixed $valor) use ($limpiar): string {
+    return mb_strtoupper($limpiar($valor), 'UTF-8');
 };
 
-$assetText = static function (?array $activo, string $clave, string $default = '-') use ($clean): string {
-    return $activo ? $clean($activo[$clave] ?? '', $default) : $default;
+$textoActivo = static function (?array $activo, string $clave, string $default = '-') use ($limpiar): string {
+    return $activo ? $limpiar($activo[$clave] ?? '', $default) : $default;
 };
 
-$cellClass = static function (mixed $valor): string {
+$claseCelda = static function (mixed $valor): string {
     return trim((string) $valor) === '-' ? ' dash' : '';
 };
 
-$assetDescription = static function (?array $activo) use ($clean): string {
+$descripcionActivo = static function (?array $activo) use ($limpiar): string {
     if (!$activo) {
         return '-';
     }
 
-    $parts = array_filter([
+    $partes = array_filter([
         $activo['type_name'] ?? '',
         $activo['brand_name'] ?? '',
         $activo['model_name'] ?? '',
     ], static fn ($valor): bool => trim((string) $valor) !== '');
 
-    return $clean(implode(' ', $parts));
+    return $limpiar(implode(' ', $partes));
 };
 
-$assetObservations = static function (?array $activo, array $asignacion, string $default = '-') use ($clean): string {
+$observacionesActivo = static function (?array $activo, array $asignacion, string $default = '-') use ($limpiar): string {
     if (!$activo) {
         return $default;
     }
 
-    $parts = [];
+    $partes = [];
 
     foreach (['specs_text', 'asset_notes'] as $clave) {
-        $text = trim((string) ($activo[$clave] ?? ''));
+        $texto = trim((string) ($activo[$clave] ?? ''));
 
-        if ($text !== '') {
-            $parts[] = $text;
+        if ($texto !== '') {
+            $partes[] = $texto;
         }
     }
 
-    if (!$parts) {
-        $note = trim((string) ($asignacion['notes'] ?? ''));
+    if (!$partes) {
+        $nota = trim((string) ($asignacion['notes'] ?? ''));
 
-        if ($note !== '') {
-            $parts[] = $note;
+        if ($nota !== '') {
+            $partes[] = $nota;
         }
     }
 
-    return $clean(implode(', ', array_unique($parts)), $default);
+    return $limpiar(implode(', ', array_unique($partes)), $default);
 };
 
-$isPhoneAsset = static function (array $activo): bool {
-    $text = mb_strtoupper(implode(' ', [
+$esCelular = static function (array $activo): bool {
+    $texto = mb_strtoupper(implode(' ', [
         $activo['type_name'] ?? '',
         $activo['brand_name'] ?? '',
         $activo['model_name'] ?? '',
@@ -84,8 +84,8 @@ $isPhoneAsset = static function (array $activo): bool {
         return true;
     }
 
-    foreach (['CELULAR', 'SMARTPHONE', 'TELEFONO', 'TELÃ‰FONO', 'MOVIL', 'MÃ“VIL', 'SIM CARD', 'SIM'] as $needle) {
-        if (str_contains($text, $needle)) {
+    foreach (['CELULAR', 'SMARTPHONE', 'TELEFONO', 'MOVIL', 'SIM CARD', 'SIM'] as $aguja) {
+        if (str_contains($texto, $aguja)) {
             return true;
         }
     }
@@ -96,13 +96,13 @@ $isPhoneAsset = static function (array $activo): bool {
 require __DIR__.'/imprimir/estilos.php';
 
 $logoSrc = '';
-$logoCandidates = [
-    dirname(__DIR__, 2).'/public/activos/img/solandra-logo.png',
-    dirname(__DIR__, 2).'/public/activos/img/solandra-logo.jpg',
-    dirname(__DIR__, 2).'/public/activos/img/solandra-logo.jpeg',
+$logos = [
+    dirname(__DIR__, 2).'/public/recursos/img/solandra-logo.png',
+    dirname(__DIR__, 2).'/public/recursos/img/solandra-logo.jpg',
+    dirname(__DIR__, 2).'/public/recursos/img/solandra-logo.jpeg',
 ];
 
-foreach ($logoCandidates as $logoPath) {
+foreach ($logos as $logoPath) {
     if (!is_file($logoPath)) {
         continue;
     }
@@ -112,7 +112,6 @@ foreach ($logoCandidates as $logoPath) {
     $logoSrc = 'data:'.$mime.';base64,'.base64_encode((string) file_get_contents($logoPath));
     break;
 }
-?>
 
 if (!empty($pdf)) {
     echo $assignmentCss;
@@ -122,6 +121,6 @@ if (empty($pdf)) {
     require __DIR__.'/imprimir/acciones.php';
 }
 
-require $isAssignment
+require $esAsignacion
     ? __DIR__.'/imprimir/asignacion.php'
     : __DIR__.'/imprimir/devolucion.php';
