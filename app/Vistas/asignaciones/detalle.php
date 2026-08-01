@@ -1,8 +1,8 @@
 <div class="page-actions">
         <div>
-            <div class="eyebrow">Acta de asignación</div>
+            <div class="eyebrow">Acta de asignacion</div>
             <h2><?= e($registro['numero_asignacion']) ?></h2>
-            <p><?= e($registro['nombre_trabajador']) ?> · <?= e($registro['nombre_area'] ?: 'Sin área') ?></p>
+            <p><?= e($registro['nombre_trabajador']) ?> - <?= e($registro['nombre_area'] ?: 'Sin area') ?></p>
         </div>
 
         <div class="actions">
@@ -23,16 +23,16 @@
                     <strong><?= e($registro['nombre_trabajador']) ?></strong>
                 </div>
                 <div>
-                    <span>Código</span>
+                    <span>Codigo</span>
                     <strong><?= e($registro['codigo_trabajador']) ?></strong>
                 </div>
                 <div>
                     <span>Cargo</span>
-                    <strong><?= e($registro['cargo'] ?: '—') ?></strong>
+                    <strong><?= e($registro['cargo'] ?: '-') ?></strong>
                 </div>
                 <div>
-                    <span>Área</span>
-                    <strong><?= e($registro['nombre_area'] ?: '—') ?></strong>
+                    <span>Area</span>
+                    <strong><?= e($registro['nombre_area'] ?: '-') ?></strong>
                 </div>
                 <div>
                     <span>Estado</span>
@@ -53,11 +53,11 @@
         <aside class="panel action-panel">
             <h3>Acciones</h3>
             <a class="action-link" href="<?= url('devoluciones/crear?asignacion_id='.$registro['id']) ?>">
-                <b>↩ Registrar devolución</b>
+                <b>&larr; Registrar devolucion</b>
                 <small>Devolver uno o varios equipos</small>
             </a>
             <a class="action-link" target="_blank" href="<?= url('asignaciones/'.$registro['id'].'/imprimir') ?>">
-                <b>▤ Vista imprimible</b>
+                <b>&#9636; Vista imprimible</b>
                 <small>Firmar manualmente el documento</small>
             </a>
         </aside>
@@ -75,12 +75,12 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Código</th>
+                        <th>Codigo</th>
                         <th>Tipo</th>
                         <th>Marca / modelo</th>
                         <th>Serie</th>
-                        <th>Condición</th>
-                        <th>Situación</th>
+                        <th>Condicion</th>
+                        <th>Situacion</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,8 +92,8 @@
                                 </a>
                             </td>
                             <td><?= e($activo['nombre_tipo']) ?></td>
-                            <td><?= e(trim(($activo['nombre_marca'] ?? '').' '.($activo['nombre_modelo'] ?? '')) ?: '—') ?></td>
-                            <td><?= e($activo['numero_serie'] ?: '—') ?></td>
+                            <td><?= e(trim(($activo['nombre_marca'] ?? '').' '.($activo['nombre_modelo'] ?? '')) ?: '-') ?></td>
+                            <td><?= e($activo['numero_serie'] ?: '-') ?></td>
                             <td><?= e($activo['condicion_salida']) ?></td>
                             <td>
                                 <?php if ($activo['devuelto_en']): ?>

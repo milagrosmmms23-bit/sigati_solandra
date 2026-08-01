@@ -102,7 +102,7 @@ final class Csrf
         $tokenEnviado = (string) ($_POST['_token'] ?? '');
 
         if ($tokenEnviado === '' || !hash_equals(self::token(), $tokenEnviado)) {
-            \abort(419, 'La sesión del formulario expiró.');
+            \abort(419, 'La sesion del formulario expiro.');
         }
     }
 }
@@ -159,7 +159,7 @@ final class Auth
     public static function requerirIngreso(): void
     {
         if (!self::autenticado()) {
-            Flash::advertencia('Inicia sesión para continuar.');
+            Flash::advertencia('Inicia sesion para continuar.');
             \redirect('ingreso');
         }
     }
@@ -209,7 +209,7 @@ final class Auditoria
                 substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 500),
             ]);
         } catch (Throwable) {
-            // La auditoría no debe bloquear una operación principal exitosa.
+            // La auditoria no debe bloquear una operacion principal exitosa.
         }
     }
 }
@@ -267,11 +267,11 @@ abstract class Controlador
                 }
 
                 if (in_array($regla, ['email', 'correo'], true) && $valor !== '' && !filter_var($valor, FILTER_VALIDATE_EMAIL)) {
-                    $errores[$campo] = 'Correo inválido.';
+                    $errores[$campo] = 'Correo invalido.';
                 }
 
                 if (str_starts_with($regla, 'max:') && mb_strlen($valor) > (int) substr($regla, 4)) {
-                    $errores[$campo] = 'Longitud máxima excedida.';
+                    $errores[$campo] = 'Longitud maxima excedida.';
                 }
             }
         }

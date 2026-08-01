@@ -3,7 +3,7 @@
     <div class="page-actions">
         <div>
             <h2><?= $isEdit ? 'Editar trabajador' : 'Nuevo trabajador' ?></h2>
-            <p>Registra al responsable que recibirá los equipos.</p>
+            <p>Registra al responsable que recibira los equipos.</p>
         </div>
 
         <a class="btn btn-light" href="<?= url('trabajadores') ?>">Cancelar</a>
@@ -18,7 +18,7 @@
 
         <div class="form-grid cols-2">
             <label>
-                Código de trabajador *
+                Codigo de trabajador *
                 <input
                     name="codigo_trabajador"
                     required
@@ -31,9 +31,9 @@
             </label>
 
             <label>
-                Área
+                Area
                 <select name="area_id">
-                    <option value="">Sin área</option>
+                    <option value="">Sin area</option>
                     <?php foreach ($areas as $area): ?>
                         <option
                             value="<?= $area['id'] ?>"
@@ -61,7 +61,7 @@
             </label>
 
             <label>
-                Teléfono
+                Telefono
                 <input name="telefono" value="<?= e(old('telefono', $registro['telefono'] ?? '')) ?>">
             </label>
 

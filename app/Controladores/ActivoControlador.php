@@ -157,7 +157,7 @@ final class ActivoControlador extends Controlador
         $cabeceras = fgetcsv($archivo, 0, ',');
 
         if (!$cabeceras) {
-            Flash::error('CSV vacío.');
+            Flash::error('CSV vacio.');
             redirect('activos/importar');
         }
 

@@ -33,7 +33,7 @@ final class DevolucionControlador extends Controlador
 
         $this->vista('devoluciones', [
             'modo' => 'formulario',
-            'titulo' => 'Nueva devolución',
+            'titulo' => 'Nueva devolucion',
             'asignaciones' => (new Asignacion())->activas(),
             'asignacion' => $asignacion,
             'estados' => (new Catalogo())->listar('estados_activo'),
@@ -70,7 +70,7 @@ final class DevolucionControlador extends Controlador
                 Auth::id()
             );
 
-            Flash::exito('Devolución registrada.');
+            Flash::exito('Devolucion registrada.');
             redirect('devoluciones/'.$id);
         } catch (Throwable $exception) {
             Flash::error($exception->getMessage());

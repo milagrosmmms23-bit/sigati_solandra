@@ -1,10 +1,10 @@
 <div class="page-actions">
         <div>
             <h2>Devoluciones</h2>
-            <p>Recepción y evaluación de equipos entregados.</p>
+            <p>Recepcion y evaluacion de equipos entregados.</p>
         </div>
 
-        <a class="btn btn-primary" href="<?= url('devoluciones/crear') ?>">+ Nueva devolución</a>
+        <a class="btn btn-primary" href="<?= url('devoluciones/crear') ?>">+ Nueva devolucion</a>
     </div>
 
     <section class="panel table-panel">
@@ -13,7 +13,7 @@
                 <thead>
                     <tr>
                         <th>Acta</th>
-                        <th>Asignación</th>
+                        <th>Asignacion</th>
                         <th>Trabajador</th>
                         <th>Equipos</th>
                         <th>Fecha</th>

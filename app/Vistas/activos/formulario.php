@@ -30,8 +30,8 @@
             <div class="section-title">
                 <span>1</span>
                 <div>
-                    <h3>Identificación</h3>
-                    <p>Datos principales y clasificación del equipo.</p>
+                    <h3>Identificacion</h3>
+                    <p>Datos principales y clasificacion del equipo.</p>
                 </div>
             </div>
 
@@ -74,7 +74,7 @@
                 </label>
 
                 <label>
-                    Código anterior
+                    Codigo anterior
                     <input
                         name="codigo_anterior"
                         value="<?= e(old('codigo_anterior', $registro['codigo_anterior'] ?? '')) ?>"
@@ -113,7 +113,7 @@
                 </label>
 
                 <label>
-                    Número de serie
+                    Numero de serie
                     <input
                         name="numero_serie"
                         value="<?= e(old('numero_serie', $registro['numero_serie'] ?? '')) ?>"
@@ -127,16 +127,16 @@
             <div class="section-title">
                 <span>2</span>
                 <div>
-                    <h3>Ubicación y red</h3>
-                    <p>Localización actual e identificación técnica.</p>
+                    <h3>Ubicacion y red</h3>
+                    <p>Localizacion actual e identificacion tecnica.</p>
                 </div>
             </div>
 
             <div class="form-grid cols-3">
                 <label>
-                    Área
+                    Area
                     <select name="area_actual_id">
-                        <option value="">Sin área</option>
+                        <option value="">Sin area</option>
                         <?php foreach ($areas as $area): ?>
                             <option
                                 value="<?= $area['id'] ?>"
@@ -149,9 +149,9 @@
                 </label>
 
                 <label>
-                    Ubicación
+                    Ubicacion
                     <select name="ubicacion_id">
-                        <option value="">Sin ubicación</option>
+                        <option value="">Sin ubicacion</option>
                         <?php foreach ($ubicaciones as $ubicacion): ?>
                             <option
                                 value="<?= $ubicacion['id'] ?>"
@@ -173,7 +173,7 @@
                 </label>
 
                 <label>
-                    Dirección IP
+                    Direccion IP
                     <input
                         name="direccion_ip"
                         value="<?= e(old('direccion_ip', $registro['direccion_ip'] ?? '')) ?>"
@@ -182,7 +182,7 @@
                 </label>
 
                 <label>
-                    Dirección MAC
+                    Direccion MAC
                     <input
                         name="direccion_mac"
                         value="<?= e(old('direccion_mac', $registro['direccion_mac'] ?? '')) ?>"
@@ -191,11 +191,11 @@
                 </label>
 
                 <label>
-                    Teléfono
+                    Telefono
                     <input
                         name="numero_telefono"
                         value="<?= e(old('numero_telefono', $registro['numero_telefono'] ?? '')) ?>"
-                        placeholder="Número corporativo"
+                        placeholder="Numero corporativo"
                     >
                 </label>
 
@@ -215,8 +215,8 @@
             <div class="section-title">
                 <span>3</span>
                 <div>
-                    <h3>Compra y garantía</h3>
-                    <p>Información administrativa del activo.</p>
+                    <h3>Compra y garantia</h3>
+                    <p>Informacion administrativa del activo.</p>
                 </div>
             </div>
 
@@ -231,7 +231,7 @@
                 </label>
 
                 <label>
-                    Número de factura
+                    Numero de factura
                     <input
                         name="numero_factura"
                         value="<?= e(old('numero_factura', $registro['numero_factura'] ?? '')) ?>"
@@ -265,7 +265,7 @@
                 </label>
 
                 <label>
-                    Fin de garantía
+                    Fin de garantia
                     <input
                         type="date"
                         name="fin_garantia"
@@ -280,7 +280,7 @@
                 <span>4</span>
                 <div>
                     <h3>Especificaciones</h3>
-                    <p>Agrega características según el tipo de equipo.</p>
+                    <p>Agrega caracteristicas segun el tipo de equipo.</p>
                 </div>
             </div>
 
@@ -297,13 +297,13 @@
                             value="<?= e($especificacion['valor_especificacion']) ?>"
                             placeholder="Ej. 16 GB"
                         >
-                        <button type="button" class="icon-btn danger" data-remove-row>×</button>
+                        <button type="button" class="icon-btn danger" data-remove-row>&times;</button>
                     </div>
                 <?php endforeach; ?>
             </div>
 
             <button type="button" class="btn btn-light btn-sm" data-add-spec>
-                + Agregar característica
+                + Agregar caracteristica
             </button>
 
             <label class="full-label">
@@ -311,7 +311,7 @@
                 <textarea
                     name="observaciones"
                     rows="4"
-                    placeholder="Estado físico, accesorios, información relevante..."
+                    placeholder="Estado fisico, accesorios, informacion relevante..."
                 ><?= e(old('observaciones', $registro['observaciones'] ?? '')) ?></textarea>
             </label>
         </div>

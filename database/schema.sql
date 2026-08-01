@@ -292,38 +292,38 @@ CREATE TABLE registros_auditoria (
 -- Datos iniciales
 INSERT INTO roles(id,nombre,descripcion) VALUES
 (1,'ADMIN','Control total del sistema'),
-(2,'TECNICO','OperaciÃ³n del inventario y movimientos'),
+(2,'TECNICO','Operacion del inventario y movimientos'),
 (3,'AUDITOR','Consulta y reportes');
 
 INSERT INTO usuarios(id,rol_id,nombre,usuario,correo,clave_hash,activo) VALUES
 (1,1,'Administrador SIGATI','admin','ti.arequipa@solandra.local','$2y$12$xiwecU9euNq9rnpaqIQGnON/pHhL6VXuMquZaG3uI3GlPZQ96HjEW',1);
 
 INSERT INTO areas(id,nombre) VALUES
-(1,'TecnologÃ­a de la InformaciÃ³n'),(2,'AdministraciÃ³n'),(3,'Operaciones'),(4,'Mantenimiento'),
-(5,'Seguridad'),(6,'Laboratorio'),(7,'AlmacÃ©n'),(8,'Recursos Humanos'),(9,'Contabilidad'),
-(10,'LogÃ­stica'),(11,'Medio Ambiente'),(12,'Calidad'),(13,'ProducciÃ³n'),(14,'Sala de Control'),
-(15,'Taller MecÃ¡nico'),(16,'Taller ElÃ©ctrico'),(17,'Servicios Generales'),(18,'Planeamiento'),
+(1,'Tecnologia de la Informacion'),(2,'Administracion'),(3,'Operaciones'),(4,'Mantenimiento'),
+(5,'Seguridad'),(6,'Laboratorio'),(7,'Almacen'),(8,'Recursos Humanos'),(9,'Contabilidad'),
+(10,'Logistica'),(11,'Medio Ambiente'),(12,'Calidad'),(13,'Produccion'),(14,'Sala de Control'),
+(15,'Taller Mecanico'),(16,'Taller Electrico'),(17,'Servicios Generales'),(18,'Planeamiento'),
 (19,'Compras'),(20,'Gerencia de Planta'),(21,'Comedor'),(22,'Campamento'),(23,'Garita Principal'),
 (24,'Tratamiento de Agua'),(25,'Proyectos');
 
 INSERT INTO ubicaciones(id,area_id,nombre) VALUES
-(1,1,'Oficina TI'),(2,1,'AlmacÃ©n TI'),(3,1,'Taller TI'),(4,2,'Oficina Administrativa'),
+(1,1,'Oficina TI'),(2,1,'Almacen TI'),(3,1,'Taller TI'),(4,2,'Oficina Administrativa'),
 (5,3,'Zona Operativa'),(6,5,'Garita Principal'),(7,6,'Laboratorio Principal'),
-(8,14,'Sala de Control'),(9,15,'Taller MecÃ¡nico'),(10,16,'Taller ElÃ©ctrico');
+(8,14,'Sala de Control'),(9,15,'Taller Mecanico'),(10,16,'Taller Electrico');
 
 INSERT INTO tipos_activo(id,nombre,prefijo) VALUES
 (1,'PC','PC'),(2,'Laptop','LAP'),(3,'Monitor','MON'),(4,'Impresora','IMP'),
 (5,'Celular','CEL'),(6,'Radio','RAD'),(7,'Switch','SW'),(8,'Access Point','AP'),
-(9,'Servidor','SRV'),(10,'UPS','UPS'),(11,'CÃ¡mara','CAM'),(12,'NVR','NVR'),
+(9,'Servidor','SRV'),(10,'UPS','UPS'),(11,'Camara','CAM'),(12,'NVR','NVR'),
 (13,'Starlink','STL'),(14,'Accesorio','ACC'),(15,'Otro','OTR');
 
 INSERT INTO estados_activo(id,codigo,nombre,color) VALUES
 (1,'DISPONIBLE','Disponible','success'),(2,'ASIGNADO','Asignado','primary'),
-(3,'PRESTAMO','En prÃ©stamo','primary'),(4,'MANTENIMIENTO','Mantenimiento','warning'),
-(5,'REPARACION','ReparaciÃ³n','danger'),(6,'ALMACEN','En almacÃ©n','secondary'),
-(7,'EVALUACION','Pendiente de evaluaciÃ³n','warning'),(8,'BAJA_PENDIENTE','Pendiente de baja','danger'),
+(3,'PRESTAMO','En prestamo','primary'),(4,'MANTENIMIENTO','Mantenimiento','warning'),
+(5,'REPARACION','Reparacion','danger'),(6,'ALMACEN','En almacen','secondary'),
+(7,'EVALUACION','Pendiente de evaluacion','warning'),(8,'BAJA_PENDIENTE','Pendiente de baja','danger'),
 (9,'BAJA','Dado de baja','dark'),(10,'EXTRAVIADO','Extraviado','danger'),
-(11,'ROBADO','Robado','danger'),(12,'TRANSITO','En trÃ¡nsito','secondary');
+(11,'ROBADO','Robado','danger'),(12,'TRANSITO','En transito','secondary');
 
 INSERT INTO marcas(id,nombre) VALUES
 (1,'Dell'),(2,'HP'),(3,'Lenovo'),(4,'Epson'),(5,'Samsung'),(6,'Motorola'),
@@ -338,10 +338,10 @@ INSERT INTO proveedores(id,nombre) VALUES
 (1,'Proveedor Lima TI'),(2,'Distribuidor Arequipa'),(3,'Compra corporativa SOLANDRA');
 
 INSERT INTO trabajadores(id,codigo_trabajador,nombres,apellidos,correo,telefono,cargo,area_id) VALUES
-(1,'SOL-AQP-001','VÃ­ctor','Mendoza','victor@solandra.local','999111111','TÃ©cnico TI',1),
+(1,'SOL-AQP-001','Victor','Mendoza','victor@solandra.local','999111111','Tecnico TI',1),
 (2,'SOL-AQP-002','Carlos','Quispe','carlos@solandra.local','999222222','Supervisor de Operaciones',3),
-(3,'SOL-AQP-003','MarÃ­a','Torres','maria@solandra.local','999333333','Analista Administrativa',2),
-(4,'SOL-AQP-004','JosÃ©','Flores','jose@solandra.local','999444444','TÃ©cnico de Mantenimiento',4),
+(3,'SOL-AQP-003','Maria','Torres','maria@solandra.local','999333333','Analista Administrativa',2),
+(4,'SOL-AQP-004','Jose','Flores','jose@solandra.local','999444444','Tecnico de Mantenimiento',4),
 (5,'SOL-AQP-005','Ana','Ramos','ana@solandra.local','999555555','Analista de Laboratorio',6);
 
 INSERT INTO contadores_activo(tipo_activo_id,numero_actual) VALUES
@@ -370,8 +370,8 @@ INSERT INTO activos(id,codigo_activo,codigo_anterior,tipo_activo_id,marca_id,mod
 INSERT INTO especificaciones_activo(activo_id,clave_especificacion,valor_especificacion) VALUES
 (1,'Procesador','Intel Core i5'),(1,'RAM','16 GB'),(1,'Almacenamiento','SSD 512 GB'),
 (4,'Procesador','Intel Core i5'),(4,'RAM','16 GB'),(4,'Almacenamiento','SSD 512 GB'),
-(11,'Tipo de tÃ³ner','Botellas Epson 544'),(11,'Conectividad','Red / Wi-Fi'),
-(17,'Puertos','24 Gigabit'),(17,'PoE','SÃ­');
+(11,'Tipo de toner','Botellas Epson 544'),(11,'Conectividad','Red / Wi-Fi'),
+(17,'Puertos','24 Gigabit'),(17,'PoE','Si');
 
 INSERT INTO movimientos_activo(activo_id,tipo_movimiento,estado_destino_id,area_destino_id,observaciones,usuario_id)
 SELECT id,'REGISTRO',estado_id,area_actual_id,'Carga inicial del sistema',1 FROM activos;
@@ -386,7 +386,7 @@ BEGIN
   DECLARE v_prefix VARCHAR(8);
   DECLARE v_number INT;
   SELECT prefijo INTO v_prefix FROM tipos_activo WHERE id=p_asset_type_id AND activo=1;
-  IF v_prefix IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Tipo de activo invÃ¡lido'; END IF;
+  IF v_prefix IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Tipo de activo invalido'; END IF;
   INSERT INTO contadores_activo(tipo_activo_id,numero_actual) VALUES(p_asset_type_id,0)
     ON DUPLICATE KEY UPDATE numero_actual=numero_actual;
   UPDATE contadores_activo SET numero_actual=LAST_INSERT_ID(numero_actual+1) WHERE tipo_activo_id=p_asset_type_id;
@@ -406,7 +406,7 @@ BEGIN
   DECLARE v_employee_exists INT DEFAULT 0;
   SET v_year=YEAR(CURDATE());
   SELECT COUNT(*),MAX(area_id) INTO v_employee_exists,v_area FROM trabajadores WHERE id=p_employee_id AND activo=1;
-  IF v_employee_exists=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El trabajador no existe o estÃ¡ inactivo'; END IF;
+  IF v_employee_exists=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El trabajador no existe o esta inactivo'; END IF;
   IF p_area_id IS NOT NULL AND p_area_id>0 THEN SET v_area=p_area_id; END IF;
   INSERT INTO contadores_documento(tipo_documento,anio_documento,numero_actual) VALUES('ASG',v_year,0)
     ON DUPLICATE KEY UPDATE numero_actual=numero_actual;
@@ -427,11 +427,11 @@ BEGIN
   DECLARE v_status_code VARCHAR(40);
   DECLARE v_header_status VARCHAR(20);
   SELECT estado INTO v_header_status FROM asignaciones WHERE id=p_assignment_id FOR UPDATE;
-  IF v_header_status IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='AsignaciÃ³n inexistente'; END IF;
-  IF v_header_status<>'BORRADOR' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignaciÃ³n ya no estÃ¡ en borrador'; END IF;
+  IF v_header_status IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignacion inexistente'; END IF;
+  IF v_header_status<>'BORRADOR' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignacion ya no esta en borrador'; END IF;
   SELECT s.codigo INTO v_status_code FROM activos a JOIN estados_activo s ON s.id=a.estado_id WHERE a.id=p_asset_id AND a.activo=1 FOR UPDATE;
   IF v_status_code IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Activo inexistente'; END IF;
-  IF v_status_code<>'DISPONIBLE' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Uno de los activos ya no estÃ¡ disponible'; END IF;
+  IF v_status_code<>'DISPONIBLE' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Uno de los activos ya no esta disponible'; END IF;
   INSERT INTO items_asignacion(asignacion_id,activo_id,condicion_salida)
   VALUES(p_assignment_id,p_asset_id,COALESCE(NULLIF(p_condition,''),'Buen estado'));
 END$$
@@ -444,9 +444,9 @@ BEGIN
   DECLARE v_status INT;
   DECLARE v_count INT;
   SELECT trabajador_id,area_id INTO v_employee,v_area FROM asignaciones WHERE id=p_assignment_id AND estado='BORRADOR' FOR UPDATE;
-  IF v_employee IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='AsignaciÃ³n no disponible para confirmar'; END IF;
+  IF v_employee IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignacion no disponible para confirmar'; END IF;
   SELECT COUNT(*) INTO v_count FROM items_asignacion WHERE asignacion_id=p_assignment_id;
-  IF v_count=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignaciÃ³n no contiene activos'; END IF;
+  IF v_count=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignacion no contiene activos'; END IF;
   SELECT id INTO v_status FROM estados_activo WHERE codigo='ASIGNADO';
   INSERT INTO movimientos_activo(activo_id,tipo_movimiento,tipo_referencia,referencia_id,estado_origen_id,estado_destino_id,area_origen_id,area_destino_id,trabajador_origen_id,trabajador_destino_id,observaciones,usuario_id)
   SELECT a.id,'ASIGNACION','assignment',p_assignment_id,a.estado_id,v_status,a.area_actual_id,v_area,a.trabajador_actual_id,v_employee,CONCAT('Asignado mediante ',x.numero_asignacion),p_user_id
@@ -468,7 +468,7 @@ BEGIN
   DECLARE v_num INT;
   DECLARE v_ok INT;
   SELECT COUNT(*) INTO v_ok FROM asignaciones WHERE id=p_assignment_id AND estado IN('CONFIRMADA','PARCIAL');
-  IF v_ok=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='AsignaciÃ³n no disponible para devoluciÃ³n'; END IF;
+  IF v_ok=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignacion no disponible para devolucion'; END IF;
   SET v_year=YEAR(CURDATE());
   INSERT INTO contadores_documento(tipo_documento,anio_documento,numero_actual) VALUES('DEV',v_year,0)
     ON DUPLICATE KEY UPDATE numero_actual=numero_actual;
@@ -495,15 +495,15 @@ BEGIN
   DECLARE v_from_employee INT;
   SELECT asignacion_id INTO v_return_assignment FROM devoluciones_activo WHERE id=p_return_id AND estado='BORRADOR' FOR UPDATE;
   SELECT ai.activo_id,ai.asignacion_id INTO v_asset,v_assignment FROM items_asignacion ai WHERE ai.id=p_assignment_item_id AND ai.devuelto_en IS NULL FOR UPDATE;
-  IF v_asset IS NULL OR v_assignment<>v_return_assignment THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El activo no pertenece a la asignaciÃ³n o ya fue devuelto'; END IF;
-  IF NOT EXISTS(SELECT 1 FROM estados_activo WHERE id=p_next_status_id AND activo=1) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Estado posterior invÃ¡lido'; END IF;
+  IF v_asset IS NULL OR v_assignment<>v_return_assignment THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El activo no pertenece a la asignacion o ya fue devuelto'; END IF;
+  IF NOT EXISTS(SELECT 1 FROM estados_activo WHERE id=p_next_status_id AND activo=1) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Estado posterior invalido'; END IF;
   SELECT estado_id,area_actual_id,trabajador_actual_id INTO v_from_status,v_from_area,v_from_employee FROM activos WHERE id=v_asset FOR UPDATE;
   INSERT INTO items_devolucion(devolucion_id,item_asignacion_id,condicion_entrada,observaciones_danos,siguiente_estado_id)
   VALUES(p_return_id,p_assignment_item_id,COALESCE(NULLIF(p_condition,''),'Sin especificar'),NULLIF(p_damage,''),p_next_status_id);
   UPDATE items_asignacion SET devuelto_en=NOW() WHERE id=p_assignment_item_id;
   UPDATE activos SET estado_id=p_next_status_id,trabajador_actual_id=NULL,actualizado_por=p_user_id WHERE id=v_asset;
   INSERT INTO movimientos_activo(activo_id,tipo_movimiento,tipo_referencia,referencia_id,estado_origen_id,estado_destino_id,area_origen_id,area_destino_id,trabajador_origen_id,trabajador_destino_id,observaciones,usuario_id)
-  VALUES(v_asset,'DEVOLUCION','return',p_return_id,v_from_status,p_next_status_id,v_from_area,v_from_area,v_from_employee,NULL,COALESCE(NULLIF(p_damage,''),'Equipo recibido sin daÃ±os reportados'),p_user_id);
+  VALUES(v_asset,'DEVOLUCION','return',p_return_id,v_from_status,p_next_status_id,v_from_area,v_from_area,v_from_employee,NULL,COALESCE(NULLIF(p_damage,''),'Equipo recibido sin danos reportados'),p_user_id);
 END$$
 
 DROP PROCEDURE IF EXISTS sp_confirmar_devolucion$$
@@ -513,9 +513,9 @@ BEGIN
   DECLARE v_items INT;
   DECLARE v_pending INT;
   SELECT asignacion_id INTO v_assignment FROM devoluciones_activo WHERE id=p_return_id AND estado='BORRADOR' FOR UPDATE;
-  IF v_assignment IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='DevoluciÃ³n no disponible para confirmar'; END IF;
+  IF v_assignment IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Devolucion no disponible para confirmar'; END IF;
   SELECT COUNT(*) INTO v_items FROM items_devolucion WHERE devolucion_id=p_return_id;
-  IF v_items=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La devoluciÃ³n no contiene equipos'; END IF;
+  IF v_items=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La devolucion no contiene equipos'; END IF;
   UPDATE devoluciones_activo SET estado='CONFIRMADA',devuelto_en=NOW() WHERE id=p_return_id;
   SELECT COUNT(*) INTO v_pending FROM items_asignacion WHERE asignacion_id=v_assignment AND devuelto_en IS NULL;
   UPDATE asignaciones SET estado=IF(v_pending=0,'CERRADA','PARCIAL') WHERE id=v_assignment;
@@ -616,7 +616,7 @@ WHERE t.activo=1 GROUP BY t.id,t.nombre,t.prefijo HAVING total>0 ORDER BY total 
 
 DROP VIEW IF EXISTS vw_activos_por_area;
 CREATE VIEW vw_activos_por_area AS
-SELECT COALESCE(ar.id,0) id,COALESCE(ar.nombre,'Sin Ã¡rea') nombre,COUNT(a.id) total
+SELECT COALESCE(ar.id,0) id,COALESCE(ar.nombre,'Sin area') nombre,COUNT(a.id) total
 FROM activos a LEFT JOIN areas ar ON ar.id=a.area_actual_id
 WHERE a.activo=1 GROUP BY ar.id,ar.nombre ORDER BY total DESC;
 
@@ -631,8 +631,8 @@ SELECT
   (SELECT COUNT(*) FROM asignaciones WHERE estado IN('CONFIRMADA','PARCIAL')) asignaciones_activas,
   (SELECT COUNT(*) FROM mantenimientos WHERE estado='ABIERTO') mantenimientos_abiertos;
 
--- AsignaciÃ³n demostrativa, creada mediante los procedimientos del sistema
-CALL sp_crear_asignacion(3,2,'AsignaciÃ³n inicial de demostraciÃ³n',1,@demo_assignment,@demo_assignment_number);
+-- Asignacion demostrativa, creada mediante los procedimientos del sistema
+CALL sp_crear_asignacion(3,2,'Asignacion inicial de demostracion',1,@demo_assignment,@demo_assignment_number);
 CALL sp_agregar_activo_asignacion(@demo_assignment,4,'Buen estado, incluye cargador y mochila',1);
 CALL sp_agregar_activo_asignacion(@demo_assignment,7,'Buen estado, incluye cable de poder y HDMI',1);
 CALL sp_confirmar_asignacion(@demo_assignment,1);

@@ -1,7 +1,7 @@
 <div class="page-actions">
         <div>
             <h2>Nuevo mantenimiento</h2>
-            <p>Abre una orden técnica y cambia el equipo a mantenimiento.</p>
+            <p>Abre una orden tecnica y cambia el equipo a mantenimiento.</p>
         </div>
 
         <a class="btn btn-light" href="<?= url('mantenimientos') ?>">Cancelar</a>
@@ -17,7 +17,7 @@
                     <option value="">Seleccionar equipo</option>
                     <?php foreach ($activos as $activo): ?>
                         <option value="<?= $activo['id'] ?>">
-                            <?= e($activo['codigo_activo'].' · '.$activo['nombre_tipo'].' · '.trim(($activo['nombre_marca'] ?? '').' '.($activo['nombre_modelo'] ?? '')).' · Serie '.($activo['numero_serie'] ?: '—')) ?>
+                            <?= e($activo['codigo_activo'].' - '.$activo['nombre_tipo'].' - '.trim(($activo['nombre_marca'] ?? '').' '.($activo['nombre_modelo'] ?? '')).' - Serie '.($activo['numero_serie'] ?: '-')) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -42,7 +42,7 @@
             </label>
 
             <label>
-                Diagnóstico inicial
+                Diagnostico inicial
                 <textarea name="diagnostico" rows="3"></textarea>
             </label>
 

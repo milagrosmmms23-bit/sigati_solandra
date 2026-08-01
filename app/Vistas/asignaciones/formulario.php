@@ -1,6 +1,6 @@
 <div class="page-actions">
         <div>
-            <h2>Nueva asignación</h2>
+            <h2>Nueva asignacion</h2>
             <p>Selecciona trabajador y equipos disponibles.</p>
         </div>
 
@@ -15,7 +15,7 @@
                 <span>1</span>
                 <div>
                     <h3>Responsable</h3>
-                    <p>La asignación tomará el área actual del trabajador.</p>
+                    <p>La asignacion tomara el area actual del trabajador.</p>
                 </div>
             </div>
 
@@ -26,7 +26,7 @@
                         <option value="">Seleccionar trabajador</option>
                         <?php foreach ($trabajadores as $trabajador): ?>
                             <option value="<?= $trabajador['id'] ?>" data-area="<?= e($trabajador['area_id']) ?>">
-                                <?= e($trabajador['codigo_trabajador'].' · '.$trabajador['nombres'].' '.$trabajador['apellidos'].' · '.($trabajador['nombre_area'] ?? 'Sin área')) ?>
+                                <?= e($trabajador['codigo_trabajador'].' - '.$trabajador['nombres'].' '.$trabajador['apellidos'].' - '.($trabajador['nombre_area'] ?? 'Sin area')) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -39,7 +39,7 @@
                     <textarea
                         name="observaciones"
                         rows="2"
-                        placeholder="Motivo, condición general o indicaciones"
+                        placeholder="Motivo, condicion general o indicaciones"
                     ></textarea>
                 </label>
             </div>
@@ -56,7 +56,7 @@
 
             <div class="asset-picker">
                 <div class="picker-search">
-                    <input type="search" placeholder="Filtrar por código, tipo, marca o serie" data-filter-activos>
+                    <input type="search" placeholder="Filtrar por codigo, tipo, marca o serie" data-filter-activos>
                     <span><b data-selected-count>0</b> seleccionados</span>
                 </div>
 
@@ -65,14 +65,14 @@
                         <input type="checkbox" name="activo_ids[]" value="<?= $activo['id'] ?>" data-activo-check>
                         <div>
                             <strong><?= e($activo['codigo_activo']) ?></strong>
-                            <span><?= e($activo['nombre_tipo'].' · '.trim(($activo['nombre_marca'] ?? '').' '.($activo['nombre_modelo'] ?? ''))) ?></span>
-                            <small>Serie: <?= e($activo['numero_serie'] ?: '—') ?></small>
+                            <span><?= e($activo['nombre_tipo'].' - '.trim(($activo['nombre_marca'] ?? '').' '.($activo['nombre_modelo'] ?? ''))) ?></span>
+                            <small>Serie: <?= e($activo['numero_serie'] ?: '-') ?></small>
                         </div>
                         <input
                             class="condition-input"
                             name="condicion[<?= $activo['id'] ?>]"
                             value="Buen estado"
-                            placeholder="Condición de entrega"
+                            placeholder="Condicion de entrega"
                         >
                     </label>
                 <?php endforeach; ?>

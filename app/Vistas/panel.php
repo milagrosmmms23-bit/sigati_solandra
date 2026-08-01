@@ -11,16 +11,16 @@ $cards = [
     ['Total de activos', $resumen['total_activos'] ?? 0, 'Inventario registrado', 'navy'],
     ['Asignados', $resumen['activos_asignados'] ?? 0, 'Bajo responsabilidad', 'blue'],
     ['Disponibles', $resumen['activos_disponibles'] ?? 0, 'Listos para entregar', 'green'],
-    ['En mantenimiento', $resumen['activos_mantenimiento'] ?? 0, 'Atención técnica', 'orange'],
+    ['En mantenimiento', $resumen['activos_mantenimiento'] ?? 0, 'Atencion tecnica', 'orange'],
     ['Trabajadores', $resumen['total_trabajadores'] ?? 0, 'Personal activo', 'purple'],
-    ['Préstamos/asignaciones', $resumen['asignaciones_activas'] ?? 0, 'Actas vigentes', 'cyan'],
+    ['Prestamos/asignaciones', $resumen['asignaciones_activas'] ?? 0, 'Actas vigentes', 'cyan'],
 ];
 ?>
 
 <div class="page-actions">
     <div>
         <h2>Resumen operativo</h2>
-        <p>Estado actual de los activos tecnológicos en planta.</p>
+        <p>Estado actual de los activos tecnologicos en planta.</p>
     </div>
 
     <div class="actions">
@@ -32,7 +32,7 @@ $cards = [
 <div class="stat-grid">
     <?php foreach ($cards as [$label, $valor, $description, $tone]): ?>
         <article class="stat-card tone-<?= $tone ?>">
-            <div class="stat-icon">◆</div>
+            <div class="stat-icon">&#9670;</div>
             <div>
                 <span><?= e($label) ?></span>
                 <strong><?= number_format((int) $valor) ?></strong>
@@ -47,7 +47,7 @@ $cards = [
         <div class="panel-head">
             <div>
                 <h3>Activos por estado</h3>
-                <p>Distribución del inventario vigente</p>
+                <p>Distribucion del inventario vigente</p>
             </div>
         </div>
 
@@ -71,7 +71,7 @@ $cards = [
         <div class="panel-head">
             <div>
                 <h3>Activos por tipo</h3>
-                <p>Principales categorías</p>
+                <p>Principales categorias</p>
             </div>
         </div>
 
@@ -98,8 +98,8 @@ $cards = [
     <section class="panel">
         <div class="panel-head">
             <div>
-                <h3>Distribución por área</h3>
-                <p>Diez áreas con más activos</p>
+                <h3>Distribucion por area</h3>
+                <p>Diez areas con mas activos</p>
             </div>
             <a href="<?= url('reportes/inventario') ?>">Detalle</a>
         </div>
@@ -118,7 +118,7 @@ $cards = [
         <div class="panel-head">
             <div>
                 <h3>Actividad reciente</h3>
-                <p>Últimos movimientos registrados</p>
+                <p>Ultimos movimientos registrados</p>
             </div>
         </div>
 
@@ -127,17 +127,17 @@ $cards = [
                 <div class="timeline-item">
                     <i></i>
                     <div>
-                        <strong><?= e($movimiento['codigo_activo']) ?> · <?= e($movimiento['tipo_movimiento']) ?></strong>
+                        <strong><?= e($movimiento['codigo_activo']) ?> - <?= e($movimiento['tipo_movimiento']) ?></strong>
                         <p><?= e($movimiento['observaciones'] ?: 'Movimiento registrado') ?></p>
                         <small>
-                            <?= datetime_pe($movimiento['creado_en']) ?> · <?= e($movimiento['nombre_usuario'] ?? 'Sistema') ?>
+                            <?= datetime_pe($movimiento['creado_en']) ?> - <?= e($movimiento['nombre_usuario'] ?? 'Sistema') ?>
                         </small>
                     </div>
                 </div>
             <?php endforeach; ?>
 
             <?php if (!$recientes): ?>
-                <div class="empty">Aún no hay movimientos.</div>
+                <div class="empty">Aun no hay movimientos.</div>
             <?php endif; ?>
         </div>
     </section>

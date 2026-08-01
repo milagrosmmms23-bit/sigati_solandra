@@ -64,7 +64,7 @@ BEGIN
   DECLARE v_prefix VARCHAR(8);
   DECLARE v_number INT;
   SELECT prefix INTO v_prefix FROM tipos_activo WHERE id=p_asset_type_id AND active=1;
-  IF v_prefix IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Tipo de activo inválido'; END IF;
+  IF v_prefix IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Tipo de activo invalido'; END IF;
   INSERT INTO contadores_activo(asset_type_id,current_number) VALUES(p_asset_type_id,0)
     ON DUPLICATE KEY UPDATE current_number=current_number;
   UPDATE contadores_activo SET current_number=LAST_INSERT_ID(current_number+1) WHERE asset_type_id=p_asset_type_id;
@@ -84,7 +84,7 @@ BEGIN
   DECLARE v_employee_exists INT DEFAULT 0;
   SET v_year=YEAR(CURDATE());
   SELECT COUNT(*),MAX(area_id) INTO v_employee_exists,v_area FROM trabajadores WHERE id=p_employee_id AND active=1;
-  IF v_employee_exists=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El trabajador no existe o está inactivo'; END IF;
+  IF v_employee_exists=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El trabajador no existe o esta inactivo'; END IF;
   IF p_area_id IS NOT NULL AND p_area_id>0 THEN SET v_area=p_area_id; END IF;
   INSERT INTO contadores_documento(document_type,document_year,current_number) VALUES('ASG',v_year,0)
     ON DUPLICATE KEY UPDATE current_number=current_number;
@@ -105,11 +105,11 @@ BEGIN
   DECLARE v_status_code VARCHAR(40);
   DECLARE v_header_status VARCHAR(20);
   SELECT status INTO v_header_status FROM asignaciones WHERE id=p_assignment_id FOR UPDATE;
-  IF v_header_status IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignación inexistente'; END IF;
-  IF v_header_status<>'BORRADOR' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignación ya no está en borrador'; END IF;
+  IF v_header_status IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignacion inexistente'; END IF;
+  IF v_header_status<>'BORRADOR' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignacion ya no esta en borrador'; END IF;
   SELECT s.code INTO v_status_code FROM activos a JOIN estados_activo s ON s.id=a.status_id WHERE a.id=p_asset_id AND a.active=1 FOR UPDATE;
   IF v_status_code IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Activo inexistente'; END IF;
-  IF v_status_code<>'DISPONIBLE' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Uno de los activos ya no está disponible'; END IF;
+  IF v_status_code<>'DISPONIBLE' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Uno de los activos ya no esta disponible'; END IF;
   INSERT INTO items_asignacion(assignment_id,asset_id,condition_out)
   VALUES(p_assignment_id,p_asset_id,COALESCE(NULLIF(p_condition,''),'Buen estado'));
 END$$
@@ -122,9 +122,9 @@ BEGIN
   DECLARE v_status INT;
   DECLARE v_count INT;
   SELECT employee_id,area_id INTO v_employee,v_area FROM asignaciones WHERE id=p_assignment_id AND status='BORRADOR' FOR UPDATE;
-  IF v_employee IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignación no disponible para confirmar'; END IF;
+  IF v_employee IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignacion no disponible para confirmar'; END IF;
   SELECT COUNT(*) INTO v_count FROM items_asignacion WHERE assignment_id=p_assignment_id;
-  IF v_count=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignación no contiene activos'; END IF;
+  IF v_count=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignacion no contiene activos'; END IF;
   SELECT id INTO v_status FROM estados_activo WHERE code='ASIGNADO';
   INSERT INTO movimientos_activo(asset_id,movement_type,reference_type,reference_id,from_status_id,to_status_id,from_area_id,to_area_id,from_employee_id,to_employee_id,notes,user_id)
   SELECT a.id,'ASIGNACION','assignment',p_assignment_id,a.status_id,v_status,a.current_area_id,v_area,a.current_employee_id,v_employee,CONCAT('Asignado mediante ',x.assignment_number),p_user_id
@@ -146,7 +146,7 @@ BEGIN
   DECLARE v_num INT;
   DECLARE v_ok INT;
   SELECT COUNT(*) INTO v_ok FROM asignaciones WHERE id=p_assignment_id AND status IN('CONFIRMADA','PARCIAL');
-  IF v_ok=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignación no disponible para devolución'; END IF;
+  IF v_ok=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignacion no disponible para devolucion'; END IF;
   SET v_year=YEAR(CURDATE());
   INSERT INTO contadores_documento(document_type,document_year,current_number) VALUES('DEV',v_year,0)
     ON DUPLICATE KEY UPDATE current_number=current_number;
@@ -173,15 +173,15 @@ BEGIN
   DECLARE v_from_employee INT;
   SELECT assignment_id INTO v_return_assignment FROM devoluciones_activo WHERE id=p_return_id AND status='BORRADOR' FOR UPDATE;
   SELECT ai.asset_id,ai.assignment_id INTO v_asset,v_assignment FROM items_asignacion ai WHERE ai.id=p_assignment_item_id AND ai.returned_at IS NULL FOR UPDATE;
-  IF v_asset IS NULL OR v_assignment<>v_return_assignment THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El activo no pertenece a la asignación o ya fue devuelto'; END IF;
-  IF NOT EXISTS(SELECT 1 FROM estados_activo WHERE id=p_next_status_id AND active=1) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Estado posterior inválido'; END IF;
+  IF v_asset IS NULL OR v_assignment<>v_return_assignment THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El activo no pertenece a la asignacion o ya fue devuelto'; END IF;
+  IF NOT EXISTS(SELECT 1 FROM estados_activo WHERE id=p_next_status_id AND active=1) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Estado posterior invalido'; END IF;
   SELECT status_id,current_area_id,current_employee_id INTO v_from_status,v_from_area,v_from_employee FROM activos WHERE id=v_asset FOR UPDATE;
   INSERT INTO items_devolucion(return_id,assignment_item_id,condition_in,damage_notes,next_status_id)
   VALUES(p_return_id,p_assignment_item_id,COALESCE(NULLIF(p_condition,''),'Sin especificar'),NULLIF(p_damage,''),p_next_status_id);
   UPDATE items_asignacion SET returned_at=NOW() WHERE id=p_assignment_item_id;
   UPDATE activos SET status_id=p_next_status_id,current_employee_id=NULL,updated_by=p_user_id WHERE id=v_asset;
   INSERT INTO movimientos_activo(asset_id,movement_type,reference_type,reference_id,from_status_id,to_status_id,from_area_id,to_area_id,from_employee_id,to_employee_id,notes,user_id)
-  VALUES(v_asset,'DEVOLUCION','return',p_return_id,v_from_status,p_next_status_id,v_from_area,v_from_area,v_from_employee,NULL,COALESCE(NULLIF(p_damage,''),'Equipo recibido sin daños reportados'),p_user_id);
+  VALUES(v_asset,'DEVOLUCION','return',p_return_id,v_from_status,p_next_status_id,v_from_area,v_from_area,v_from_employee,NULL,COALESCE(NULLIF(p_damage,''),'Equipo recibido sin danos reportados'),p_user_id);
 END$$
 
 DROP PROCEDURE IF EXISTS sp_confirmar_devolucion$$
@@ -191,9 +191,9 @@ BEGIN
   DECLARE v_items INT;
   DECLARE v_pending INT;
   SELECT assignment_id INTO v_assignment FROM devoluciones_activo WHERE id=p_return_id AND status='BORRADOR' FOR UPDATE;
-  IF v_assignment IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Devolución no disponible para confirmar'; END IF;
+  IF v_assignment IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Devolucion no disponible para confirmar'; END IF;
   SELECT COUNT(*) INTO v_items FROM items_devolucion WHERE return_id=p_return_id;
-  IF v_items=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La devolución no contiene equipos'; END IF;
+  IF v_items=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La devolucion no contiene equipos'; END IF;
   UPDATE devoluciones_activo SET status='CONFIRMADA',returned_at=NOW() WHERE id=p_return_id;
   SELECT COUNT(*) INTO v_pending FROM items_asignacion WHERE assignment_id=v_assignment AND returned_at IS NULL;
   UPDATE asignaciones SET status=IF(v_pending=0,'CERRADA','PARCIAL') WHERE id=v_assignment;
@@ -294,7 +294,7 @@ WHERE t.active=1 GROUP BY t.id,t.name,t.prefix HAVING total>0 ORDER BY total DES
 
 DROP VIEW IF EXISTS vw_activos_por_area;
 CREATE VIEW vw_activos_por_area AS
-SELECT COALESCE(ar.id,0) id,COALESCE(ar.name,'Sin área') name,COUNT(a.id) total
+SELECT COALESCE(ar.id,0) id,COALESCE(ar.name,'Sin area') name,COUNT(a.id) total
 FROM activos a LEFT JOIN areas ar ON ar.id=a.current_area_id
 WHERE a.active=1 GROUP BY ar.id,ar.name ORDER BY total DESC;
 
@@ -309,4 +309,4 @@ SELECT
   (SELECT COUNT(*) FROM asignaciones WHERE status IN('CONFIRMADA','PARCIAL')) active_assignments,
   (SELECT COUNT(*) FROM mantenimientos WHERE status='ABIERTO') open_maintenances;
 
--- Asignación demostrativa, creada mediante los procedimientos del sistema
+-- Asignacion demostrativa, creada mediante los procedimientos del sistema

@@ -1,8 +1,8 @@
 <div class="page-actions">
         <div>
-            <div class="eyebrow">Acta de devolución</div>
+            <div class="eyebrow">Acta de devolucion</div>
             <h2><?= e($registro['numero_devolucion']) ?></h2>
-            <p><?= e($registro['nombre_trabajador']) ?> · Referencia <?= e($registro['numero_asignacion']) ?></p>
+            <p><?= e($registro['nombre_trabajador']) ?> - Referencia <?= e($registro['numero_asignacion']) ?></p>
         </div>
 
         <div class="actions">
@@ -22,12 +22,12 @@
                 <strong><?= e($registro['nombre_trabajador']) ?></strong>
             </div>
             <div>
-                <span>Código</span>
+                <span>Codigo</span>
                 <strong><?= e($registro['codigo_trabajador']) ?></strong>
             </div>
             <div>
-                <span>Área</span>
-                <strong><?= e($registro['nombre_area'] ?: '—') ?></strong>
+                <span>Area</span>
+                <strong><?= e($registro['nombre_area'] ?: '-') ?></strong>
             </div>
             <div>
                 <span>Fecha</span>
@@ -41,10 +41,10 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Código</th>
+                        <th>Codigo</th>
                         <th>Equipo</th>
-                        <th>Condición</th>
-                        <th>Daños / faltantes</th>
+                        <th>Condicion</th>
+                        <th>Danos / faltantes</th>
                         <th>Estado posterior</th>
                     </tr>
                 </thead>
@@ -58,10 +58,10 @@
                             </td>
                             <td>
                                 <?= e($activo['nombre_tipo'].' '.trim(($activo['nombre_marca'] ?? '').' '.($activo['nombre_modelo'] ?? ''))) ?>
-                                <small>Serie: <?= e($activo['numero_serie'] ?: '—') ?></small>
+                                <small>Serie: <?= e($activo['numero_serie'] ?: '-') ?></small>
                             </td>
                             <td><?= e($activo['condicion_entrada']) ?></td>
-                            <td><?= e($activo['observaciones_danos'] ?: 'Sin daños') ?></td>
+                            <td><?= e($activo['observaciones_danos'] ?: 'Sin danos') ?></td>
                             <td><?= badge($activo['nombre_siguiente_estado']) ?></td>
                         </tr>
                     <?php endforeach; ?>

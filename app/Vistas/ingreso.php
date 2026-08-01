@@ -7,17 +7,17 @@
                 <div class="brand-mark">S</div>
                 <div>
                     <strong>SIGATI</strong>
-                    <small>SOLANDRA · SEDE AREQUIPA</small>
+                    <small>SOLANDRA - SEDE AREQUIPA</small>
                 </div>
             </div>
 
-            <h1>Control integral de activos tecnológicos</h1>
+            <h1>Control integral de activos tecnologicos</h1>
             <p>Inventario, asignaciones, devoluciones y mantenimiento en una sola plataforma local.</p>
 
             <div class="login-features">
-                <span>✓ Historial trazable</span>
-                <span>✓ Actas descargables</span>
-                <span>✓ Panel operativo</span>
+                <span>&#10003; Historial trazable</span>
+                <span>&#10003; Actas descargables</span>
+                <span>&#10003; Panel operativo</span>
             </div>
         </div>
     </section>
@@ -45,9 +45,9 @@
             </label>
 
             <label>
-                Contraseña
+                Contrasena
                 <div class="password-wrap">
-                    <input id="password" type="password" name="clave" required placeholder="••••••••">
+                    <input id="password" type="password" name="clave" required placeholder="********">
                     <button type="button" data-password-toggle>Ver</button>
                 </div>
             </label>
@@ -60,7 +60,7 @@
                 <strong>Acceso inicial:</strong> admin / Admin123*
             </div>
 
-            <small class="copyright">Uso interno de SOLANDRA · Planta Arequipa</small>
+            <small class="copyright">Uso interno de SOLANDRA - Planta Arequipa</small>
         </form>
     </section>
 </div>

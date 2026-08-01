@@ -64,12 +64,12 @@
                                                     <h3>Cerrar mantenimiento</h3>
                                                     <p><?= e($mantenimiento['codigo_activo']) ?></p>
                                                 </div>
-                                                <button type="button" data-close-modal>×</button>
+                                                <button type="button" data-close-modal>&times;</button>
                                             </div>
 
                                             <div class="form-grid cols-2">
                                                 <label>
-                                                    Diagnóstico
+                                                    Diagnostico
                                                     <textarea name="diagnostico" rows="3"><?= e($mantenimiento['diagnostico'] ?? '') ?></textarea>
                                                 </label>
 
@@ -95,7 +95,7 @@
                                                 </label>
 
                                                 <label>
-                                                    Próximo mantenimiento
+                                                    Proximo mantenimiento
                                                     <input type="date" name="proxima_fecha">
                                                 </label>
                                             </div>

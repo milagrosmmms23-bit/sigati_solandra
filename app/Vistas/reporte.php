@@ -26,7 +26,7 @@
         <strong><?= count(array_filter($filas, fn ($fila) => empty($fila['serie']))) ?></strong>
     </div>
     <div>
-        <span>Sin área</span>
+        <span>Sin area</span>
         <strong><?= count(array_filter($filas, fn ($fila) => empty($fila['area']))) ?></strong>
     </div>
 </section>
@@ -47,7 +47,7 @@
                 <?php foreach ($filas as $fila): ?>
                     <tr>
                         <?php foreach ($fila as $valor): ?>
-                            <td><?= e($valor ?? '—') ?></td>
+                            <td><?= e($valor ?? '-') ?></td>
                         <?php endforeach; ?>
                     </tr>
                 <?php endforeach; ?>

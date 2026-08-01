@@ -30,7 +30,7 @@ final class AsignacionControlador extends Controlador
     {
         $this->vista('asignaciones', [
             'modo' => 'formulario',
-            'titulo' => 'Nueva asignación',
+            'titulo' => 'Nueva asignacion',
             'trabajadores' => (new Trabajador())->listar(),
             'activos' => (new Activo())->disponibles(),
         ]);
@@ -65,7 +65,7 @@ final class AsignacionControlador extends Controlador
                 Auth::id()
             );
 
-            Flash::exito('Asignación confirmada.');
+            Flash::exito('Asignacion confirmada.');
             redirect('asignaciones/'.$id);
         } catch (Throwable $exception) {
             Flash::error($exception->getMessage());

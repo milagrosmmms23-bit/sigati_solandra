@@ -21,7 +21,7 @@
             <label class="file-drop">
                 <input type="file" name="csv" accept=".csv,text/csv" required>
                 <span>Arrastra o selecciona tu archivo CSV</span>
-                <small>Máximo recomendado: 2,000 filas por carga</small>
+                <small>Maximo recomendado: 2,000 filas por carga</small>
             </label>
 
             <button class="btn btn-primary btn-block" type="submit">
@@ -38,8 +38,8 @@
             </div>
             <div class="notice">
                 <strong>Importante:</strong>
-                los tipos deben coincidir con los catálogos del sistema. Las marcas, modelos,
-                áreas, ubicaciones y proveedores que no existan serán creados.
+                los tipos deben coincidir con los catalogos del sistema. Las marcas, modelos,
+                areas, ubicaciones y proveedores que no existan seran creados.
             </div>
         </section>
     </div>

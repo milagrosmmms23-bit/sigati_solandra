@@ -13,7 +13,7 @@ final class AutenticacionControlador extends Controlador
             redirect('');
         }
 
-        $this->vista('ingreso', ['titulo' => 'Iniciar sesión'], 'autenticacion');
+        $this->vista('ingreso', ['titulo' => 'Iniciar sesion'], 'autenticacion');
     }
 
     public function ingresar(): void
@@ -28,7 +28,7 @@ final class AutenticacionControlador extends Controlador
             redirect('');
         }
 
-        Flash::error('Usuario o contraseña incorrectos.');
+        Flash::error('Usuario o contrasena incorrectos.');
         redirect('ingreso');
     }
 
@@ -37,7 +37,7 @@ final class AutenticacionControlador extends Controlador
         Csrf::verificar();
         Auth::cerrarSesion();
 
-        Flash::exito('Sesión cerrada.');
+        Flash::exito('Sesion cerrada.');
         redirect('ingreso');
     }
 }

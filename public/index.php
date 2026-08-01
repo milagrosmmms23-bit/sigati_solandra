@@ -67,7 +67,7 @@ set_exception_handler(function (Throwable $exception): void {
     http_response_code(500);
 
     $debug = (bool) config('aplicacion.depuracion', false);
-    $message = $debug ? $exception->getMessage() : 'Ocurrió un error interno.';
+    $message = $debug ? $exception->getMessage() : 'Ocurrio un error interno.';
 
     @file_put_contents(
         dirname(__DIR__).'/storage/logs/app.log',
@@ -88,7 +88,7 @@ set_exception_handler(function (Throwable $exception): void {
 
 $router = new Router();
 
-// Autenticación
+// Autenticacion
 $router->get('/ingreso', [AutenticacionControlador::class, 'formularioIngreso']);
 $router->post('/ingreso', [AutenticacionControlador::class, 'ingresar']);
 $router->post('/salir', [AutenticacionControlador::class, 'salir']);
@@ -136,7 +136,7 @@ $router->get('/mantenimientos/crear', [MantenimientoControlador::class, 'crear']
 $router->post('/mantenimientos', [MantenimientoControlador::class, 'guardar']);
 $router->post('/mantenimientos/{id}/cerrar', [MantenimientoControlador::class, 'cerrar']);
 
-// Catálogos y reportes
+// Catalogos y reportes
 $router->get('/catalogos', [CatalogoControlador::class, 'listado']);
 $router->post('/catalogos/{table}', [CatalogoControlador::class, 'guardar']);
 $router->get('/reportes/inventario', [ReporteControlador::class, 'inventario']);

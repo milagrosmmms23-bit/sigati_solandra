@@ -8,7 +8,7 @@ $requirements = [
     'OpenSSL' => extension_loaded('openssl'),
 ];
 
-echo "SIGATI SOLANDRA - Verificación de entorno\n";
+echo "SIGATI SOLANDRA - Verificacion de entorno\n";
 echo "PHP: ".PHP_VERSION."\n\n";
 $ok = true;
 foreach ($requirements as $name => $status) {

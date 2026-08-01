@@ -1,6 +1,6 @@
 {
   "name": "solandra/sigati",
-  "description": "SIGATI SOLANDRA - Gestión de activos TI Arequipa",
+  "description": "SIGATI SOLANDRA - Gestion de activos TI Arequipa",
   "require": {
     "php": ">=8.2",
     "dompdf/dompdf": "^3.1",

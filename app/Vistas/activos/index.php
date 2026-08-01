@@ -1,6 +1,6 @@
 <div class="page-actions">
         <div>
-            <h2>Inventario tecnológico</h2>
+            <h2>Inventario tecnologico</h2>
             <p><?= number_format((int) $resultado['total']) ?> activos encontrados.</p>
         </div>
 
@@ -16,7 +16,7 @@
             <input
                 name="q"
                 value="<?= e($filtros['q']) ?>"
-                placeholder="Código, serie, nombre_equipo, IMEI o teléfono"
+                placeholder="Codigo, serie, nombre_equipo, IMEI o telefono"
             >
         </div>
 
@@ -45,7 +45,7 @@
         </div>
 
         <div class="field">
-            <label>Área</label>
+            <label>Area</label>
             <select name="area_id">
                 <option value="">Todas</option>
                 <?php foreach ($areas as $area): ?>
@@ -64,12 +64,12 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Código</th>
+                        <th>Codigo</th>
                         <th>Equipo</th>
                         <th>Serie</th>
-                        <th>Área / responsable</th>
+                        <th>Area / responsable</th>
                         <th>Estado</th>
-                        <th>Actualización</th>
+                        <th>Actualizacion</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -80,7 +80,7 @@
                                 <a class="asset-code" href="<?= url('activos/'.$activo['id']) ?>">
                                     <?= e($activo['codigo_activo']) ?>
                                 </a>
-                                <small><?= e($activo['codigo_anterior'] ?: 'Sin código anterior') ?></small>
+                                <small><?= e($activo['codigo_anterior'] ?: 'Sin codigo anterior') ?></small>
                             </td>
                             <td>
                                 <strong><?= e($activo['nombre_tipo']) ?></strong>
@@ -89,11 +89,11 @@
                                 </small>
                             </td>
                             <td>
-                                <?= e($activo['numero_serie'] ?: '—') ?>
+                                <?= e($activo['numero_serie'] ?: '-') ?>
                                 <small><?= e($activo['nombre_equipo'] ?: '') ?></small>
                             </td>
                             <td>
-                                <?= e($activo['nombre_area'] ?: 'Sin área') ?>
+                                <?= e($activo['nombre_area'] ?: 'Sin area') ?>
                                 <small><?= e($activo['nombre_trabajador'] ?: 'Sin responsable') ?></small>
                             </td>
                             <td><?= badge($activo['nombre_estado']) ?></td>

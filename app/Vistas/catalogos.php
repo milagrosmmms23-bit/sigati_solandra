@@ -5,7 +5,7 @@ $filas = $filas ?? [];
 
 <div class="page-actions">
     <div>
-        <h2>Catálogos del sistema</h2>
+        <h2>Catalogos del sistema</h2>
         <p>Administra los valores usados en formularios y reportes.</p>
     </div>
 </div>
@@ -34,7 +34,7 @@ $filas = $filas ?? [];
 
                 <?php if ($tabla === 'ubicaciones'): ?>
                     <select name="area_id">
-                        <option value="">Sin área</option>
+                        <option value="">Sin area</option>
                         <?php foreach ($filas['areas'] as $area): ?>
                             <option value="<?= $area['id'] ?>"><?= e($area['nombre']) ?></option>
                         <?php endforeach; ?>
@@ -48,7 +48,7 @@ $filas = $filas ?? [];
                 <?php endif; ?>
 
                 <?php if ($tabla === 'estados_activo'): ?>
-                    <input name="codigo" maxlength="40" placeholder="Código (opcional)">
+                    <input name="codigo" maxlength="40" placeholder="Codigo (opcional)">
                     <select name="color">
                         <option value="secondary">Gris</option>
                         <option value="success">Verde</option>

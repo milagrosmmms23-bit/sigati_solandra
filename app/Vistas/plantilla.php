@@ -37,7 +37,7 @@ function nav_activo(string $segmento, string $rutaActual): string
                 <span>P</span> Panel
             </a>
 
-            <div class="nav-label">GESTIÓN</div>
+            <div class="nav-label">GESTION</div>
 
             <a class="<?= nav_activo('activos', $rutaActual) ?>" href="<?= url('activos') ?>">
                 <span>I</span> Inventario
@@ -63,7 +63,7 @@ function nav_activo(string $segmento, string $rutaActual): string
 
             <?php if (Auth::rol() === 'ADMIN'): ?>
                 <a class="<?= nav_activo('catalogos', $rutaActual) ?>" href="<?= url('catalogos') ?>">
-                    <span>C</span> Catálogos
+                    <span>C</span> Catalogos
                 </a>
             <?php endif; ?>
         </nav>
@@ -92,7 +92,7 @@ function nav_activo(string $segmento, string $rutaActual): string
 
                 <form action="<?= url('salir') ?>" method="post">
                     <?= csrf_field() ?>
-                    <button class="link-button" title="Cerrar sesión">Salir</button>
+                    <button class="link-button" title="Cerrar sesion">Salir</button>
                 </form>
             </div>
         </header>

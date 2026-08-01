@@ -1,7 +1,7 @@
 <div class="page-actions">
         <div>
             <h2>Trabajadores</h2>
-            <p>Personas que pueden recibir activos tecnológicos.</p>
+            <p>Personas que pueden recibir activos tecnologicos.</p>
         </div>
 
         <a class="btn btn-primary" href="<?= url('trabajadores/crear') ?>">+ Nuevo trabajador</a>
@@ -10,7 +10,7 @@
     <form class="filter-panel" method="get">
         <div class="field grow">
             <label>Buscar</label>
-            <input name="q" value="<?= e($q) ?>" placeholder="Código, nombre o cargo">
+            <input name="q" value="<?= e($q) ?>" placeholder="Codigo, nombre o cargo">
         </div>
         <button class="btn btn-dark">Buscar</button>
     </form>
@@ -20,10 +20,10 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Código</th>
+                        <th>Codigo</th>
                         <th>Trabajador</th>
                         <th>Cargo</th>
-                        <th>Área</th>
+                        <th>Area</th>
                         <th>Contacto</th>
                         <th></th>
                     </tr>
@@ -33,10 +33,10 @@
                         <tr>
                             <td><strong><?= e($trabajador['codigo_trabajador']) ?></strong></td>
                             <td><strong><?= e($trabajador['nombres'].' '.$trabajador['apellidos']) ?></strong></td>
-                            <td><?= e($trabajador['cargo'] ?: '—') ?></td>
-                            <td><?= e($trabajador['nombre_area'] ?: 'Sin área') ?></td>
+                            <td><?= e($trabajador['cargo'] ?: '-') ?></td>
+                            <td><?= e($trabajador['nombre_area'] ?: 'Sin area') ?></td>
                             <td>
-                                <?= e($trabajador['correo'] ?: '—') ?>
+                                <?= e($trabajador['correo'] ?: '-') ?>
                                 <small><?= e($trabajador['telefono'] ?: '') ?></small>
                             </td>
                             <td class="text-right">

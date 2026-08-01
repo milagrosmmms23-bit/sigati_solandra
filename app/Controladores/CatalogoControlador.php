@@ -26,7 +26,7 @@ final class CatalogoControlador extends Controlador
         }
 
         $this->vista('catalogos', [
-            'titulo' => 'Catálogos',
+            'titulo' => 'Catalogos',
             'filas' => $filas,
             'labels' => $this->modelo->allowed,
         ]);

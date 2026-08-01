@@ -8,7 +8,7 @@ use InvalidArgumentException;
 final class Catalogo extends ModeloBase
 {
     public array $allowed = [
-        'areas' => 'Áreas',
+        'areas' => 'Areas',
         'ubicaciones' => 'Ubicaciones',
         'tipos_activo' => 'Tipos de activo',
         'estados_activo' => 'Estados',
@@ -76,7 +76,7 @@ final class Catalogo extends ModeloBase
     private function validarTablaPermitida(string $tabla): void
     {
         if (!isset($this->allowed[$tabla])) {
-            throw new InvalidArgumentException('Catálogo inválido');
+            throw new InvalidArgumentException('Catalogo invalido');
         }
     }
 

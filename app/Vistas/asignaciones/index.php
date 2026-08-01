@@ -4,7 +4,7 @@
             <p>Actas de entrega de equipos a trabajadores.</p>
         </div>
 
-        <a class="btn btn-primary" href="<?= url('asignaciones/crear') ?>">+ Nueva asignación</a>
+        <a class="btn btn-primary" href="<?= url('asignaciones/crear') ?>">+ Nueva asignacion</a>
     </div>
 
     <section class="panel table-panel">
@@ -14,7 +14,7 @@
                     <tr>
                         <th>Acta</th>
                         <th>Trabajador</th>
-                        <th>Área</th>
+                        <th>Area</th>
                         <th>Equipos</th>
                         <th>Estado</th>
                         <th>Fecha</th>
@@ -30,7 +30,7 @@
                                 </a>
                             </td>
                             <td><strong><?= e($asignacion['nombre_trabajador']) ?></strong></td>
-                            <td><?= e($asignacion['nombre_area'] ?: '—') ?></td>
+                            <td><?= e($asignacion['nombre_area'] ?: '-') ?></td>
                             <td><?= (int) $asignacion['cantidad_items'] ?></td>
                             <td><?= badge($asignacion['estado']) ?></td>
                             <td><?= datetime_pe($asignacion['asignado_en']) ?></td>
