@@ -21,26 +21,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($rows as $return): ?>
+                    <?php foreach ($filas as $devolucion): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('devoluciones/'.$return['id']) ?>">
-                                    <?= e($return['return_number']) ?>
+                                <a class="asset-code" href="<?= url('devoluciones/'.$devolucion['id']) ?>">
+                                    <?= e($devolucion['return_number']) ?>
                                 </a>
                             </td>
-                            <td><?= e($return['assignment_number']) ?></td>
-                            <td><?= e($return['employee_name']) ?></td>
-                            <td><?= (int) $return['item_count'] ?></td>
-                            <td><?= datetime_pe($return['returned_at']) ?></td>
+                            <td><?= e($devolucion['assignment_number']) ?></td>
+                            <td><?= e($devolucion['employee_name']) ?></td>
+                            <td><?= (int) $devolucion['item_count'] ?></td>
+                            <td><?= datetime_pe($devolucion['returned_at']) ?></td>
                             <td class="text-right">
-                                <a class="icon-btn" target="_blank" href="<?= url('devoluciones/'.$return['id'].'/imprimir') ?>">
+                                <a class="icon-btn" target="_blank" href="<?= url('devoluciones/'.$devolucion['id'].'/imprimir') ?>">
                                     Imprimir
                                 </a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
 
-                    <?php if (!$rows): ?>
+                    <?php if (!$filas): ?>
                         <tr>
                             <td colspan="6">
                                 <div class="empty">No hay devoluciones.</div>

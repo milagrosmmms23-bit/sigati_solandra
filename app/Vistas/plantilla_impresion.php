@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title><?= e($title ?? 'Documento') ?></title>
+    <title><?= e($titulo ?? 'Documento') ?></title>
     <style>
 @page{size:A4 portrait;margin:2mm}
 *{box-sizing:border-box}
@@ -74,5 +74,5 @@ body{font-family:Arial,DejaVu Sans,sans-serif;color:#000;font-size:14.2px;margin
 @media print{.print-actions{display:none}body{background:#fff}.quality-sheet{margin:0 auto;max-width:none;width:205mm}}
     </style>
 </head>
-<body><?= $content ?></body>
+<body><?= $contenido ?></body>
 </html>

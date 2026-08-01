@@ -10,7 +10,7 @@ final class CodigoQrControlador
 {
     public function ver(string $id): void
     {
-        Auth::requireLogin();
+        Auth::requerirIngreso();
 
         $activo = (new Activo())->buscar((int) $id);
 
@@ -45,12 +45,12 @@ final class CodigoQrControlador
         echo '</svg>';
     }
 
-    private function mostrarDataUri(string $dataUri): void
+    private function mostrarDataUri(string $datosUri): void
     {
-        [$meta, $data] = explode(',', $dataUri, 2);
+        [$meta, $datos] = explode(',', $datosUri, 2);
         $mime = str_contains($meta, 'svg') ? 'image/svg+xml' : 'image/png';
 
         header('Content-Type: '.$mime);
-        echo str_contains($meta, 'base64') ? base64_decode($data) : urldecode($data);
+        echo str_contains($meta, 'base64') ? base64_decode($datos) : urldecode($datos);
     }
 }

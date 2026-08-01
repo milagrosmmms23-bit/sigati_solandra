@@ -22,22 +22,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($rows as $assignment): ?>
+                    <?php foreach ($filas as $asignacion): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('asignaciones/'.$assignment['id']) ?>">
-                                    <?= e($assignment['assignment_number']) ?>
+                                <a class="asset-code" href="<?= url('asignaciones/'.$asignacion['id']) ?>">
+                                    <?= e($asignacion['assignment_number']) ?>
                                 </a>
                             </td>
-                            <td><strong><?= e($assignment['employee_name']) ?></strong></td>
-                            <td><?= e($assignment['area_name'] ?: '—') ?></td>
-                            <td><?= (int) $assignment['item_count'] ?></td>
-                            <td><?= badge($assignment['status']) ?></td>
-                            <td><?= datetime_pe($assignment['assigned_at']) ?></td>
+                            <td><strong><?= e($asignacion['employee_name']) ?></strong></td>
+                            <td><?= e($asignacion['area_name'] ?: '—') ?></td>
+                            <td><?= (int) $asignacion['item_count'] ?></td>
+                            <td><?= badge($asignacion['status']) ?></td>
+                            <td><?= datetime_pe($asignacion['assigned_at']) ?></td>
                             <td class="text-right">
                                 <a
                                     class="icon-btn"
-                                    href="<?= url('asignaciones/'.$assignment['id'].'/imprimir') ?>"
+                                    href="<?= url('asignaciones/'.$asignacion['id'].'/imprimir') ?>"
                                     target="_blank"
                                 >
                                     Imprimir
@@ -46,7 +46,7 @@
                         </tr>
                     <?php endforeach; ?>
 
-                    <?php if (!$rows): ?>
+                    <?php if (!$filas): ?>
                         <tr>
                             <td colspan="7">
                                 <div class="empty">No hay asignaciones.</div>

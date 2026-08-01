@@ -20,35 +20,35 @@ final class Mantenimiento extends ModeloBase
             ->fetchAll();
     }
 
-    public function abrir(array $data, int $user): int
+    public function abrir(array $datos, int $usuarioId): int
     {
-        $statement = $this->db->prepare('CALL sp_abrir_mantenimiento(?,?,?,?,?,?,?,@id)');
-        $statement->execute([
-            $data['asset_id'],
-            $data['type'],
-            $data['issue'] ?: null,
-            $data['diagnosis'] ?: null,
-            $data['actions'] ?: null,
-            $data['cost'] ?: 0,
-            $user,
+        $consulta = $this->db->prepare('CALL sp_abrir_mantenimiento(?,?,?,?,?,?,?,@id)');
+        $consulta->execute([
+            $datos['asset_id'],
+            $datos['tipo'],
+            $datos['problema'] ?: null,
+            $datos['diagnostico'] ?: null,
+            $datos['acciones'] ?: null,
+            $datos['costo'] ?: 0,
+            $usuarioId,
         ]);
-        $statement->closeCursor();
+        $consulta->closeCursor();
 
         return (int) $this->db->query('SELECT @id')->fetchColumn();
     }
 
-    public function cerrar(int $id, array $data, int $user): void
+    public function cerrar(int $id, array $datos, int $usuarioId): void
     {
-        $statement = $this->db->prepare('CALL sp_cerrar_mantenimiento(?,?,?,?,?,?,?)');
-        $statement->execute([
+        $consulta = $this->db->prepare('CALL sp_cerrar_mantenimiento(?,?,?,?,?,?,?)');
+        $consulta->execute([
             $id,
-            $data['diagnosis'] ?: null,
-            $data['actions'] ?: null,
-            $data['parts'] ?: null,
-            $data['cost'] ?: 0,
-            $data['next_date'] ?: null,
-            $user,
+            $datos['diagnostico'] ?: null,
+            $datos['acciones'] ?: null,
+            $datos['repuestos'] ?: null,
+            $datos['costo'] ?: 0,
+            $datos['proxima_fecha'] ?: null,
+            $usuarioId,
         ]);
-        $statement->closeCursor();
+        $consulta->closeCursor();
     }
 }

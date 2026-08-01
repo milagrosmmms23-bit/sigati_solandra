@@ -3,70 +3,70 @@ declare(strict_types=1);
 
 namespace App\Controladores;
 
-use App\Nucleo\{Auth, Audit, Controlador, Csrf, DB, Flash};
+use App\Nucleo\{Auth, Auditoria, Controlador, Csrf, BD, Flash};
 use App\Modelos\{Activo, Catalogo};
 use Throwable;
 
 final class ActivoControlador extends Controlador
 {
-    private Activo $model;
+    private Activo $modelo;
     private Catalogo $catalogo;
 
     public function __construct()
     {
-        Auth::requireLogin();
-        $this->model = new Activo();
+        Auth::requerirIngreso();
+        $this->modelo = new Activo();
         $this->catalogo = new Catalogo();
     }
 
     public function listado(): void
     {
-        $filters = [
+        $filtros = [
             'q' => trim($_GET['q'] ?? ''),
             'type_id' => $_GET['type_id'] ?? '',
             'status_id' => $_GET['status_id'] ?? '',
             'area_id' => $_GET['area_id'] ?? '',
         ];
 
-        $page = max(1, (int) ($_GET['page'] ?? 1));
-        $perPage = (int) config('app.items_per_page', 15);
+        $pagina = max(1, (int) ($_GET['page'] ?? 1));
+        $porPagina = (int) config('app.items_per_page', 15);
 
-        $this->view('activos', [
-            'mode' => 'listado',
-            'title' => 'Inventario',
-            'result' => $this->model->listar($filters, $page, $perPage),
-            'filters' => $filters,
+        $this->vista('activos', [
+            'modo' => 'listado',
+            'titulo' => 'Inventario',
+            'resultado' => $this->modelo->listar($filtros, $pagina, $porPagina),
+            'filtros' => $filtros,
         ] + $this->catalogos());
     }
 
     public function crear(): void
     {
-        $this->view('activos', [
-            'mode' => 'formulario',
-            'title' => 'Nuevo activo',
-            'item' => null,
+        $this->vista('activos', [
+            'modo' => 'formulario',
+            'titulo' => 'Nuevo activo',
+            'registro' => null,
         ] + $this->catalogos());
     }
 
     public function guardar(): void
     {
-        Csrf::verify();
+        Csrf::verificar();
 
-        $data = $this->payload();
-        $errors = $this->validate($data, [
+        $datos = $this->datosFormulario();
+        $errores = $this->validar($datos, [
             'asset_type_id' => 'required',
             'status_id' => 'required',
             'serial_number' => 'max:150',
         ]);
 
-        if ($errors) {
-            $this->errors($errors, $_POST, 'activos/crear');
+        if ($errores) {
+            $this->enviarErrores($errores, $_POST, 'activos/crear');
         }
 
         try {
-            $id = $this->model->guardar($data, $this->especificaciones(), Auth::id());
-            Audit::log('Inventario', 'CREAR', 'activo', $id, null, $data);
-            Flash::success('Activo registrado correctamente.');
+            $id = $this->modelo->guardar($datos, $this->especificaciones(), Auth::id());
+            Auditoria::registrar('Inventario', 'CREAR', 'activo', $id, null, $datos);
+            Flash::exito('Activo registrado correctamente.');
             redirect('activos/'.$id);
         } catch (Throwable $exception) {
             Flash::error('No se pudo registrar: '.$exception->getMessage());
@@ -77,58 +77,58 @@ final class ActivoControlador extends Controlador
 
     public function ver(string $id): void
     {
-        $activo = $this->model->buscar((int) $id);
+        $activo = $this->modelo->buscar((int) $id);
 
         if (!$activo) {
             abort(404, 'Activo no encontrado.');
         }
 
-        $this->view('activos', [
-            'mode' => 'detalle',
-            'title' => $activo['asset_code'],
-            'item' => $activo,
+        $this->vista('activos', [
+            'modo' => 'detalle',
+            'titulo' => $activo['asset_code'],
+            'registro' => $activo,
         ]);
     }
 
     public function editar(string $id): void
     {
-        $activo = $this->model->buscar((int) $id);
+        $activo = $this->modelo->buscar((int) $id);
 
         if (!$activo) {
             abort(404);
         }
 
-        $this->view('activos', [
-            'mode' => 'formulario',
-            'title' => 'Editar '.$activo['asset_code'],
-            'item' => $activo,
+        $this->vista('activos', [
+            'modo' => 'formulario',
+            'titulo' => 'Editar '.$activo['asset_code'],
+            'registro' => $activo,
         ] + $this->catalogos());
     }
 
     public function actualizar(string $id): void
     {
-        Csrf::verify();
+        Csrf::verificar();
 
-        $anterior = $this->model->buscar((int) $id);
+        $anterior = $this->modelo->buscar((int) $id);
 
         if (!$anterior) {
             abort(404);
         }
 
-        $data = $this->payload();
-        $errors = $this->validate($data, [
+        $datos = $this->datosFormulario();
+        $errores = $this->validar($datos, [
             'asset_type_id' => 'required',
             'status_id' => 'required',
         ]);
 
-        if ($errors) {
-            $this->errors($errors, $_POST, 'activos/'.$id.'/editar');
+        if ($errores) {
+            $this->enviarErrores($errores, $_POST, 'activos/'.$id.'/editar');
         }
 
         try {
-            $this->model->guardar($data, $this->especificaciones(), Auth::id(), (int) $id);
-            Audit::log('Inventario', 'ACTUALIZAR', 'activo', (int) $id, $anterior, $data);
-            Flash::success('Activo actualizado.');
+            $this->modelo->guardar($datos, $this->especificaciones(), Auth::id(), (int) $id);
+            Auditoria::registrar('Inventario', 'ACTUALIZAR', 'activo', (int) $id, $anterior, $datos);
+            Flash::exito('Activo actualizado.');
             redirect('activos/'.$id);
         } catch (Throwable $exception) {
             Flash::error($exception->getMessage());
@@ -138,15 +138,15 @@ final class ActivoControlador extends Controlador
 
     public function formularioImportacion(): void
     {
-        $this->view('activos', [
-            'mode' => 'importar',
-            'title' => 'Importar inventario',
+        $this->vista('activos', [
+            'modo' => 'importar',
+            'titulo' => 'Importar inventario',
         ]);
     }
 
     public function importarCsv(): void
     {
-        Csrf::verify();
+        Csrf::verificar();
 
         if (empty($_FILES['csv']['tmp_name'])) {
             Flash::error('Selecciona un CSV.');
@@ -154,26 +154,26 @@ final class ActivoControlador extends Controlador
         }
 
         $archivo = fopen($_FILES['csv']['tmp_name'], 'r');
-        $headers = fgetcsv($archivo, 0, ',');
+        $cabeceras = fgetcsv($archivo, 0, ',');
 
-        if (!$headers) {
+        if (!$cabeceras) {
             Flash::error('CSV vacío.');
             redirect('activos/importar');
         }
 
-        $headers = array_map(fn ($header) => trim(strtolower($header)), $headers);
+        $cabeceras = array_map(fn ($header) => trim(strtolower($header)), $cabeceras);
         $importados = 0;
         $errores = [];
 
-        while (($row = fgetcsv($archivo, 0, ',')) !== false) {
-            if (count($row) !== count($headers)) {
+        while (($fila = fgetcsv($archivo, 0, ',')) !== false) {
+            if (count($fila) !== count($cabeceras)) {
                 continue;
             }
 
-            $registro = array_combine($headers, $row);
+            $registro = array_combine($cabeceras, $fila);
 
             try {
-                $this->model->guardar($this->mapearFilaCsv($registro), [], Auth::id());
+                $this->modelo->guardar($this->mapearFilaCsv($registro), [], Auth::id());
                 $importados++;
             } catch (Throwable $exception) {
                 $errores[] = $exception->getMessage();
@@ -182,10 +182,10 @@ final class ActivoControlador extends Controlador
 
         fclose($archivo);
 
-        Flash::success("Se importaron $importados activos.");
+        Flash::exito("Se importaron $importados activos.");
 
         if ($errores) {
-            Flash::warning(implode(' | ', array_slice($errores, 0, 4)));
+            Flash::advertencia(implode(' | ', array_slice($errores, 0, 4)));
         }
 
         redirect('activos');
@@ -194,8 +194,8 @@ final class ActivoControlador extends Controlador
     private function catalogos(): array
     {
         return [
-            'types' => $this->catalogo->listar('tipos_activo'),
-            'statuses' => $this->catalogo->listar('estados_activo'),
+            'tipos' => $this->catalogo->listar('tipos_activo'),
+            'estados' => $this->catalogo->listar('estados_activo'),
             'marcas' => $this->catalogo->listar('marcas'),
             'modelos' => $this->catalogo->listar('modelos'),
             'areas' => $this->catalogo->listar('areas'),
@@ -204,7 +204,7 @@ final class ActivoControlador extends Controlador
         ];
     }
 
-    private function payload(): array
+    private function datosFormulario(): array
     {
         return [
             'legacy_code' => trim($_POST['legacy_code'] ?? ''),
@@ -232,40 +232,40 @@ final class ActivoControlador extends Controlador
 
     private function especificaciones(): array
     {
-        $keys = $_POST['spec_key'] ?? [];
-        $values = $_POST['spec_value'] ?? [];
-        $specs = [];
+        $claves = $_POST['spec_key'] ?? [];
+        $valors = $_POST['spec_value'] ?? [];
+        $especificaciones = [];
 
-        foreach ($keys as $index => $key) {
-            $key = trim($key);
+        foreach ($claves as $indice => $clave) {
+            $clave = trim($clave);
 
-            if ($key !== '') {
-                $specs[$key] = trim($values[$index] ?? '');
+            if ($clave !== '') {
+                $especificaciones[$clave] = trim($valors[$indice] ?? '');
             }
         }
 
-        return $specs;
+        return $especificaciones;
     }
 
     private function mapearFilaCsv(array $registro): array
     {
-        $tipo = $this->findByName('tipos_activo', $registro['tipo'] ?? '');
+        $tipo = $this->buscarPorNombre('tipos_activo', $registro['tipo'] ?? '');
 
         if (!$tipo) {
             throw new \RuntimeException('Tipo inexistente: '.($registro['tipo'] ?? ''));
         }
 
-        $marca = $this->findOrCreate('marcas', $registro['marca'] ?? '');
-        $area = $this->findOrCreate('areas', $registro['area'] ?? '');
+        $marca = $this->buscarOCrear('marcas', $registro['marca'] ?? '');
+        $area = $this->buscarOCrear('areas', $registro['area'] ?? '');
 
         return [
             'legacy_code' => $registro['codigo_anterior'] ?? '',
             'asset_type_id' => $tipo,
             'brand_id' => $marca,
-            'model_id' => $this->findModel($marca, $registro['modelo'] ?? ''),
-            'status_id' => $this->findByCode('estados_activo', 'DISPONIBLE'),
+            'model_id' => $this->buscarModelo($marca, $registro['modelo'] ?? ''),
+            'status_id' => $this->buscarPorCodigo('estados_activo', 'DISPONIBLE'),
             'current_area_id' => $area,
-            'location_id' => $this->findLocation($area, $registro['ubicacion'] ?? ''),
+            'location_id' => $this->buscarUbicacion($area, $registro['ubicacion'] ?? ''),
             'serial_number' => $registro['serie'] ?? '',
             'hostname' => $registro['hostname'] ?? '',
             'ip_address' => $registro['ip'] ?? '',
@@ -275,93 +275,93 @@ final class ActivoControlador extends Controlador
             'phone_number' => $registro['telefono'] ?? '',
             'purchase_date' => $registro['fecha_compra'] ?? '',
             'invoice_number' => $registro['factura'] ?? '',
-            'supplier_id' => $this->findOrCreate('proveedores', $registro['proveedor'] ?? ''),
+            'supplier_id' => $this->buscarOCrear('proveedores', $registro['proveedor'] ?? ''),
             'cost' => $registro['costo'] ?? '',
             'warranty_end' => $registro['fin_garantia'] ?? '',
             'notes' => $registro['observaciones'] ?? '',
         ];
     }
 
-    private function findByName(string $table, string $name): ?int
+    private function buscarPorNombre(string $tabla, string $nombre): ?int
     {
-        if (trim($name) === '') {
+        if (trim($nombre) === '') {
             return null;
         }
 
-        $statement = DB::pdo()->prepare("SELECT id FROM $table WHERE LOWER(name) = LOWER(?) LIMIT 1");
-        $statement->execute([trim($name)]);
-        $id = $statement->fetchColumn();
+        $consulta = BD::pdo()->prepare("SELECT id FROM $tabla WHERE LOWER(name) = LOWER(?) LIMIT 1");
+        $consulta->execute([trim($nombre)]);
+        $id = $consulta->fetchColumn();
 
         return $id ? (int) $id : null;
     }
 
-    private function findByCode(string $table, string $code): int
+    private function buscarPorCodigo(string $tabla, string $codigo): int
     {
-        $statement = DB::pdo()->prepare("SELECT id FROM $table WHERE code = ?");
-        $statement->execute([$code]);
+        $consulta = BD::pdo()->prepare("SELECT id FROM $tabla WHERE code = ?");
+        $consulta->execute([$codigo]);
 
-        return (int) $statement->fetchColumn();
+        return (int) $consulta->fetchColumn();
     }
 
-    private function findOrCreate(string $table, string $name): ?int
+    private function buscarOCrear(string $tabla, string $nombre): ?int
     {
-        if (trim($name) === '') {
+        if (trim($nombre) === '') {
             return null;
         }
 
-        $id = $this->findByName($table, $name);
+        $id = $this->buscarPorNombre($tabla, $nombre);
 
         if ($id) {
             return $id;
         }
 
-        $statement = DB::pdo()->prepare("INSERT INTO $table(name, active) VALUES(?, 1)");
-        $statement->execute([trim($name)]);
+        $consulta = BD::pdo()->prepare("INSERT INTO $tabla(name, active) VALUES(?, 1)");
+        $consulta->execute([trim($nombre)]);
 
-        return (int) DB::pdo()->lastInsertId();
+        return (int) BD::pdo()->lastInsertId();
     }
 
-    private function findModel(?int $marcaId, string $name): ?int
+    private function buscarModelo(?int $marcaId, string $nombre): ?int
     {
-        if (trim($name) === '') {
+        if (trim($nombre) === '') {
             return null;
         }
 
-        $statement = DB::pdo()->prepare(
+        $consulta = BD::pdo()->prepare(
             'SELECT id FROM modelos WHERE brand_id <=> ? AND LOWER(name) = LOWER(?)'
         );
-        $statement->execute([$marcaId, trim($name)]);
-        $id = $statement->fetchColumn();
+        $consulta->execute([$marcaId, trim($nombre)]);
+        $id = $consulta->fetchColumn();
 
         if ($id) {
             return (int) $id;
         }
 
-        $statement = DB::pdo()->prepare('INSERT INTO modelos(brand_id, name, active) VALUES(?, ?, 1)');
-        $statement->execute([$marcaId, trim($name)]);
+        $consulta = BD::pdo()->prepare('INSERT INTO modelos(brand_id, name, active) VALUES(?, ?, 1)');
+        $consulta->execute([$marcaId, trim($nombre)]);
 
-        return (int) DB::pdo()->lastInsertId();
+        return (int) BD::pdo()->lastInsertId();
     }
 
-    private function findLocation(?int $areaId, string $name): ?int
+    private function buscarUbicacion(?int $areaId, string $nombre): ?int
     {
-        if (trim($name) === '') {
+        if (trim($nombre) === '') {
             return null;
         }
 
-        $statement = DB::pdo()->prepare(
+        $consulta = BD::pdo()->prepare(
             'SELECT id FROM ubicaciones WHERE area_id <=> ? AND LOWER(name) = LOWER(?)'
         );
-        $statement->execute([$areaId, trim($name)]);
-        $id = $statement->fetchColumn();
+        $consulta->execute([$areaId, trim($nombre)]);
+        $id = $consulta->fetchColumn();
 
         if ($id) {
             return (int) $id;
         }
 
-        $statement = DB::pdo()->prepare('INSERT INTO ubicaciones(area_id, name, active) VALUES(?, ?, 1)');
-        $statement->execute([$areaId, trim($name)]);
+        $consulta = BD::pdo()->prepare('INSERT INTO ubicaciones(area_id, name, active) VALUES(?, ?, 1)');
+        $consulta->execute([$areaId, trim($nombre)]);
 
-        return (int) DB::pdo()->lastInsertId();
+        return (int) BD::pdo()->lastInsertId();
     }
 }

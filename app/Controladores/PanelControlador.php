@@ -10,13 +10,13 @@ final class PanelControlador extends Controlador
 {
     public function inicio(): void
     {
-        Auth::requireLogin();
+        Auth::requerirIngreso();
 
         $datos = array_merge(
-            ['title' => 'Panel'],
+            ['titulo' => 'Panel'],
             (new Panel())->datos()
         );
 
-        $this->view('panel', $datos);
+        $this->vista('panel', $datos);
     }
 }

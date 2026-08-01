@@ -37,7 +37,7 @@ final class Asignacion extends ModeloBase
 
     public function buscar(int $id): ?array
     {
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             "SELECT a.*, CONCAT(e.first_name,' ',e.last_name) employee_name, e.employee_code, e.position,
                     ar.name area_name, u.name created_by_name
              FROM asignaciones a
@@ -46,14 +46,14 @@ final class Asignacion extends ModeloBase
              LEFT JOIN usuarios u ON u.id = a.created_by
              WHERE a.id = ?"
         );
-        $statement->execute([$id]);
-        $assignment = $statement->fetch();
+        $consulta->execute([$id]);
+        $asignacion = $consulta->fetch();
 
-        if (!$assignment) {
+        if (!$asignacion) {
             return null;
         }
 
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             "SELECT ai.*, x.asset_code, x.serial_number, x.phone_number, x.imei1, x.imei2, x.notes asset_notes,
                     t.name type_name, b.name brand_name, m.name model_name,
                     (
@@ -69,31 +69,31 @@ final class Asignacion extends ModeloBase
              WHERE ai.assignment_id = ?
              ORDER BY ai.id"
         );
-        $statement->execute([$id]);
-        $assignment['items'] = $statement->fetchAll();
+        $consulta->execute([$id]);
+        $asignacion['items'] = $consulta->fetchAll();
 
-        return $assignment;
+        return $asignacion;
     }
 
-    public function crear(int $employee, ?int $area, string $notes, array $items, int $user): int
+    public function crear(int $trabajadorId, ?int $areaId, string $observaciones, array $elementos, int $usuarioId): int
     {
         $this->db->beginTransaction();
 
         try {
-            $statement = $this->db->prepare('CALL sp_crear_asignacion(?,?,?,?,@id,@number)');
-            $statement->execute([$employee, $area, $notes, $user]);
-            $statement->closeCursor();
+            $consulta = $this->db->prepare('CALL sp_crear_asignacion(?,?,?,?,@id,@number)');
+            $consulta->execute([$trabajadorId, $areaId, $observaciones, $usuarioId]);
+            $consulta->closeCursor();
             $id = (int) $this->db->query('SELECT @id')->fetchColumn();
 
-            foreach ($items as $item) {
-                $statement = $this->db->prepare('CALL sp_agregar_activo_asignacion(?,?,?,?)');
-                $statement->execute([$id, $item['asset_id'], $item['condition'], $user]);
-                $statement->closeCursor();
+            foreach ($elementos as $registro) {
+                $consulta = $this->db->prepare('CALL sp_agregar_activo_asignacion(?,?,?,?)');
+                $consulta->execute([$id, $registro['asset_id'], $registro['condition'], $usuarioId]);
+                $consulta->closeCursor();
             }
 
-            $statement = $this->db->prepare('CALL sp_confirmar_asignacion(?,?)');
-            $statement->execute([$id, $user]);
-            $statement->closeCursor();
+            $consulta = $this->db->prepare('CALL sp_confirmar_asignacion(?,?)');
+            $consulta->execute([$id, $usuarioId]);
+            $consulta->closeCursor();
             $this->db->commit();
 
             return $id;

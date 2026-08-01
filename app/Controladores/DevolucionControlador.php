@@ -3,26 +3,26 @@ declare(strict_types=1);
 
 namespace App\Controladores;
 
-use App\Nucleo\{Auth, Controlador, Csrf, Flash, View};
+use App\Nucleo\{Auth, Controlador, Csrf, Flash, Vista};
 use App\Modelos\{Asignacion, Catalogo, DevolucionActivo};
 use Throwable;
 
 final class DevolucionControlador extends Controlador
 {
-    private DevolucionActivo $model;
+    private DevolucionActivo $modelo;
 
     public function __construct()
     {
-        Auth::requireLogin();
-        $this->model = new DevolucionActivo();
+        Auth::requerirIngreso();
+        $this->modelo = new DevolucionActivo();
     }
 
     public function listado(): void
     {
-        $this->view('devoluciones', [
-            'mode' => 'listado',
-            'title' => 'Devoluciones',
-            'rows' => $this->model->listar(),
+        $this->vista('devoluciones', [
+            'modo' => 'listado',
+            'titulo' => 'Devoluciones',
+            'filas' => $this->modelo->listar(),
         ]);
     }
 
@@ -31,30 +31,30 @@ final class DevolucionControlador extends Controlador
         $asignacionId = (int) ($_GET['assignment_id'] ?? 0);
         $asignacion = $asignacionId ? (new Asignacion())->buscar($asignacionId) : null;
 
-        $this->view('devoluciones', [
-            'mode' => 'formulario',
-            'title' => 'Nueva devolución',
+        $this->vista('devoluciones', [
+            'modo' => 'formulario',
+            'titulo' => 'Nueva devolución',
             'asignaciones' => (new Asignacion())->activas(),
-            'assignment' => $asignacion,
-            'statuses' => (new Catalogo())->listar('estados_activo'),
+            'asignacion' => $asignacion,
+            'estados' => (new Catalogo())->listar('estados_activo'),
         ]);
     }
 
     public function guardar(): void
     {
-        Csrf::verify();
+        Csrf::verificar();
 
         $asignacionId = (int) ($_POST['assignment_id'] ?? 0);
-        $itemIds = array_values(array_unique(array_map('intval', $_POST['item_ids'] ?? [])));
+        $elementosIds = array_values(array_unique(array_map('intval', $_POST['item_ids'] ?? [])));
 
-        if (!$asignacionId || !$itemIds) {
+        if (!$asignacionId || !$elementosIds) {
             Flash::error('Selecciona al menos un equipo.');
             redirect('devoluciones/crear?assignment_id='.$asignacionId);
         }
 
-        $items = [];
-        foreach ($itemIds as $itemId) {
-            $items[] = [
+        $elementos = [];
+        foreach ($elementosIds as $itemId) {
+            $elementos[] = [
                 'item_id' => $itemId,
                 'condition' => trim($_POST['condition'][$itemId] ?? 'Buen estado'),
                 'damage' => trim($_POST['damage'][$itemId] ?? ''),
@@ -63,14 +63,14 @@ final class DevolucionControlador extends Controlador
         }
 
         try {
-            $id = $this->model->crear(
+            $id = $this->modelo->crear(
                 $asignacionId,
                 trim($_POST['notes'] ?? ''),
-                $items,
+                $elementos,
                 Auth::id()
             );
 
-            Flash::success('Devolución registrada.');
+            Flash::exito('Devolución registrada.');
             redirect('devoluciones/'.$id);
         } catch (Throwable $exception) {
             Flash::error($exception->getMessage());
@@ -80,37 +80,37 @@ final class DevolucionControlador extends Controlador
 
     public function ver(string $id): void
     {
-        $devolucion = $this->model->buscar((int) $id);
+        $devolucion = $this->modelo->buscar((int) $id);
 
         if (!$devolucion) {
             abort(404);
         }
 
-        $this->view('devoluciones', [
-            'mode' => 'detalle',
-            'title' => $devolucion['return_number'],
-            'item' => $devolucion,
+        $this->vista('devoluciones', [
+            'modo' => 'detalle',
+            'titulo' => $devolucion['return_number'],
+            'registro' => $devolucion,
         ]);
     }
 
     public function imprimir(string $id): void
     {
-        $devolucion = $this->model->buscar((int) $id);
+        $devolucion = $this->modelo->buscar((int) $id);
 
         if (!$devolucion) {
             abort(404);
         }
 
-        $this->view(
+        $this->vista(
             'imprimir',
-            ['doc' => 'return', 'title' => $devolucion['return_number'], 'item' => $devolucion],
+            ['doc' => 'return', 'titulo' => $devolucion['return_number'], 'registro' => $devolucion],
             'plantilla_impresion'
         );
     }
 
     public function pdf(string $id): void
     {
-        $devolucion = $this->model->buscar((int) $id);
+        $devolucion = $this->modelo->buscar((int) $id);
 
         if (!$devolucion) {
             abort(404);
@@ -120,9 +120,9 @@ final class DevolucionControlador extends Controlador
             redirect('devoluciones/'.$id.'/imprimir');
         }
 
-        $html = View::capture('imprimir', [
+        $html = Vista::capturar('imprimir', [
             'doc' => 'return',
-            'item' => $devolucion,
+            'registro' => $devolucion,
             'pdf' => true,
         ]);
 

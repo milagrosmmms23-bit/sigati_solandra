@@ -15,9 +15,9 @@
                 Activo *
                 <select name="asset_id" required>
                     <option value="">Seleccionar equipo</option>
-                    <?php foreach ($activos as $asset): ?>
-                        <option value="<?= $asset['id'] ?>">
-                            <?= e($asset['asset_code'].' · '.$asset['type_name'].' · '.trim(($asset['brand_name'] ?? '').' '.($asset['model_name'] ?? '')).' · Serie '.($asset['serial_number'] ?: '—')) ?>
+                    <?php foreach ($activos as $activo): ?>
+                        <option value="<?= $activo['id'] ?>">
+                            <?= e($activo['asset_code'].' · '.$activo['type_name'].' · '.trim(($activo['brand_name'] ?? '').' '.($activo['model_name'] ?? '')).' · Serie '.($activo['serial_number'] ?: '—')) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>

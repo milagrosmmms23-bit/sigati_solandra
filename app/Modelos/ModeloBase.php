@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Modelos;
 
-use App\Nucleo\DB;
+use App\Nucleo\BD;
 use PDO;
 
 abstract class ModeloBase
@@ -12,6 +12,6 @@ abstract class ModeloBase
 
     public function __construct()
     {
-        $this->db = DB::pdo();
+        $this->db = BD::pdo();
     }
 }

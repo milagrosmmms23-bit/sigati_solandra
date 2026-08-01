@@ -30,12 +30,12 @@ $cards = [
 </div>
 
 <div class="stat-grid">
-    <?php foreach ($cards as [$label, $value, $description, $tone]): ?>
+    <?php foreach ($cards as [$label, $valor, $description, $tone]): ?>
         <article class="stat-card tone-<?= $tone ?>">
             <div class="stat-icon">◆</div>
             <div>
                 <span><?= e($label) ?></span>
-                <strong><?= number_format((int) $value) ?></strong>
+                <strong><?= number_format((int) $valor) ?></strong>
                 <small><?= e($description) ?></small>
             </div>
         </article>
@@ -52,12 +52,12 @@ $cards = [
         </div>
 
         <div class="bar-list">
-            <?php foreach ($porEstado as $status): ?>
-                <?php $percent = round(((int) $status['total'] / $total) * 100, 1); ?>
+            <?php foreach ($porEstado as $estado): ?>
+                <?php $percent = round(((int) $estado['total'] / $total) * 100, 1); ?>
                 <div class="bar-row">
                     <div class="bar-label">
-                        <span><?= e($status['name']) ?></span>
-                        <b><?= (int) $status['total'] ?></b>
+                        <span><?= e($estado['name']) ?></span>
+                        <b><?= (int) $estado['total'] ?></b>
                     </div>
                     <div class="bar-track">
                         <i style="width:<?= $percent ?>%"></i>
@@ -84,11 +84,11 @@ $cards = [
             </div>
 
             <div class="legend-list">
-                <?php foreach (array_slice($porTipo, 0, 6) as $type): ?>
+                <?php foreach (array_slice($porTipo, 0, 6) as $tipo): ?>
                     <div>
                         <i></i>
-                        <span><?= e($type['name']) ?></span>
-                        <b><?= (int) $type['total'] ?></b>
+                        <span><?= e($tipo['name']) ?></span>
+                        <b><?= (int) $tipo['total'] ?></b>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -123,14 +123,14 @@ $cards = [
         </div>
 
         <div class="timeline compact">
-            <?php foreach ($recientes as $movement): ?>
+            <?php foreach ($recientes as $movimiento): ?>
                 <div class="timeline-item">
                     <i></i>
                     <div>
-                        <strong><?= e($movement['asset_code']) ?> · <?= e($movement['movement_type']) ?></strong>
-                        <p><?= e($movement['notes'] ?: 'Movimiento registrado') ?></p>
+                        <strong><?= e($movimiento['asset_code']) ?> · <?= e($movimiento['movement_type']) ?></strong>
+                        <p><?= e($movimiento['notes'] ?: 'Movimiento registrado') ?></p>
                         <small>
-                            <?= datetime_pe($movement['created_at']) ?> · <?= e($movement['user_name'] ?? 'Sistema') ?>
+                            <?= datetime_pe($movimiento['created_at']) ?> · <?= e($movimiento['user_name'] ?? 'Sistema') ?>
                         </small>
                     </div>
                 </div>

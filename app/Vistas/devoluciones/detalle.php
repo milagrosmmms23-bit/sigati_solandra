@@ -1,15 +1,15 @@
 <div class="page-actions">
         <div>
             <div class="eyebrow">Acta de devolución</div>
-            <h2><?= e($item['return_number']) ?></h2>
-            <p><?= e($item['employee_name']) ?> · Referencia <?= e($item['assignment_number']) ?></p>
+            <h2><?= e($registro['return_number']) ?></h2>
+            <p><?= e($registro['employee_name']) ?> · Referencia <?= e($registro['assignment_number']) ?></p>
         </div>
 
         <div class="actions">
-            <a class="btn btn-light" target="_blank" href="<?= url('devoluciones/'.$item['id'].'/imprimir') ?>">
+            <a class="btn btn-light" target="_blank" href="<?= url('devoluciones/'.$registro['id'].'/imprimir') ?>">
                 Imprimir
             </a>
-            <a class="btn btn-primary" href="<?= url('devoluciones/'.$item['id'].'/pdf') ?>">
+            <a class="btn btn-primary" href="<?= url('devoluciones/'.$registro['id'].'/pdf') ?>">
                 Descargar PDF
             </a>
         </div>
@@ -19,19 +19,19 @@
         <div class="detail-grid">
             <div>
                 <span>Trabajador</span>
-                <strong><?= e($item['employee_name']) ?></strong>
+                <strong><?= e($registro['employee_name']) ?></strong>
             </div>
             <div>
                 <span>Código</span>
-                <strong><?= e($item['employee_code']) ?></strong>
+                <strong><?= e($registro['employee_code']) ?></strong>
             </div>
             <div>
                 <span>Área</span>
-                <strong><?= e($item['area_name'] ?: '—') ?></strong>
+                <strong><?= e($registro['area_name'] ?: '—') ?></strong>
             </div>
             <div>
                 <span>Fecha</span>
-                <strong><?= datetime_pe($item['returned_at']) ?></strong>
+                <strong><?= datetime_pe($registro['returned_at']) ?></strong>
             </div>
         </div>
     </section>
@@ -49,20 +49,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($item['items'] as $asset): ?>
+                    <?php foreach ($registro['items'] as $activo): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('activos/'.$asset['asset_id']) ?>">
-                                    <?= e($asset['asset_code']) ?>
+                                <a class="asset-code" href="<?= url('activos/'.$activo['asset_id']) ?>">
+                                    <?= e($activo['asset_code']) ?>
                                 </a>
                             </td>
                             <td>
-                                <?= e($asset['type_name'].' '.trim(($asset['brand_name'] ?? '').' '.($asset['model_name'] ?? ''))) ?>
-                                <small>Serie: <?= e($asset['serial_number'] ?: '—') ?></small>
+                                <?= e($activo['type_name'].' '.trim(($activo['brand_name'] ?? '').' '.($activo['model_name'] ?? ''))) ?>
+                                <small>Serie: <?= e($activo['serial_number'] ?: '—') ?></small>
                             </td>
-                            <td><?= e($asset['condition_in']) ?></td>
-                            <td><?= e($asset['damage_notes'] ?: 'Sin daños') ?></td>
-                            <td><?= badge($asset['next_status_name']) ?></td>
+                            <td><?= e($activo['condition_in']) ?></td>
+                            <td><?= e($activo['damage_notes'] ?: 'Sin daños') ?></td>
+                            <td><?= badge($activo['next_status_name']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

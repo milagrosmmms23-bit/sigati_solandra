@@ -10,20 +10,20 @@ final class ReporteControlador extends Controlador
 {
     public function __construct()
     {
-        Auth::requireLogin();
+        Auth::requerirIngreso();
     }
 
     public function inventario(): void
     {
-        $this->view('reporte', [
-            'title' => 'Reporte de inventario',
-            'rows' => (new Activo())->exportar(),
+        $this->vista('reporte', [
+            'titulo' => 'Reporte de inventario',
+            'filas' => (new Activo())->exportar(),
         ]);
     }
 
     public function exportarCsv(): never
     {
-        $rows = (new Activo())->exportar();
+        $filas = (new Activo())->exportar();
 
         header('Content-Type: text/csv; charset=UTF-8');
         header('Content-Disposition: attachment; filename="inventario_solandra_'.date('Ymd_His').'.csv"');
@@ -31,11 +31,11 @@ final class ReporteControlador extends Controlador
         $output = fopen('php://output', 'w');
         fwrite($output, "\xEF\xBB\xBF");
 
-        if ($rows) {
-            fputcsv($output, array_keys($rows[0]), ';');
+        if ($filas) {
+            fputcsv($output, array_keys($filas[0]), ';');
 
-            foreach ($rows as $row) {
-                fputcsv($output, $row, ';');
+            foreach ($filas as $fila) {
+                fputcsv($output, $fila, ';');
             }
         }
 

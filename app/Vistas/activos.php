@@ -1,16 +1,16 @@
 <?php
-$modo = $modo ?? $mode ?? 'listado';
-$errors = $_SESSION['_errors'] ?? [];
-$result = $result ?? ['rows' => [], 'total' => 0, 'page' => 1, 'pages' => 1];
-$filters = $filters ?? ['q' => '', 'type_id' => '', 'status_id' => '', 'area_id' => ''];
-$types = $types ?? [];
-$statuses = $statuses ?? [];
+$modo = $modo ?? 'listado';
+$errores = $_SESSION['_errors'] ?? [];
+$resultado = $resultado ?? ['filas' => [], 'total' => 0, 'pagina' => 1, 'paginas' => 1];
+$filtros = $filtros ?? ['q' => '', 'type_id' => '', 'status_id' => '', 'area_id' => ''];
+$tipos = $tipos ?? [];
+$estados = $estados ?? [];
 $marcas = $marcas ?? [];
 $modelos = $modelos ?? [];
 $areas = $areas ?? [];
 $ubicaciones = $ubicaciones ?? [];
 $proveedores = $proveedores ?? [];
-$item = $item ?? null;
+$registro = $registro ?? null;
 
 $parciales = [
     'listado' => 'index',

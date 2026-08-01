@@ -1,9 +1,9 @@
 <?php
-$modo = $modo ?? $mode ?? 'listado';
-$rows = $rows ?? [];
+$modo = $modo ?? 'listado';
+$filas = $filas ?? [];
 $trabajadores = $trabajadores ?? [];
 $activos = $activos ?? [];
-$item = $item ?? null;
+$registro = $registro ?? null;
 
 $parciales = [
     'listado' => 'index',

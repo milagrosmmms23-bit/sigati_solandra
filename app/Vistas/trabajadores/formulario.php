@@ -1,4 +1,4 @@
-<?php $isEdit = !empty($item); ?>
+<?php $isEdit = !empty($registro); ?>
 
     <div class="page-actions">
         <div>
@@ -12,7 +12,7 @@
     <form
         class="form-card compact-card"
         method="post"
-        action="<?= $isEdit ? url('trabajadores/'.$item['id']) : url('trabajadores') ?>"
+        action="<?= $isEdit ? url('trabajadores/'.$registro['id']) : url('trabajadores') ?>"
     >
         <?= csrf_field() ?>
 
@@ -22,11 +22,11 @@
                 <input
                     name="employee_code"
                     required
-                    value="<?= e(old('employee_code', $item['employee_code'] ?? '')) ?>"
+                    value="<?= e(old('employee_code', $registro['employee_code'] ?? '')) ?>"
                 >
 
-                <?php if (isset($errors['employee_code'])): ?>
-                    <small class="error"><?= e($errors['employee_code']) ?></small>
+                <?php if (isset($errores['employee_code'])): ?>
+                    <small class="error"><?= e($errores['employee_code']) ?></small>
                 <?php endif; ?>
             </label>
 
@@ -37,7 +37,7 @@
                     <?php foreach ($areas as $area): ?>
                         <option
                             value="<?= $area['id'] ?>"
-                            <?= selected(old('area_id', $item['area_id'] ?? ''), $area['id']) ?>
+                            <?= selected(old('area_id', $registro['area_id'] ?? ''), $area['id']) ?>
                         >
                             <?= e($area['name']) ?>
                         </option>
@@ -47,27 +47,27 @@
 
             <label>
                 Nombres *
-                <input name="first_name" required value="<?= e(old('first_name', $item['first_name'] ?? '')) ?>">
+                <input name="first_name" required value="<?= e(old('first_name', $registro['first_name'] ?? '')) ?>">
             </label>
 
             <label>
                 Apellidos *
-                <input name="last_name" required value="<?= e(old('last_name', $item['last_name'] ?? '')) ?>">
+                <input name="last_name" required value="<?= e(old('last_name', $registro['last_name'] ?? '')) ?>">
             </label>
 
             <label>
                 Cargo
-                <input name="position" value="<?= e(old('position', $item['position'] ?? '')) ?>">
+                <input name="position" value="<?= e(old('position', $registro['position'] ?? '')) ?>">
             </label>
 
             <label>
                 Teléfono
-                <input name="phone" value="<?= e(old('phone', $item['phone'] ?? '')) ?>">
+                <input name="phone" value="<?= e(old('phone', $registro['phone'] ?? '')) ?>">
             </label>
 
             <label class="span-2">
                 Correo
-                <input type="email" name="email" value="<?= e(old('email', $item['email'] ?? '')) ?>">
+                <input type="email" name="email" value="<?= e(old('email', $registro['email'] ?? '')) ?>">
             </label>
         </div>
 

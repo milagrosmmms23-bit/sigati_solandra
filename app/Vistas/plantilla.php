@@ -2,13 +2,13 @@
 use App\Nucleo\Auth;
 use App\Nucleo\Flash;
 
-$user = Auth::user();
-$flashes = Flash::take();
-$current = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '', '/');
+$usuario = Auth::usuario();
+$flashes = Flash::tomar();
+$rutaActual = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '', '/');
 
-function nav_active(string $needle, string $current): string
+function nav_activo(string $segmento, string $rutaActual): string
 {
-    return str_contains($current, $needle) ? 'active' : '';
+    return str_contains($rutaActual, $segmento) ? 'active' : '';
 }
 ?>
 
@@ -17,7 +17,7 @@ function nav_active(string $needle, string $current): string
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title><?= e($title ?? 'SIGATI') ?> | SIGATI SOLANDRA</title>
+    <title><?= e($titulo ?? 'SIGATI') ?> | SIGATI SOLANDRA</title>
     <link rel="icon" href="<?= url('favicon.svg') ?>">
     <link rel="stylesheet" href="<?= recurso('css/app.css') ?>">
 </head>
@@ -33,36 +33,36 @@ function nav_active(string $needle, string $current): string
         </div>
 
         <nav>
-            <a class="<?= $current === trim(config('app.base_url'), '/') ? 'active' : '' ?>" href="<?= url() ?>">
+            <a class="<?= $rutaActual === trim(config('app.base_url'), '/') ? 'active' : '' ?>" href="<?= url() ?>">
                 <span>P</span> Panel
             </a>
 
             <div class="nav-label">GESTIÓN</div>
 
-            <a class="<?= nav_active('activos', $current) ?>" href="<?= url('activos') ?>">
+            <a class="<?= nav_activo('activos', $rutaActual) ?>" href="<?= url('activos') ?>">
                 <span>I</span> Inventario
             </a>
-            <a class="<?= nav_active('trabajadores', $current) ?>" href="<?= url('trabajadores') ?>">
+            <a class="<?= nav_activo('trabajadores', $rutaActual) ?>" href="<?= url('trabajadores') ?>">
                 <span>T</span> Trabajadores
             </a>
-            <a class="<?= nav_active('asignaciones', $current) ?>" href="<?= url('asignaciones') ?>">
+            <a class="<?= nav_activo('asignaciones', $rutaActual) ?>" href="<?= url('asignaciones') ?>">
                 <span>A</span> Asignaciones
             </a>
-            <a class="<?= nav_active('devoluciones', $current) ?>" href="<?= url('devoluciones') ?>">
+            <a class="<?= nav_activo('devoluciones', $rutaActual) ?>" href="<?= url('devoluciones') ?>">
                 <span>D</span> Devoluciones
             </a>
-            <a class="<?= nav_active('mantenimientos', $current) ?>" href="<?= url('mantenimientos') ?>">
+            <a class="<?= nav_activo('mantenimientos', $rutaActual) ?>" href="<?= url('mantenimientos') ?>">
                 <span>M</span> Mantenimientos
             </a>
 
             <div class="nav-label">CONTROL</div>
 
-            <a class="<?= nav_active('reportes', $current) ?>" href="<?= url('reportes/inventario') ?>">
+            <a class="<?= nav_activo('reportes', $rutaActual) ?>" href="<?= url('reportes/inventario') ?>">
                 <span>R</span> Reportes
             </a>
 
-            <?php if (Auth::role() === 'ADMIN'): ?>
-                <a class="<?= nav_active('catalogos', $current) ?>" href="<?= url('catalogos') ?>">
+            <?php if (Auth::rol() === 'ADMIN'): ?>
+                <a class="<?= nav_activo('catalogos', $rutaActual) ?>" href="<?= url('catalogos') ?>">
                     <span>C</span> Catálogos
                 </a>
             <?php endif; ?>
@@ -79,15 +79,15 @@ function nav_active(string $needle, string $current): string
             <button class="menu-button" type="button" data-toggle-sidebar>Menu</button>
 
             <div>
-                <h1><?= e($title ?? 'SIGATI') ?></h1>
+                <h1><?= e($titulo ?? 'SIGATI') ?></h1>
                 <p><?= e(config('app.company')) ?> - <?= e(config('app.site')) ?></p>
             </div>
 
             <div class="user-menu">
-                <div class="avatar"><?= e(strtoupper(substr($user['name'] ?? 'U', 0, 1))) ?></div>
+                <div class="avatar"><?= e(strtoupper(substr($usuario['name'] ?? 'U', 0, 1))) ?></div>
                 <div>
-                    <strong><?= e($user['name'] ?? '') ?></strong>
-                    <small><?= e($user['role_name'] ?? '') ?></small>
+                    <strong><?= e($usuario['name'] ?? '') ?></strong>
+                    <small><?= e($usuario['role_name'] ?? '') ?></small>
                 </div>
 
                 <form action="<?= url('salir') ?>" method="post">
@@ -104,7 +104,7 @@ function nav_active(string $needle, string $current): string
                 </div>
             <?php endforeach; ?>
 
-            <?= $content ?>
+            <?= $contenido ?>
         </section>
     </main>
 </div>

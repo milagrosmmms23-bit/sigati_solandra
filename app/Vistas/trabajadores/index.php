@@ -29,25 +29,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($rows as $employee): ?>
+                    <?php foreach ($filas as $trabajador): ?>
                         <tr>
-                            <td><strong><?= e($employee['employee_code']) ?></strong></td>
-                            <td><strong><?= e($employee['first_name'].' '.$employee['last_name']) ?></strong></td>
-                            <td><?= e($employee['position'] ?: '—') ?></td>
-                            <td><?= e($employee['area_name'] ?: 'Sin área') ?></td>
+                            <td><strong><?= e($trabajador['employee_code']) ?></strong></td>
+                            <td><strong><?= e($trabajador['first_name'].' '.$trabajador['last_name']) ?></strong></td>
+                            <td><?= e($trabajador['position'] ?: '—') ?></td>
+                            <td><?= e($trabajador['area_name'] ?: 'Sin área') ?></td>
                             <td>
-                                <?= e($employee['email'] ?: '—') ?>
-                                <small><?= e($employee['phone'] ?: '') ?></small>
+                                <?= e($trabajador['email'] ?: '—') ?>
+                                <small><?= e($trabajador['phone'] ?: '') ?></small>
                             </td>
                             <td class="text-right">
-                                <a class="icon-btn" href="<?= url('trabajadores/'.$employee['id'].'/editar') ?>">
+                                <a class="icon-btn" href="<?= url('trabajadores/'.$trabajador['id'].'/editar') ?>">
                                     Editar
                                 </a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
 
-                    <?php if (!$rows): ?>
+                    <?php if (!$filas): ?>
                         <tr>
                             <td colspan="6">
                                 <div class="empty">No hay trabajadores registrados.</div>

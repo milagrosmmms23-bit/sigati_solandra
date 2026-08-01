@@ -3,34 +3,34 @@ declare(strict_types=1);
 
 namespace App\Controladores;
 
-use App\Nucleo\{Auth, Controlador, Csrf, Flash, View};
+use App\Nucleo\{Auth, Controlador, Csrf, Flash, Vista};
 use App\Modelos\{Activo, Asignacion, Trabajador};
 use Throwable;
 
 final class AsignacionControlador extends Controlador
 {
-    private Asignacion $model;
+    private Asignacion $modelo;
 
     public function __construct()
     {
-        Auth::requireLogin();
-        $this->model = new Asignacion();
+        Auth::requerirIngreso();
+        $this->modelo = new Asignacion();
     }
 
     public function listado(): void
     {
-        $this->view('asignaciones', [
-            'mode' => 'listado',
-            'title' => 'Asignaciones',
-            'rows' => $this->model->listar(),
+        $this->vista('asignaciones', [
+            'modo' => 'listado',
+            'titulo' => 'Asignaciones',
+            'filas' => $this->modelo->listar(),
         ]);
     }
 
     public function crear(): void
     {
-        $this->view('asignaciones', [
-            'mode' => 'formulario',
-            'title' => 'Nueva asignación',
+        $this->vista('asignaciones', [
+            'modo' => 'formulario',
+            'titulo' => 'Nueva asignación',
             'trabajadores' => (new Trabajador())->listar(),
             'activos' => (new Activo())->disponibles(),
         ]);
@@ -38,7 +38,7 @@ final class AsignacionControlador extends Controlador
 
     public function guardar(): void
     {
-        Csrf::verify();
+        Csrf::verificar();
 
         $trabajadorId = (int) ($_POST['employee_id'] ?? 0);
         $activosIds = array_values(array_unique(array_map('intval', $_POST['asset_ids'] ?? [])));
@@ -48,24 +48,24 @@ final class AsignacionControlador extends Controlador
             redirect('asignaciones/crear');
         }
 
-        $items = [];
+        $elementos = [];
         foreach ($activosIds as $activoId) {
-            $items[] = [
+            $elementos[] = [
                 'asset_id' => $activoId,
                 'condition' => trim($_POST['condition'][$activoId] ?? 'Buen estado'),
             ];
         }
 
         try {
-            $id = $this->model->crear(
+            $id = $this->modelo->crear(
                 $trabajadorId,
                 (int) ($_POST['area_id'] ?? 0) ?: null,
                 trim($_POST['notes'] ?? ''),
-                $items,
+                $elementos,
                 Auth::id()
             );
 
-            Flash::success('Asignación confirmada.');
+            Flash::exito('Asignación confirmada.');
             redirect('asignaciones/'.$id);
         } catch (Throwable $exception) {
             Flash::error($exception->getMessage());
@@ -75,37 +75,37 @@ final class AsignacionControlador extends Controlador
 
     public function ver(string $id): void
     {
-        $asignacion = $this->model->buscar((int) $id);
+        $asignacion = $this->modelo->buscar((int) $id);
 
         if (!$asignacion) {
             abort(404);
         }
 
-        $this->view('asignaciones', [
-            'mode' => 'detalle',
-            'title' => $asignacion['assignment_number'],
-            'item' => $asignacion,
+        $this->vista('asignaciones', [
+            'modo' => 'detalle',
+            'titulo' => $asignacion['assignment_number'],
+            'registro' => $asignacion,
         ]);
     }
 
     public function imprimir(string $id): void
     {
-        $asignacion = $this->model->buscar((int) $id);
+        $asignacion = $this->modelo->buscar((int) $id);
 
         if (!$asignacion) {
             abort(404);
         }
 
-        $this->view(
+        $this->vista(
             'imprimir',
-            ['doc' => 'assignment', 'title' => $asignacion['assignment_number'], 'item' => $asignacion],
+            ['doc' => 'assignment', 'titulo' => $asignacion['assignment_number'], 'registro' => $asignacion],
             'plantilla_impresion'
         );
     }
 
     public function pdf(string $id): void
     {
-        $asignacion = $this->model->buscar((int) $id);
+        $asignacion = $this->modelo->buscar((int) $id);
 
         if (!$asignacion) {
             abort(404);
@@ -115,9 +115,9 @@ final class AsignacionControlador extends Controlador
             redirect('asignaciones/'.$id.'/imprimir');
         }
 
-        $html = View::capture('imprimir', [
+        $html = Vista::capturar('imprimir', [
             'doc' => 'assignment',
-            'item' => $asignacion,
+            'registro' => $asignacion,
             'pdf' => true,
         ]);
 

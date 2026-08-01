@@ -25,7 +25,7 @@ final class DevolucionActivo extends ModeloBase
 
     public function buscar(int $id): ?array
     {
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             "SELECT r.*, a.assignment_number, CONCAT(e.first_name, ' ', e.last_name) employee_name,
                     e.employee_code, e.position, ar.name area_name, u.name created_by_name
              FROM devoluciones_activo r
@@ -35,14 +35,14 @@ final class DevolucionActivo extends ModeloBase
              LEFT JOIN usuarios u ON u.id = r.created_by
              WHERE r.id = ?"
         );
-        $statement->execute([$id]);
-        $devolucion = $statement->fetch();
+        $consulta->execute([$id]);
+        $devolucion = $consulta->fetch();
 
         if (!$devolucion) {
             return null;
         }
 
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             "SELECT ri.*, x.asset_code, x.serial_number, t.name type_name, b.name brand_name,
                     m.name model_name, st.name next_status_name
              FROM items_devolucion ri
@@ -54,39 +54,39 @@ final class DevolucionActivo extends ModeloBase
              JOIN estados_activo st ON st.id = ri.next_status_id
              WHERE ri.return_id = ?"
         );
-        $statement->execute([$id]);
-        $devolucion['items'] = $statement->fetchAll();
+        $consulta->execute([$id]);
+        $devolucion['items'] = $consulta->fetchAll();
 
         return $devolucion;
     }
 
-    public function crear(int $assignment, string $notes, array $items, int $user): int
+    public function crear(int $asignacionId, string $observaciones, array $elementos, int $usuarioId): int
     {
         $this->db->beginTransaction();
 
         try {
-            $statement = $this->db->prepare('CALL sp_crear_devolucion(?,?,?,@id,@number)');
-            $statement->execute([$assignment, $notes, $user]);
-            $statement->closeCursor();
+            $consulta = $this->db->prepare('CALL sp_crear_devolucion(?,?,?,@id,@number)');
+            $consulta->execute([$asignacionId, $observaciones, $usuarioId]);
+            $consulta->closeCursor();
 
             $id = (int) $this->db->query('SELECT @id')->fetchColumn();
 
-            foreach ($items as $item) {
-                $statement = $this->db->prepare('CALL sp_devolver_activo(?,?,?,?,?,?)');
-                $statement->execute([
+            foreach ($elementos as $registro) {
+                $consulta = $this->db->prepare('CALL sp_devolver_activo(?,?,?,?,?,?)');
+                $consulta->execute([
                     $id,
-                    $item['item_id'],
-                    $item['condition'],
-                    $item['damage'] ?: null,
-                    $item['status_id'],
-                    $user,
+                    $registro['item_id'],
+                    $registro['condition'],
+                    $registro['damage'] ?: null,
+                    $registro['status_id'],
+                    $usuarioId,
                 ]);
-                $statement->closeCursor();
+                $consulta->closeCursor();
             }
 
-            $statement = $this->db->prepare('CALL sp_confirmar_devolucion(?,?)');
-            $statement->execute([$id, $user]);
-            $statement->closeCursor();
+            $consulta = $this->db->prepare('CALL sp_confirmar_devolucion(?,?)');
+            $consulta->execute([$id, $usuarioId]);
+            $consulta->closeCursor();
 
             $this->db->commit();
             return $id;

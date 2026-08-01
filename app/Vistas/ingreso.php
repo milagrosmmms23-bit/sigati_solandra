@@ -1,4 +1,4 @@
-<?php $flashes = App\Nucleo\Flash::take(); ?>
+<?php $flashes = App\Nucleo\Flash::tomar(); ?>
 
 <div class="login-shell">
     <section class="login-visual">

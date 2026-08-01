@@ -7,16 +7,16 @@ use Throwable;
 
 final class Activo extends ModeloBase
 {
-    public function listar(array $filters, int $page, int $perPage): array
+    public function listar(array $filtros, int $pagina, int $porPagina): array
     {
-        [$where, $params] = $this->armarFiltros($filters);
-        $offset = ($page - 1) * $perPage;
+        [$where, $params] = $this->armarFiltros($filtros);
+        $offset = ($pagina - 1) * $porPagina;
 
         $count = $this->db->prepare("SELECT COUNT(*) FROM activos a WHERE $where");
         $count->execute($params);
         $total = (int) $count->fetchColumn();
 
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             "SELECT a.*, t.name type_name, s.name status_name, s.color,
                     b.name brand_name, m.name model_name, ar.name area_name,
                     l.name location_name, CONCAT(e.first_name, ' ', e.last_name) employee_name
@@ -30,21 +30,21 @@ final class Activo extends ModeloBase
              LEFT JOIN trabajadores e ON e.id = a.current_employee_id
              WHERE $where
              ORDER BY a.id DESC
-             LIMIT $perPage OFFSET $offset"
+             LIMIT $porPagina OFFSET $offset"
         );
-        $statement->execute($params);
+        $consulta->execute($params);
 
         return [
-            'rows' => $statement->fetchAll(),
+            'filas' => $consulta->fetchAll(),
             'total' => $total,
-            'page' => $page,
-            'pages' => (int) ceil($total / $perPage),
+            'pagina' => $pagina,
+            'paginas' => (int) ceil($total / $porPagina),
         ];
     }
 
     public function buscar(int $id): ?array
     {
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             "SELECT a.*, t.name type_name, s.name status_name, s.color,
                     b.name brand_name, m.name model_name, ar.name area_name,
                     l.name location_name, CONCAT(e.first_name, ' ', e.last_name) employee_name,
@@ -60,8 +60,8 @@ final class Activo extends ModeloBase
              LEFT JOIN proveedores sup ON sup.id = a.supplier_id
              WHERE a.id = ?"
         );
-        $statement->execute([$id]);
-        $activo = $statement->fetch();
+        $consulta->execute([$id]);
+        $activo = $consulta->fetch();
 
         if (!$activo) {
             return null;
@@ -91,18 +91,18 @@ final class Activo extends ModeloBase
             ->fetchAll();
     }
 
-    public function guardar(array $data, array $specs, int $user, ?int $id = null): int
+    public function guardar(array $datos, array $especificaciones, int $usuarioId, ?int $id = null): int
     {
         $this->db->beginTransaction();
 
         try {
             if ($id) {
-                $this->actualizar($id, $data, $user);
+                $this->actualizar($id, $datos, $usuarioId);
             } else {
-                $id = $this->insertar($data, $user);
+                $id = $this->insertar($datos, $usuarioId);
             }
 
-            $this->guardarEspecificaciones($id, $specs);
+            $this->guardarEspecificaciones($id, $especificaciones);
             $this->db->commit();
 
             return $id;
@@ -119,14 +119,14 @@ final class Activo extends ModeloBase
             ->fetchAll();
     }
 
-    private function armarFiltros(array $filters): array
+    private function armarFiltros(array $filtros): array
     {
         $where = ['a.active = 1'];
         $params = [];
 
-        if ($filters['q'] ?? '') {
+        if ($filtros['q'] ?? '') {
             $where[] = '(a.asset_code LIKE :q OR a.legacy_code LIKE :q OR a.serial_number LIKE :q OR a.hostname LIKE :q OR a.imei1 LIKE :q OR a.phone_number LIKE :q)';
-            $params['q'] = '%'.$filters['q'].'%';
+            $params['q'] = '%'.$filtros['q'].'%';
         }
 
         $allowedFilters = [
@@ -135,24 +135,24 @@ final class Activo extends ModeloBase
             'area_id' => 'a.current_area_id',
         ];
 
-        foreach ($allowedFilters as $key => $column) {
-            if (!empty($filters[$key])) {
-                $where[] = "$column = :$key";
-                $params[$key] = (int) $filters[$key];
+        foreach ($allowedFilters as $clave => $column) {
+            if (!empty($filtros[$clave])) {
+                $where[] = "$column = :$clave";
+                $params[$clave] = (int) $filtros[$clave];
             }
         }
 
         return [implode(' AND ', $where), $params];
     }
 
-    private function insertar(array $data, int $user): int
+    private function insertar(array $datos, int $usuarioId): int
     {
-        $statement = $this->db->prepare('CALL sp_generar_codigo_activo(?, @code)');
-        $statement->execute([$data['asset_type_id']]);
-        $statement->closeCursor();
+        $consulta = $this->db->prepare('CALL sp_generar_codigo_activo(?, @code)');
+        $consulta->execute([$datos['asset_type_id']]);
+        $consulta->closeCursor();
 
-        $code = $this->db->query('SELECT @code')->fetchColumn();
-        $statement = $this->db->prepare(
+        $codigo = $this->db->query('SELECT @code')->fetchColumn();
+        $consulta = $this->db->prepare(
             'INSERT INTO activos(
                 asset_code, legacy_code, asset_type_id, brand_id, model_id, status_id,
                 current_area_id, location_id, serial_number, hostname, ip_address, mac_address,
@@ -160,17 +160,17 @@ final class Activo extends ModeloBase
                 cost, warranty_end, notes, active, created_by, updated_by
              ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)'
         );
-        $statement->execute(array_merge([$code], $this->argumentos($data), [$user, $user]));
+        $consulta->execute(array_merge([$codigo], $this->argumentos($datos), [$usuarioId, $usuarioId]));
 
         $id = (int) $this->db->lastInsertId();
-        $this->registrarMovimientoInicial($id, $data, $user);
+        $this->registrarMovimientoInicial($id, $datos, $usuarioId);
 
         return $id;
     }
 
-    private function actualizar(int $id, array $data, int $user): void
+    private function actualizar(int $id, array $datos, int $usuarioId): void
     {
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             'UPDATE activos
              SET legacy_code = ?, asset_type_id = ?, brand_id = ?, model_id = ?, status_id = ?,
                  current_area_id = ?, location_id = ?, serial_number = ?, hostname = ?, ip_address = ?,
@@ -180,86 +180,86 @@ final class Activo extends ModeloBase
              WHERE id = ?'
         );
 
-        $arguments = $this->argumentos($data);
-        $arguments[] = $user;
-        $arguments[] = $id;
-        $statement->execute($arguments);
+        $argumentos = $this->argumentos($datos);
+        $argumentos[] = $usuarioId;
+        $argumentos[] = $id;
+        $consulta->execute($argumentos);
 
         $this->db
             ->prepare('DELETE FROM especificaciones_activo WHERE asset_id = ?')
             ->execute([$id]);
     }
 
-    private function argumentos(array $data): array
+    private function argumentos(array $datos): array
     {
         return [
-            $data['legacy_code'] ?: null,
-            $data['asset_type_id'],
-            $data['brand_id'] ?: null,
-            $data['model_id'] ?: null,
-            $data['status_id'],
-            $data['current_area_id'] ?: null,
-            $data['location_id'] ?: null,
-            $data['serial_number'] ?: null,
-            $data['hostname'] ?: null,
-            $data['ip_address'] ?: null,
-            $data['mac_address'] ?: null,
-            $data['imei1'] ?: null,
-            $data['imei2'] ?: null,
-            $data['phone_number'] ?: null,
-            $data['purchase_date'] ?: null,
-            $data['invoice_number'] ?: null,
-            $data['supplier_id'] ?: null,
-            $data['cost'] ?: null,
-            $data['warranty_end'] ?: null,
-            $data['notes'] ?: null,
+            $datos['legacy_code'] ?: null,
+            $datos['asset_type_id'],
+            $datos['brand_id'] ?: null,
+            $datos['model_id'] ?: null,
+            $datos['status_id'],
+            $datos['current_area_id'] ?: null,
+            $datos['location_id'] ?: null,
+            $datos['serial_number'] ?: null,
+            $datos['hostname'] ?: null,
+            $datos['ip_address'] ?: null,
+            $datos['mac_address'] ?: null,
+            $datos['imei1'] ?: null,
+            $datos['imei2'] ?: null,
+            $datos['phone_number'] ?: null,
+            $datos['purchase_date'] ?: null,
+            $datos['invoice_number'] ?: null,
+            $datos['supplier_id'] ?: null,
+            $datos['cost'] ?: null,
+            $datos['warranty_end'] ?: null,
+            $datos['notes'] ?: null,
         ];
     }
 
-    private function guardarEspecificaciones(int $assetId, array $specs): void
+    private function guardarEspecificaciones(int $activoId, array $especificaciones): void
     {
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             'INSERT INTO especificaciones_activo(asset_id, spec_key, spec_value) VALUES(?, ?, ?)'
         );
 
-        foreach ($specs as $key => $value) {
-            $key = trim($key);
-            $value = trim($value);
+        foreach ($especificaciones as $clave => $valor) {
+            $clave = trim($clave);
+            $valor = trim($valor);
 
-            if ($key !== '' && $value !== '') {
-                $statement->execute([$assetId, $key, $value]);
+            if ($clave !== '' && $valor !== '') {
+                $consulta->execute([$activoId, $clave, $valor]);
             }
         }
     }
 
-    private function registrarMovimientoInicial(int $assetId, array $data, int $user): void
+    private function registrarMovimientoInicial(int $activoId, array $datos, int $usuarioId): void
     {
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             "INSERT INTO movimientos_activo(asset_id, movement_type, to_status_id, to_area_id, notes, user_id)
              VALUES(?, 'REGISTRO', ?, ?, ?, ?)"
         );
-        $statement->execute([
-            $assetId,
-            $data['status_id'],
-            $data['current_area_id'] ?: null,
+        $consulta->execute([
+            $activoId,
+            $datos['status_id'],
+            $datos['current_area_id'] ?: null,
             'Registro inicial',
-            $user,
+            $usuarioId,
         ]);
     }
 
-    private function especificacionesGuardadas(int $assetId): array
+    private function especificacionesGuardadas(int $activoId): array
     {
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             'SELECT spec_key, spec_value FROM especificaciones_activo WHERE asset_id = ? ORDER BY spec_key'
         );
-        $statement->execute([$assetId]);
+        $consulta->execute([$activoId]);
 
-        return $statement->fetchAll();
+        return $consulta->fetchAll();
     }
 
-    private function movimientos(int $assetId): array
+    private function movimientos(int $activoId): array
     {
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             "SELECT am.*, u.name user_name
              FROM movimientos_activo am
              LEFT JOIN usuarios u ON u.id = am.user_id
@@ -267,18 +267,18 @@ final class Activo extends ModeloBase
              ORDER BY am.id DESC
              LIMIT 50"
         );
-        $statement->execute([$assetId]);
+        $consulta->execute([$activoId]);
 
-        return $statement->fetchAll();
+        return $consulta->fetchAll();
     }
 
-    private function mantenimientos(int $assetId): array
+    private function mantenimientos(int $activoId): array
     {
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             'SELECT * FROM mantenimientos WHERE asset_id = ? ORDER BY id DESC'
         );
-        $statement->execute([$assetId]);
+        $consulta->execute([$activoId]);
 
-        return $statement->fetchAll();
+        return $consulta->fetchAll();
     }
 }

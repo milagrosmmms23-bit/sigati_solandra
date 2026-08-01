@@ -21,53 +21,53 @@ final class Trabajador extends ModeloBase
 
         $sql .= ' ORDER BY e.last_name, e.first_name';
 
-        $statement = $this->db->prepare($sql);
-        $statement->execute($params);
+        $consulta = $this->db->prepare($sql);
+        $consulta->execute($params);
 
-        return $statement->fetchAll();
+        return $consulta->fetchAll();
     }
 
     public function buscar(int $id): ?array
     {
-        $statement = $this->db->prepare('SELECT * FROM trabajadores WHERE id = ?');
-        $statement->execute([$id]);
+        $consulta = $this->db->prepare('SELECT * FROM trabajadores WHERE id = ?');
+        $consulta->execute([$id]);
 
-        return $statement->fetch() ?: null;
+        return $consulta->fetch() ?: null;
     }
 
-    public function guardar(array $data, ?int $id = null): int
+    public function guardar(array $datos, ?int $id = null): int
     {
         if ($id) {
-            $statement = $this->db->prepare(
+            $consulta = $this->db->prepare(
                 'UPDATE trabajadores
                  SET employee_code = ?, first_name = ?, last_name = ?, email = ?, phone = ?,
                      position = ?, area_id = ?, updated_at = NOW()
                  WHERE id = ?'
             );
-            $statement->execute($this->argumentos($data, $id));
+            $consulta->execute($this->argumentos($datos, $id));
 
             return $id;
         }
 
-        $statement = $this->db->prepare(
+        $consulta = $this->db->prepare(
             'INSERT INTO trabajadores(employee_code, first_name, last_name, email, phone, position, area_id, active)
              VALUES(?, ?, ?, ?, ?, ?, ?, 1)'
         );
-        $statement->execute($this->argumentos($data));
+        $consulta->execute($this->argumentos($datos));
 
         return (int) $this->db->lastInsertId();
     }
 
-    private function argumentos(array $data, ?int $id = null): array
+    private function argumentos(array $datos, ?int $id = null): array
     {
         $arguments = [
-            $data['employee_code'],
-            $data['first_name'],
-            $data['last_name'],
-            $data['email'] ?: null,
-            $data['phone'] ?: null,
-            $data['position'] ?: null,
-            $data['area_id'] ?: null,
+            $datos['employee_code'],
+            $datos['first_name'],
+            $datos['last_name'],
+            $datos['email'] ?: null,
+            $datos['phone'] ?: null,
+            $datos['position'] ?: null,
+            $datos['area_id'] ?: null,
         ];
 
         if ($id) {

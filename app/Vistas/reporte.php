@@ -1,9 +1,9 @@
-<?php $rows = $rows ?? []; ?>
+<?php $filas = $filas ?? []; ?>
 
 <div class="page-actions">
     <div>
         <h2>Reporte de inventario</h2>
-        <p><?= number_format(count($rows)) ?> activos registrados en SIGATI.</p>
+        <p><?= number_format(count($filas)) ?> activos registrados en SIGATI.</p>
     </div>
 
     <div class="actions">
@@ -15,19 +15,19 @@
 <section class="panel report-summary">
     <div>
         <span>Total</span>
-        <strong><?= count($rows) ?></strong>
+        <strong><?= count($filas) ?></strong>
     </div>
     <div>
         <span>Con responsable</span>
-        <strong><?= count(array_filter($rows, fn ($row) => !empty($row['responsable']))) ?></strong>
+        <strong><?= count(array_filter($filas, fn ($fila) => !empty($fila['responsable']))) ?></strong>
     </div>
     <div>
         <span>Sin serie</span>
-        <strong><?= count(array_filter($rows, fn ($row) => empty($row['serie']))) ?></strong>
+        <strong><?= count(array_filter($filas, fn ($fila) => empty($fila['serie']))) ?></strong>
     </div>
     <div>
         <span>Sin área</span>
-        <strong><?= count(array_filter($rows, fn ($row) => empty($row['area']))) ?></strong>
+        <strong><?= count(array_filter($filas, fn ($fila) => empty($fila['area']))) ?></strong>
     </div>
 </section>
 
@@ -36,18 +36,18 @@
         <table class="data-table dense">
             <thead>
                 <tr>
-                    <?php if ($rows): ?>
-                        <?php foreach (array_keys($rows[0]) as $heading): ?>
-                            <th><?= e(ucwords(str_replace('_', ' ', $heading))) ?></th>
+                    <?php if ($filas): ?>
+                        <?php foreach (array_keys($filas[0]) as $encabezado): ?>
+                            <th><?= e(ucwords(str_replace('_', ' ', $encabezado))) ?></th>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($rows as $row): ?>
+                <?php foreach ($filas as $fila): ?>
                     <tr>
-                        <?php foreach ($row as $value): ?>
-                            <td><?= e($value ?? '—') ?></td>
+                        <?php foreach ($fila as $valor): ?>
+                            <td><?= e($valor ?? '—') ?></td>
                         <?php endforeach; ?>
                     </tr>
                 <?php endforeach; ?>

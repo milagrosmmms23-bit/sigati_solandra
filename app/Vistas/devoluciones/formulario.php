@@ -13,12 +13,12 @@
                 Asignación vigente
                 <select name="assignment_id" onchange="this.form.submit()">
                     <option value="">Seleccionar</option>
-                    <?php foreach ($asignaciones as $activeAssignment): ?>
+                    <?php foreach ($asignaciones as $asignacionActiva): ?>
                         <option
-                            value="<?= $activeAssignment['id'] ?>"
-                            <?= selected($assignment['id'] ?? '', $activeAssignment['id']) ?>
+                            value="<?= $asignacionActiva['id'] ?>"
+                            <?= selected($asignacion['id'] ?? '', $asignacionActiva['id']) ?>
                         >
-                            <?= e($activeAssignment['assignment_number'].' · '.$activeAssignment['employee_name'].' · '.$activeAssignment['pending'].' pendientes') ?>
+                            <?= e($asignacionActiva['assignment_number'].' · '.$asignacionActiva['employee_name'].' · '.$asignacionActiva['pending'].' pendientes') ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -32,40 +32,40 @@
         </div>
     </form>
 
-    <?php if ($assignment): ?>
+    <?php if ($asignacion): ?>
         <form class="form-card" method="post" action="<?= url('devoluciones') ?>">
             <?= csrf_field() ?>
-            <input type="hidden" name="assignment_id" value="<?= $assignment['id'] ?>">
+            <input type="hidden" name="assignment_id" value="<?= $asignacion['id'] ?>">
 
             <div class="assignment-banner">
                 <div>
                     <span>Asignación</span>
-                    <strong><?= e($assignment['assignment_number']) ?></strong>
+                    <strong><?= e($asignacion['assignment_number']) ?></strong>
                 </div>
                 <div>
                     <span>Trabajador</span>
-                    <strong><?= e($assignment['employee_name']) ?></strong>
+                    <strong><?= e($asignacion['employee_name']) ?></strong>
                 </div>
                 <div>
                     <span>Área</span>
-                    <strong><?= e($assignment['area_name'] ?: '—') ?></strong>
+                    <strong><?= e($asignacion['area_name'] ?: '—') ?></strong>
                 </div>
             </div>
 
             <div class="return-list">
-                <?php foreach ($assignment['items'] as $assignmentItem): ?>
-                    <?php if ($assignmentItem['returned_at']) continue; ?>
+                <?php foreach ($asignacion['items'] as $itemAsignacion): ?>
+                    <?php if ($itemAsignacion['returned_at']) continue; ?>
 
                     <div class="return-item">
                         <label class="check-title">
-                            <input type="checkbox" name="item_ids[]" value="<?= $assignmentItem['id'] ?>">
+                            <input type="checkbox" name="item_ids[]" value="<?= $itemAsignacion['id'] ?>">
                             <div>
                                 <strong>
-                                    <?= e($assignmentItem['asset_code']) ?> · <?= e($assignmentItem['type_name']) ?>
+                                    <?= e($itemAsignacion['asset_code']) ?> · <?= e($itemAsignacion['type_name']) ?>
                                 </strong>
                                 <span>
-                                    <?= e(trim(($assignmentItem['brand_name'] ?? '').' '.($assignmentItem['model_name'] ?? ''))) ?>
-                                    · Serie <?= e($assignmentItem['serial_number'] ?: '—') ?>
+                                    <?= e(trim(($itemAsignacion['brand_name'] ?? '').' '.($itemAsignacion['model_name'] ?? ''))) ?>
+                                    · Serie <?= e($itemAsignacion['serial_number'] ?: '—') ?>
                                 </span>
                             </div>
                         </label>
@@ -73,23 +73,23 @@
                         <div class="return-fields">
                             <label>
                                 Condición al devolver
-                                <input name="condition[<?= $assignmentItem['id'] ?>]" value="Buen estado">
+                                <input name="condition[<?= $itemAsignacion['id'] ?>]" value="Buen estado">
                             </label>
 
                             <label>
                                 Daños o faltantes
-                                <input name="damage[<?= $assignmentItem['id'] ?>]" placeholder="Sin daños">
+                                <input name="damage[<?= $itemAsignacion['id'] ?>]" placeholder="Sin daños">
                             </label>
 
                             <label>
                                 Estado posterior
-                                <select name="status_id[<?= $assignmentItem['id'] ?>]">
-                                    <?php foreach ($statuses as $status): ?>
+                                <select name="status_id[<?= $itemAsignacion['id'] ?>]">
+                                    <?php foreach ($estados as $estado): ?>
                                         <option
-                                            value="<?= $status['id'] ?>"
-                                            <?= $status['code'] === 'DISPONIBLE' ? 'selected' : '' ?>
+                                            value="<?= $estado['id'] ?>"
+                                            <?= $estado['code'] === 'DISPONIBLE' ? 'selected' : '' ?>
                                         >
-                                            <?= e($status['name']) ?>
+                                            <?= e($estado['name']) ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>

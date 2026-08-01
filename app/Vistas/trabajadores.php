@@ -1,10 +1,10 @@
 <?php
-$modo = $modo ?? $mode ?? 'listado';
-$errors = $_SESSION['_errors'] ?? [];
-$rows = $rows ?? [];
+$modo = $modo ?? 'listado';
+$errores = $_SESSION['_errors'] ?? [];
+$filas = $filas ?? [];
 $q = $q ?? '';
 $areas = $areas ?? [];
-$item = $item ?? null;
+$registro = $registro ?? null;
 
 $parciales = [
     'listado' => 'index',

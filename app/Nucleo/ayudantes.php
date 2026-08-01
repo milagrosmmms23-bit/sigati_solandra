@@ -4,36 +4,36 @@ declare(strict_types=1);
 use App\Nucleo\Config;
 use App\Nucleo\Csrf;
 
-function config(string $key, mixed $default = null): mixed
+function config(string $clave, mixed $default = null): mixed
 {
-    return Config::get($key, $default);
+    return Config::obtener($clave, $default);
 }
 
-function url(string $path = ''): string
+function url(string $ruta = ''): string
 {
     $base = rtrim((string) config('app.base_url'), '/');
 
-    return $base.($path !== '' ? '/'.ltrim($path, '/') : '');
+    return $base.($ruta !== '' ? '/'.ltrim($ruta, '/') : '');
 }
 
-function recurso(string $path): string
+function recurso(string $ruta): string
 {
-    return url('recursos/'.ltrim($path, '/'));
+    return url('recursos/'.ltrim($ruta, '/'));
 }
 
-function e(mixed $value): string
+function e(mixed $valor): string
 {
-    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
 }
 
-function old(string $key, mixed $default = ''): mixed
+function old(string $clave, mixed $default = ''): mixed
 {
-    return $_SESSION['_old'][$key] ?? $default;
+    return $_SESSION['_old'][$clave] ?? $default;
 }
 
-function selected(mixed $current, mixed $expected): string
+function selected(mixed $actual, mixed $esperado): string
 {
-    return (string) $current === (string) $expected ? 'selected' : '';
+    return (string) $actual === (string) $esperado ? 'selected' : '';
 }
 
 function csrf_field(): string
@@ -41,52 +41,52 @@ function csrf_field(): string
     return '<input type="hidden" name="_token" value="'.e(Csrf::token()).'">';
 }
 
-function redirect(string $path): never
+function redirect(string $ruta): never
 {
-    header('Location: '.url($path));
+    header('Location: '.url($ruta));
     exit;
 }
 
-function abort(int $code, string $message = ''): never
+function abort(int $codigo, string $mensaje = ''): never
 {
-    http_response_code($code);
-    echo '<h1>Error '.$code.'</h1><p>'.e($message ?: 'No se pudo completar la solicitud.').'</p>';
+    http_response_code($codigo);
+    echo '<h1>Error '.$codigo.'</h1><p>'.e($mensaje ?: 'No se pudo completar la solicitud.').'</p>';
     exit;
 }
 
-function date_pe(?string $date): string
+function date_pe(?string $fecha): string
 {
-    return format_date_pe($date, 'd/m/Y');
+    return format_date_pe($fecha, 'd/m/Y');
 }
 
-function datetime_pe(?string $date): string
+function datetime_pe(?string $fecha): string
 {
-    return format_date_pe($date, 'd/m/Y H:i');
+    return format_date_pe($fecha, 'd/m/Y H:i');
 }
 
-function format_date_pe(?string $date, string $format): string
+function format_date_pe(?string $fecha, string $formato): string
 {
-    if ($date === null || trim($date) === '') {
-        return '—';
+    if ($fecha === null || trim($fecha) === '') {
+        return 'â€”';
     }
 
-    $timestamp = strtotime($date);
+    $marcaTiempo = strtotime($fecha);
 
-    return $timestamp === false ? '—' : date($format, $timestamp);
+    return $marcaTiempo === false ? 'â€”' : date($formato, $marcaTiempo);
 }
 
-function money(mixed $value): string
+function money(mixed $valor): string
 {
-    if ($value === '' || $value === null) {
-        return '—';
+    if ($valor === '' || $valor === null) {
+        return 'â€”';
     }
 
-    return 'S/ '.number_format((float) $value, 2);
+    return 'S/ '.number_format((float) $valor, 2);
 }
 
-function badge(string $status): string
+function badge(string $estado): string
 {
-    $colors = [
+    $colores = [
         'DISPONIBLE' => 'success',
         'ASIGNADO' => 'primary',
         'MANTENIMIENTO' => 'warning',
@@ -98,7 +98,7 @@ function badge(string $status): string
         'CERRADO' => 'success',
     ];
 
-    $color = $colors[strtoupper($status)] ?? 'secondary';
+    $color = $colores[strtoupper($estado)] ?? 'secondary';
 
-    return '<span class="badge badge-'.$color.'">'.e($status).'</span>';
+    return '<span class="badge badge-'.$color.'">'.e($estado).'</span>';
 }

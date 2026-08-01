@@ -22,47 +22,47 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($rows as $maintenance): ?>
+                    <?php foreach ($filas as $mantenimiento): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('activos/'.$maintenance['asset_id']) ?>">
-                                    <?= e($maintenance['asset_code']) ?>
+                                <a class="asset-code" href="<?= url('activos/'.$mantenimiento['asset_id']) ?>">
+                                    <?= e($mantenimiento['asset_code']) ?>
                                 </a>
                                 <small>
-                                    <?= e($maintenance['type_name'].' '.trim(($maintenance['brand_name'] ?? '').' '.($maintenance['model_name'] ?? ''))) ?>
+                                    <?= e($mantenimiento['type_name'].' '.trim(($mantenimiento['brand_name'] ?? '').' '.($mantenimiento['model_name'] ?? ''))) ?>
                                 </small>
                             </td>
-                            <td><?= e($maintenance['type']) ?></td>
-                            <td><?= e($maintenance['issue'] ?: 'Mantenimiento programado') ?></td>
-                            <td><?= badge($maintenance['status']) ?></td>
-                            <td><?= date_pe($maintenance['started_at']) ?></td>
-                            <td><?= money($maintenance['cost']) ?></td>
+                            <td><?= e($mantenimiento['type']) ?></td>
+                            <td><?= e($mantenimiento['issue'] ?: 'Mantenimiento programado') ?></td>
+                            <td><?= badge($mantenimiento['status']) ?></td>
+                            <td><?= date_pe($mantenimiento['started_at']) ?></td>
+                            <td><?= money($mantenimiento['cost']) ?></td>
                             <td>
-                                <?php if ($maintenance['status'] === 'ABIERTO'): ?>
+                                <?php if ($mantenimiento['status'] === 'ABIERTO'): ?>
                                     <button
                                         class="icon-btn"
                                         type="button"
-                                        data-open-modal="close-<?= $maintenance['id'] ?>"
+                                        data-open-modal="close-<?= $mantenimiento['id'] ?>"
                                     >
                                         Cerrar
                                     </button>
                                 <?php else: ?>
-                                    <span class="muted">Cerrado <?= date_pe($maintenance['finished_at']) ?></span>
+                                    <span class="muted">Cerrado <?= date_pe($mantenimiento['finished_at']) ?></span>
                                 <?php endif; ?>
                             </td>
                         </tr>
 
-                        <?php if ($maintenance['status'] === 'ABIERTO'): ?>
+                        <?php if ($mantenimiento['status'] === 'ABIERTO'): ?>
                             <tr class="modal-row">
                                 <td colspan="7">
-                                    <dialog id="close-<?= $maintenance['id'] ?>" class="modal">
-                                        <form method="post" action="<?= url('mantenimientos/'.$maintenance['id'].'/cerrar') ?>">
+                                    <dialog id="close-<?= $mantenimiento['id'] ?>" class="modal">
+                                        <form method="post" action="<?= url('mantenimientos/'.$mantenimiento['id'].'/cerrar') ?>">
                                             <?= csrf_field() ?>
 
                                             <div class="modal-head">
                                                 <div>
                                                     <h3>Cerrar mantenimiento</h3>
-                                                    <p><?= e($maintenance['asset_code']) ?></p>
+                                                    <p><?= e($mantenimiento['asset_code']) ?></p>
                                                 </div>
                                                 <button type="button" data-close-modal>×</button>
                                             </div>
@@ -70,12 +70,12 @@
                                             <div class="form-grid cols-2">
                                                 <label>
                                                     Diagnóstico
-                                                    <textarea name="diagnosis" rows="3"><?= e($maintenance['diagnosis'] ?? '') ?></textarea>
+                                                    <textarea name="diagnosis" rows="3"><?= e($mantenimiento['diagnosis'] ?? '') ?></textarea>
                                                 </label>
 
                                                 <label>
                                                     Acciones realizadas
-                                                    <textarea name="actions" rows="3"><?= e($maintenance['actions'] ?? '') ?></textarea>
+                                                    <textarea name="actions" rows="3"><?= e($mantenimiento['actions'] ?? '') ?></textarea>
                                                 </label>
 
                                                 <label>
@@ -90,7 +90,7 @@
                                                         step="0.01"
                                                         min="0"
                                                         name="cost"
-                                                        value="<?= e($maintenance['cost']) ?>"
+                                                        value="<?= e($mantenimiento['cost']) ?>"
                                                     >
                                                 </label>
 
@@ -113,7 +113,7 @@
                         <?php endif; ?>
                     <?php endforeach; ?>
 
-                    <?php if (!$rows): ?>
+                    <?php if (!$filas): ?>
                         <tr>
                             <td colspan="7">
                                 <div class="empty">No hay mantenimientos registrados.</div>

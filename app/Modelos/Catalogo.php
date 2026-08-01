@@ -17,80 +17,80 @@ final class Catalogo extends ModeloBase
         'proveedores' => 'Proveedores',
     ];
 
-    public function listar(string $table): array
+    public function listar(string $tabla): array
     {
-        $this->validarTablaPermitida($table);
+        $this->validarTablaPermitida($tabla);
 
         return $this->db
-            ->query("SELECT * FROM $table WHERE active = 1 ORDER BY name")
+            ->query("SELECT * FROM $tabla WHERE active = 1 ORDER BY name")
             ->fetchAll();
     }
 
-    public function crear(string $table, array $data): int
+    public function crear(string $tabla, array $datos): int
     {
-        $this->validarTablaPermitida($table);
+        $this->validarTablaPermitida($tabla);
 
-        if ($table === 'tipos_activo') {
-            $statement = $this->db->prepare(
+        if ($tabla === 'tipos_activo') {
+            $consulta = $this->db->prepare(
                 'INSERT INTO tipos_activo(name, prefix, active) VALUES(?, ?, 1)'
             );
-            $statement->execute([$data['name'], strtoupper($data['prefix'])]);
+            $consulta->execute([$datos['name'], strtoupper($datos['prefix'])]);
 
             return (int) $this->db->lastInsertId();
         }
 
-        if ($table === 'estados_activo') {
-            $code = $this->codigoEstado($data);
-            $statement = $this->db->prepare(
+        if ($tabla === 'estados_activo') {
+            $codigo = $this->codigoEstado($datos);
+            $consulta = $this->db->prepare(
                 'INSERT INTO estados_activo(code, name, color, active) VALUES(?, ?, ?, 1)'
             );
-            $statement->execute([$code, $data['name'], $data['color'] ?? 'secondary']);
+            $consulta->execute([$codigo, $datos['name'], $datos['color'] ?? 'secondary']);
 
             return (int) $this->db->lastInsertId();
         }
 
-        if ($table === 'modelos') {
-            $statement = $this->db->prepare(
+        if ($tabla === 'modelos') {
+            $consulta = $this->db->prepare(
                 'INSERT INTO modelos(brand_id, name, active) VALUES(?, ?, 1)'
             );
-            $statement->execute([$data['brand_id'] ?: null, $data['name']]);
+            $consulta->execute([$datos['brand_id'] ?: null, $datos['name']]);
 
             return (int) $this->db->lastInsertId();
         }
 
-        if ($table === 'ubicaciones') {
-            $statement = $this->db->prepare(
+        if ($tabla === 'ubicaciones') {
+            $consulta = $this->db->prepare(
                 'INSERT INTO ubicaciones(area_id, name, active) VALUES(?, ?, 1)'
             );
-            $statement->execute([$data['area_id'] ?: null, $data['name']]);
+            $consulta->execute([$datos['area_id'] ?: null, $datos['name']]);
 
             return (int) $this->db->lastInsertId();
         }
 
-        $statement = $this->db->prepare("INSERT INTO $table(name, active) VALUES(?, 1)");
-        $statement->execute([$data['name']]);
+        $consulta = $this->db->prepare("INSERT INTO $tabla(name, active) VALUES(?, 1)");
+        $consulta->execute([$datos['name']]);
 
         return (int) $this->db->lastInsertId();
     }
 
-    private function validarTablaPermitida(string $table): void
+    private function validarTablaPermitida(string $tabla): void
     {
-        if (!isset($this->allowed[$table])) {
+        if (!isset($this->allowed[$tabla])) {
             throw new InvalidArgumentException('Catálogo inválido');
         }
     }
 
-    private function codigoEstado(array $data): string
+    private function codigoEstado(array $datos): string
     {
-        $code = strtoupper(trim((string) ($data['code'] ?? '')));
+        $codigo = strtoupper(trim((string) ($datos['code'] ?? '')));
 
-        if ($code !== '') {
-            return trim($code, '_');
+        if ($codigo !== '') {
+            return trim($codigo, '_');
         }
 
-        $base = iconv('UTF-8', 'ASCII//TRANSLIT', (string) $data['name']) ?: $data['name'];
-        $code = preg_replace('/[^A-Z0-9]+/', '_', strtoupper($base));
+        $base = iconv('UTF-8', 'ASCII//TRANSLIT', (string) $datos['name']) ?: $datos['name'];
+        $codigo = preg_replace('/[^A-Z0-9]+/', '_', strtoupper($base));
 
-        return trim($code, '_');
+        return trim($codigo, '_');
     }
 }

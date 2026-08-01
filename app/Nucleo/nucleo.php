@@ -8,29 +8,29 @@ use Throwable;
 
 final class Config
 {
-    private static array $data = [];
+    private static array $datos = [];
 
-    public static function get(string $key, mixed $default = null): mixed
+    public static function obtener(string $clave, mixed $default = null): mixed
     {
-        [$file, $item] = array_pad(explode('.', $key, 2), 2, null);
+        [$archivo, $registro] = array_pad(explode('.', $clave, 2), 2, null);
 
-        if (!isset(self::$data[$file])) {
-            $path = dirname(__DIR__, 2).'/config/'.$file.'.php';
+        if (!isset(self::$datos[$archivo])) {
+            $ruta = dirname(__DIR__, 2).'/config/'.$archivo.'.php';
 
-            if (!is_file($path)) {
+            if (!is_file($ruta)) {
                 return $default;
             }
 
-            self::$data[$file] = require $path;
+            self::$datos[$archivo] = require $ruta;
         }
 
-        return $item === null
-            ? self::$data[$file]
-            : (self::$data[$file][$item] ?? $default);
+        return $registro === null
+            ? self::$datos[$archivo]
+            : (self::$datos[$archivo][$registro] ?? $default);
     }
 }
 
-final class DB
+final class BD
 {
     private static ?PDO $pdo = null;
 
@@ -40,7 +40,7 @@ final class DB
             return self::$pdo;
         }
 
-        $config = Config::get('database');
+        $config = Config::obtener('database');
         $dsn = sprintf(
             'mysql:host=%s;port=%s;dbname=%s;charset=%s',
             $config['host'],
@@ -61,32 +61,32 @@ final class DB
 
 final class Flash
 {
-    public static function add(string $type, string $message): void
+    public static function add(string $tipo, string $mensaje): void
     {
-        $_SESSION['_flash'][] = compact('type', 'message');
+        $_SESSION['_flash'][] = ['type' => $tipo, 'message' => $mensaje];
     }
 
-    public static function success(string $message): void
+    public static function exito(string $mensaje): void
     {
-        self::add('success', $message);
+        self::add('success', $mensaje);
     }
 
-    public static function error(string $message): void
+    public static function error(string $mensaje): void
     {
-        self::add('danger', $message);
+        self::add('danger', $mensaje);
     }
 
-    public static function warning(string $message): void
+    public static function advertencia(string $mensaje): void
     {
-        self::add('warning', $message);
+        self::add('warning', $mensaje);
     }
 
-    public static function take(): array
+    public static function tomar(): array
     {
-        $flashes = $_SESSION['_flash'] ?? [];
+        $mensajes = $_SESSION['_flash'] ?? [];
         unset($_SESSION['_flash']);
 
-        return $flashes;
+        return $mensajes;
     }
 }
 
@@ -97,11 +97,11 @@ final class Csrf
         return $_SESSION['_token'] ??= bin2hex(random_bytes(32));
     }
 
-    public static function verify(): void
+    public static function verificar(): void
     {
-        $postedToken = (string) ($_POST['_token'] ?? '');
+        $tokenEnviado = (string) ($_POST['_token'] ?? '');
 
-        if ($postedToken === '' || !hash_equals(self::token(), $postedToken)) {
+        if ($tokenEnviado === '' || !hash_equals(self::token(), $tokenEnviado)) {
             \abort(419, 'La sesión del formulario expiró.');
         }
     }
@@ -109,39 +109,39 @@ final class Csrf
 
 final class Auth
 {
-    public static function attempt(string $username, string $password): bool
+    public static function intentar(string $usuario, string $clave): bool
     {
-        $statement = DB::pdo()->prepare(
+        $consulta = BD::pdo()->prepare(
             'SELECT u.*, r.name role_name
              FROM usuarios u
              JOIN roles r ON r.id = u.role_id
              WHERE u.username = ? AND u.active = 1
              LIMIT 1'
         );
-        $statement->execute([$username]);
-        $user = $statement->fetch();
+        $consulta->execute([$usuario]);
+        $usuarioEncontrado = $consulta->fetch();
 
-        if (!$user || !password_verify($password, $user['password_hash'])) {
+        if (!$usuarioEncontrado || !password_verify($clave, $usuarioEncontrado['password_hash'])) {
             return false;
         }
 
-        unset($user['password_hash']);
+        unset($usuarioEncontrado['password_hash']);
         session_regenerate_id(true);
-        $_SESSION['user'] = $user;
+        $_SESSION['user'] = $usuarioEncontrado;
 
-        DB::pdo()
+        BD::pdo()
             ->prepare('UPDATE usuarios SET last_login_at = NOW() WHERE id = ?')
-            ->execute([$user['id']]);
+            ->execute([$usuarioEncontrado['id']]);
 
         return true;
     }
 
-    public static function check(): bool
+    public static function autenticado(): bool
     {
         return isset($_SESSION['user']);
     }
 
-    public static function user(): ?array
+    public static function usuario(): ?array
     {
         return $_SESSION['user'] ?? null;
     }
@@ -151,60 +151,60 @@ final class Auth
         return isset($_SESSION['user']['id']) ? (int) $_SESSION['user']['id'] : null;
     }
 
-    public static function role(): ?string
+    public static function rol(): ?string
     {
         return $_SESSION['user']['role_name'] ?? null;
     }
 
-    public static function requireLogin(): void
+    public static function requerirIngreso(): void
     {
-        if (!self::check()) {
-            Flash::warning('Inicia sesión para continuar.');
+        if (!self::autenticado()) {
+            Flash::advertencia('Inicia sesión para continuar.');
             \redirect('ingreso');
         }
     }
 
-    public static function requireRole(array $roles): void
+    public static function requerirRol(array $roles): void
     {
-        self::requireLogin();
+        self::requerirIngreso();
 
-        if (!in_array(self::role(), $roles, true)) {
+        if (!in_array(self::rol(), $roles, true)) {
             \abort(403, 'No tienes permiso.');
         }
     }
 
-    public static function logout(): void
+    public static function cerrarSesion(): void
     {
         unset($_SESSION['user']);
         session_regenerate_id(true);
     }
 }
 
-final class Audit
+final class Auditoria
 {
-    public static function log(
-        string $module,
-        string $action,
-        string $entity,
+    public static function registrar(
+        string $modulo,
+        string $accion,
+        string $entidad,
         ?int $id,
-        mixed $old = null,
-        mixed $new = null
+        mixed $anteriores = null,
+        mixed $nuevo = null
     ): void {
         try {
-            $statement = DB::pdo()->prepare(
+            $consulta = BD::pdo()->prepare(
                 'INSERT INTO registros_auditoria
                     (user_id, module, action, entity_type, entity_id, old_values, new_values, ip_address, user_agent, created_at)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())'
             );
 
-            $statement->execute([
+            $consulta->execute([
                 Auth::id(),
-                $module,
-                $action,
-                $entity,
+                $modulo,
+                $accion,
+                $entidad,
                 $id,
-                $old ? json_encode($old, JSON_UNESCAPED_UNICODE) : null,
-                $new ? json_encode($new, JSON_UNESCAPED_UNICODE) : null,
+                $anteriores ? json_encode($anteriores, JSON_UNESCAPED_UNICODE) : null,
+                $nuevo ? json_encode($nuevo, JSON_UNESCAPED_UNICODE) : null,
                 $_SERVER['REMOTE_ADDR'] ?? null,
                 substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 500),
             ]);
@@ -214,34 +214,34 @@ final class Audit
     }
 }
 
-final class View
+final class Vista
 {
-    public static function render(string $view, array $data = [], string $layout = 'plantilla'): void
+    public static function renderizar(string $vista, array $datos = [], string $plantilla = 'plantilla'): void
     {
-        $file = dirname(__DIR__).'/Vistas/'.$view.'.php';
+        $archivo = dirname(__DIR__).'/Vistas/'.$vista.'.php';
 
-        if (!is_file($file)) {
-            \abort(500, 'Vista no encontrada: '.$view);
+        if (!is_file($archivo)) {
+            \abort(500, 'Vista no encontrada: '.$vista);
         }
 
-        extract($data, EXTR_SKIP);
+        extract($datos, EXTR_SKIP);
         ob_start();
-        require $file;
-        $content = ob_get_clean();
+        require $archivo;
+        $contenido = ob_get_clean();
 
-        if ($layout === '') {
-            echo $content;
+        if ($plantilla === '') {
+            echo $contenido;
             return;
         }
 
-        require dirname(__DIR__).'/Vistas/'.$layout.'.php';
+        require dirname(__DIR__).'/Vistas/'.$plantilla.'.php';
     }
 
-    public static function capture(string $view, array $data = []): string
+    public static function capturar(string $vista, array $datos = []): string
     {
-        extract($data, EXTR_SKIP);
+        extract($datos, EXTR_SKIP);
         ob_start();
-        require dirname(__DIR__).'/Vistas/'.$view.'.php';
+        require dirname(__DIR__).'/Vistas/'.$vista.'.php';
 
         return (string) ob_get_clean();
     }
@@ -249,64 +249,64 @@ final class View
 
 abstract class Controlador
 {
-    protected function view(string $view, array $data = [], string $layout = 'plantilla'): void
+    protected function vista(string $vista, array $datos = [], string $plantilla = 'plantilla'): void
     {
-        View::render($view, $data, $layout);
+        Vista::renderizar($vista, $datos, $plantilla);
     }
 
-    protected function validate(array $data, array $rules): array
+    protected function validar(array $datos, array $reglas): array
     {
-        $errors = [];
+        $errores = [];
 
-        foreach ($rules as $field => $ruleList) {
-            $value = trim((string) ($data[$field] ?? ''));
+        foreach ($reglas as $campo => $listaReglas) {
+            $valor = trim((string) ($datos[$campo] ?? ''));
 
-            foreach (explode('|', $ruleList) as $rule) {
-                if ($rule === 'required' && $value === '') {
-                    $errors[$field] = 'Campo obligatorio.';
+            foreach (explode('|', $listaReglas) as $regla) {
+                if ($regla === 'required' && $valor === '') {
+                    $errores[$campo] = 'Campo obligatorio.';
                 }
 
-                if ($rule === 'email' && $value !== '' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    $errors[$field] = 'Correo inválido.';
+                if ($regla === 'email' && $valor !== '' && !filter_var($valor, FILTER_VALIDATE_EMAIL)) {
+                    $errores[$campo] = 'Correo inválido.';
                 }
 
-                if (str_starts_with($rule, 'max:') && mb_strlen($value) > (int) substr($rule, 4)) {
-                    $errors[$field] = 'Longitud máxima excedida.';
+                if (str_starts_with($regla, 'max:') && mb_strlen($valor) > (int) substr($regla, 4)) {
+                    $errores[$campo] = 'Longitud máxima excedida.';
                 }
             }
         }
 
-        return $errors;
+        return $errores;
     }
 
-    protected function errors(array $errors, array $old, string $path): never
+    protected function enviarErrores(array $errores, array $anteriores, string $ruta): never
     {
-        $_SESSION['_errors'] = $errors;
-        $_SESSION['_old'] = $old;
+        $_SESSION['_errors'] = $errores;
+        $_SESSION['_old'] = $anteriores;
 
-        \redirect($path);
+        \redirect($ruta);
     }
 }
 
 final class Router
 {
-    private array $routes = [];
+    private array $rutas = [];
 
-    public function get(string $path, array $handler): void
+    public function get(string $ruta, array $manejador): void
     {
-        $this->routes[] = ['GET', $path, $handler];
+        $this->rutas[] = ['GET', $ruta, $manejador];
     }
 
-    public function post(string $path, array $handler): void
+    public function post(string $ruta, array $manejador): void
     {
-        $this->routes[] = ['POST', $path, $handler];
+        $this->rutas[] = ['POST', $ruta, $manejador];
     }
 
     public function dispatch(): void
     {
-        $method = $_SERVER['REQUEST_METHOD'];
+        $metodo = $_SERVER['REQUEST_METHOD'];
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
-        $base = rtrim((string) Config::get('app.base_url'), '/');
+        $base = rtrim((string) Config::obtener('app.base_url'), '/');
 
         if ($base !== '' && str_starts_with($uri, $base)) {
             $uri = substr($uri, strlen($base));
@@ -318,21 +318,21 @@ final class Router
             $uri = '/';
         }
 
-        foreach ($this->routes as [$routeMethod, $path, $handler]) {
-            if ($routeMethod !== $method) {
+        foreach ($this->rutas as [$metodoRuta, $ruta, $manejador]) {
+            if ($metodoRuta !== $metodo) {
                 continue;
             }
 
             $pattern = '#^'.preg_replace(
                 '#\{[a-zA-Z_][a-zA-Z0-9_]*\}#',
                 '([^/]+)',
-                rtrim($path, '/')
+                rtrim($ruta, '/')
             ).'/?$#';
 
-            if (preg_match($pattern, $uri, $matches)) {
-                array_shift($matches);
-                [$class, $action] = $handler;
-                (new $class())->$action(...$matches);
+            if (preg_match($pattern, $uri, $coincidencias)) {
+                array_shift($coincidencias);
+                [$clase, $accion] = $manejador;
+                (new $clase())->$accion(...$coincidencias);
                 return;
             }
         }

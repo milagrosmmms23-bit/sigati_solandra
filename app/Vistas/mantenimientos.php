@@ -1,6 +1,6 @@
 <?php
-$modo = $modo ?? $mode ?? 'listado';
-$rows = $rows ?? [];
+$modo = $modo ?? 'listado';
+$filas = $filas ?? [];
 $activos = $activos ?? [];
 
 $parciales = [

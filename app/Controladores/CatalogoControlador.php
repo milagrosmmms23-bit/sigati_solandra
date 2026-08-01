@@ -9,40 +9,40 @@ use Throwable;
 
 final class CatalogoControlador extends Controlador
 {
-    private Catalogo $model;
+    private Catalogo $modelo;
 
     public function __construct()
     {
-        Auth::requireRole(['ADMIN']);
-        $this->model = new Catalogo();
+        Auth::requerirRol(['ADMIN']);
+        $this->modelo = new Catalogo();
     }
 
     public function listado(): void
     {
-        $rows = [];
+        $filas = [];
 
-        foreach ($this->model->allowed as $table => $label) {
-            $rows[$table] = $this->model->listar($table);
+        foreach ($this->modelo->allowed as $tabla => $label) {
+            $filas[$tabla] = $this->modelo->listar($tabla);
         }
 
-        $this->view('catalogos', [
-            'title' => 'Catálogos',
-            'rows' => $rows,
-            'labels' => $this->model->allowed,
+        $this->vista('catalogos', [
+            'titulo' => 'Catálogos',
+            'filas' => $filas,
+            'labels' => $this->modelo->allowed,
         ]);
     }
 
-    public function guardar(string $table): void
+    public function guardar(string $tabla): void
     {
-        Csrf::verify();
+        Csrf::verificar();
 
         try {
-            $this->model->crear($table, $_POST);
-            Flash::success('Registro agregado.');
+            $this->modelo->crear($tabla, $_POST);
+            Flash::exito('Registro agregado.');
         } catch (Throwable $exception) {
             Flash::error($exception->getMessage());
         }
 
-        redirect('catalogos#'.$table);
+        redirect('catalogos#'.$tabla);
     }
 }

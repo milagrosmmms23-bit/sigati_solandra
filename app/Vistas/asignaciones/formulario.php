@@ -24,9 +24,9 @@
                     Trabajador *
                     <select name="employee_id" id="employeeSelect" required>
                         <option value="">Seleccionar trabajador</option>
-                        <?php foreach ($trabajadores as $employee): ?>
-                            <option value="<?= $employee['id'] ?>" data-area="<?= e($employee['area_id']) ?>">
-                                <?= e($employee['employee_code'].' · '.$employee['first_name'].' '.$employee['last_name'].' · '.($employee['area_name'] ?? 'Sin área')) ?>
+                        <?php foreach ($trabajadores as $trabajador): ?>
+                            <option value="<?= $trabajador['id'] ?>" data-area="<?= e($trabajador['area_id']) ?>">
+                                <?= e($trabajador['employee_code'].' · '.$trabajador['first_name'].' '.$trabajador['last_name'].' · '.($trabajador['area_name'] ?? 'Sin área')) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -60,17 +60,17 @@
                     <span><b data-selected-count>0</b> seleccionados</span>
                 </div>
 
-                <?php foreach ($activos as $asset): ?>
+                <?php foreach ($activos as $activo): ?>
                     <label class="picker-item" data-activo-fila>
-                        <input type="checkbox" name="asset_ids[]" value="<?= $asset['id'] ?>" data-activo-check>
+                        <input type="checkbox" name="asset_ids[]" value="<?= $activo['id'] ?>" data-activo-check>
                         <div>
-                            <strong><?= e($asset['asset_code']) ?></strong>
-                            <span><?= e($asset['type_name'].' · '.trim(($asset['brand_name'] ?? '').' '.($asset['model_name'] ?? ''))) ?></span>
-                            <small>Serie: <?= e($asset['serial_number'] ?: '—') ?></small>
+                            <strong><?= e($activo['asset_code']) ?></strong>
+                            <span><?= e($activo['type_name'].' · '.trim(($activo['brand_name'] ?? '').' '.($activo['model_name'] ?? ''))) ?></span>
+                            <small>Serie: <?= e($activo['serial_number'] ?: '—') ?></small>
                         </div>
                         <input
                             class="condition-input"
-                            name="condition[<?= $asset['id'] ?>]"
+                            name="condition[<?= $activo['id'] ?>]"
                             value="Buen estado"
                             placeholder="Condición de entrega"
                         >

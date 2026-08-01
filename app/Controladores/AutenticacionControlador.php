@@ -9,22 +9,22 @@ final class AutenticacionControlador extends Controlador
 {
     public function formularioIngreso(): void
     {
-        if (Auth::check()) {
+        if (Auth::autenticado()) {
             redirect('');
         }
 
-        $this->view('ingreso', ['title' => 'Iniciar sesión'], 'autenticacion');
+        $this->vista('ingreso', ['titulo' => 'Iniciar sesión'], 'autenticacion');
     }
 
     public function ingresar(): void
     {
-        Csrf::verify();
+        Csrf::verificar();
 
         $usuario = trim($_POST['username'] ?? '');
         $clave = (string) ($_POST['password'] ?? '');
 
-        if (Auth::attempt($usuario, $clave)) {
-            Flash::success('Bienvenido a SIGATI SOLANDRA.');
+        if (Auth::intentar($usuario, $clave)) {
+            Flash::exito('Bienvenido a SIGATI SOLANDRA.');
             redirect('');
         }
 
@@ -34,10 +34,10 @@ final class AutenticacionControlador extends Controlador
 
     public function salir(): void
     {
-        Csrf::verify();
-        Auth::logout();
+        Csrf::verificar();
+        Auth::cerrarSesion();
 
-        Flash::success('Sesión cerrada.');
+        Flash::exito('Sesión cerrada.');
         redirect('ingreso');
     }
 }

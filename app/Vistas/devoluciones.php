@@ -1,10 +1,10 @@
 <?php
-$modo = $modo ?? $mode ?? 'listado';
-$rows = $rows ?? [];
+$modo = $modo ?? 'listado';
+$filas = $filas ?? [];
 $asignaciones = $asignaciones ?? [];
-$assignment = $assignment ?? null;
-$statuses = $statuses ?? [];
-$item = $item ?? null;
+$asignacion = $asignacion ?? null;
+$estados = $estados ?? [];
+$registro = $registro ?? null;
 
 $parciales = [
     'listado' => 'index',
