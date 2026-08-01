@@ -84,10 +84,10 @@ function nav_activo(string $segmento, string $rutaActual): string
             </div>
 
             <div class="user-menu">
-                <div class="avatar"><?= e(strtoupper(substr($usuario['name'] ?? 'U', 0, 1))) ?></div>
+                <div class="avatar"><?= e(strtoupper(substr($usuario['nombre'] ?? 'U', 0, 1))) ?></div>
                 <div>
-                    <strong><?= e($usuario['name'] ?? '') ?></strong>
-                    <small><?= e($usuario['role_name'] ?? '') ?></small>
+                    <strong><?= e($usuario['nombre'] ?? '') ?></strong>
+                    <small><?= e($usuario['nombre_rol'] ?? '') ?></small>
                 </div>
 
                 <form action="<?= url('salir') ?>" method="post">

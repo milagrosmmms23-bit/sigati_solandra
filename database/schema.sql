@@ -9,345 +9,345 @@ USE sigati_solandra;
 
 CREATE TABLE roles (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(40) NOT NULL UNIQUE,
-  description VARCHAR(150) NULL
+  nombre VARCHAR(40) NOT NULL UNIQUE,
+  descripcion VARCHAR(150) NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE usuarios (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  role_id INT UNSIGNED NOT NULL,
-  name VARCHAR(120) NOT NULL,
-  username VARCHAR(60) NOT NULL UNIQUE,
-  email VARCHAR(150) NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
-  active TINYINT(1) NOT NULL DEFAULT 1,
-  last_login_at DATETIME NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles(id)
+  rol_id INT UNSIGNED NOT NULL,
+  nombre VARCHAR(120) NOT NULL,
+  usuario VARCHAR(60) NOT NULL UNIQUE,
+  correo VARCHAR(150) NULL UNIQUE,
+  clave_hash VARCHAR(255) NOT NULL,
+  activo TINYINT(1) NOT NULL DEFAULT 1,
+  ultimo_ingreso_en DATETIME NULL,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_users_role FOREIGN KEY (rol_id) REFERENCES roles(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE areas (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(120) NOT NULL UNIQUE,
-  active TINYINT(1) NOT NULL DEFAULT 1,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  nombre VARCHAR(120) NOT NULL UNIQUE,
+  activo TINYINT(1) NOT NULL DEFAULT 1,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE ubicaciones (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   area_id INT UNSIGNED NULL,
-  name VARCHAR(140) NOT NULL,
-  active TINYINT(1) NOT NULL DEFAULT 1,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_location_area (area_id,name),
+  nombre VARCHAR(140) NOT NULL,
+  activo TINYINT(1) NOT NULL DEFAULT 1,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_location_area (area_id,nombre),
   CONSTRAINT fk_locations_area FOREIGN KEY (area_id) REFERENCES areas(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE trabajadores (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  employee_code VARCHAR(50) NOT NULL UNIQUE,
-  first_name VARCHAR(100) NOT NULL,
-  last_name VARCHAR(100) NOT NULL,
-  email VARCHAR(150) NULL,
-  phone VARCHAR(30) NULL,
-  position VARCHAR(120) NULL,
+  codigo_trabajador VARCHAR(50) NOT NULL UNIQUE,
+  nombres VARCHAR(100) NOT NULL,
+  apellidos VARCHAR(100) NOT NULL,
+  correo VARCHAR(150) NULL,
+  telefono VARCHAR(30) NULL,
+  cargo VARCHAR(120) NULL,
   area_id INT UNSIGNED NULL,
-  active TINYINT(1) NOT NULL DEFAULT 1,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX ix_employees_name (last_name,first_name),
+  activo TINYINT(1) NOT NULL DEFAULT 1,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX ix_employees_name (apellidos,nombres),
   CONSTRAINT fk_employees_area FOREIGN KEY (area_id) REFERENCES areas(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE tipos_activo (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL UNIQUE,
-  prefix VARCHAR(8) NOT NULL UNIQUE,
-  active TINYINT(1) NOT NULL DEFAULT 1,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  nombre VARCHAR(100) NOT NULL UNIQUE,
+  prefijo VARCHAR(8) NOT NULL UNIQUE,
+  activo TINYINT(1) NOT NULL DEFAULT 1,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE estados_activo (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  code VARCHAR(40) NOT NULL UNIQUE,
-  name VARCHAR(100) NOT NULL UNIQUE,
+  codigo VARCHAR(40) NOT NULL UNIQUE,
+  nombre VARCHAR(100) NOT NULL UNIQUE,
   color VARCHAR(30) NOT NULL DEFAULT 'secondary',
-  active TINYINT(1) NOT NULL DEFAULT 1
+  activo TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB;
 
 CREATE TABLE marcas (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL UNIQUE,
-  active TINYINT(1) NOT NULL DEFAULT 1
+  nombre VARCHAR(100) NOT NULL UNIQUE,
+  activo TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB;
 
 CREATE TABLE modelos (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  brand_id INT UNSIGNED NULL,
-  name VARCHAR(120) NOT NULL,
-  active TINYINT(1) NOT NULL DEFAULT 1,
-  UNIQUE KEY uq_model_brand (brand_id,name),
-  CONSTRAINT fk_models_brand FOREIGN KEY (brand_id) REFERENCES marcas(id)
+  marca_id INT UNSIGNED NULL,
+  nombre VARCHAR(120) NOT NULL,
+  activo TINYINT(1) NOT NULL DEFAULT 1,
+  UNIQUE KEY uq_model_brand (marca_id,nombre),
+  CONSTRAINT fk_models_brand FOREIGN KEY (marca_id) REFERENCES marcas(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE proveedores (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(150) NOT NULL UNIQUE,
-  active TINYINT(1) NOT NULL DEFAULT 1
+  nombre VARCHAR(150) NOT NULL UNIQUE,
+  activo TINYINT(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB;
 
 CREATE TABLE contadores_activo (
-  asset_type_id INT UNSIGNED PRIMARY KEY,
-  current_number INT UNSIGNED NOT NULL DEFAULT 0,
-  CONSTRAINT fk_counter_type FOREIGN KEY (asset_type_id) REFERENCES tipos_activo(id)
+  tipo_activo_id INT UNSIGNED PRIMARY KEY,
+  numero_actual INT UNSIGNED NOT NULL DEFAULT 0,
+  CONSTRAINT fk_counter_type FOREIGN KEY (tipo_activo_id) REFERENCES tipos_activo(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE contadores_documento (
-  document_type VARCHAR(15) NOT NULL,
-  document_year SMALLINT UNSIGNED NOT NULL,
-  current_number INT UNSIGNED NOT NULL DEFAULT 0,
-  PRIMARY KEY(document_type,document_year)
+  tipo_documento VARCHAR(15) NOT NULL,
+  anio_documento SMALLINT UNSIGNED NOT NULL,
+  numero_actual INT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY(tipo_documento,anio_documento)
 ) ENGINE=InnoDB;
 
 CREATE TABLE activos (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   uuid CHAR(36) NULL UNIQUE,
-  asset_code VARCHAR(40) NOT NULL UNIQUE,
-  legacy_code VARCHAR(80) NULL,
-  asset_type_id INT UNSIGNED NOT NULL,
-  brand_id INT UNSIGNED NULL,
-  model_id INT UNSIGNED NULL,
-  status_id INT UNSIGNED NOT NULL,
-  current_area_id INT UNSIGNED NULL,
-  location_id INT UNSIGNED NULL,
-  current_employee_id INT UNSIGNED NULL,
-  serial_number VARCHAR(150) NULL,
-  hostname VARCHAR(120) NULL,
-  ip_address VARCHAR(45) NULL,
-  mac_address VARCHAR(30) NULL,
+  codigo_activo VARCHAR(40) NOT NULL UNIQUE,
+  codigo_anterior VARCHAR(80) NULL,
+  tipo_activo_id INT UNSIGNED NOT NULL,
+  marca_id INT UNSIGNED NULL,
+  modelo_id INT UNSIGNED NULL,
+  estado_id INT UNSIGNED NOT NULL,
+  area_actual_id INT UNSIGNED NULL,
+  ubicacion_id INT UNSIGNED NULL,
+  trabajador_actual_id INT UNSIGNED NULL,
+  numero_serie VARCHAR(150) NULL,
+  nombre_equipo VARCHAR(120) NULL,
+  direccion_ip VARCHAR(45) NULL,
+  direccion_mac VARCHAR(30) NULL,
   imei1 VARCHAR(30) NULL,
   imei2 VARCHAR(30) NULL,
-  phone_number VARCHAR(30) NULL,
-  purchase_date DATE NULL,
-  invoice_number VARCHAR(80) NULL,
-  supplier_id INT UNSIGNED NULL,
-  cost DECIMAL(12,2) NULL,
-  warranty_end DATE NULL,
-  notes TEXT NULL,
-  active TINYINT(1) NOT NULL DEFAULT 1,
-  created_by INT UNSIGNED NULL,
-  updated_by INT UNSIGNED NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX ix_assets_search (asset_code,legacy_code,serial_number),
-  INDEX ix_assets_status (status_id),
-  INDEX ix_assets_area (current_area_id),
-  INDEX ix_assets_employee (current_employee_id),
-  CONSTRAINT fk_assets_type FOREIGN KEY (asset_type_id) REFERENCES tipos_activo(id),
-  CONSTRAINT fk_assets_brand FOREIGN KEY (brand_id) REFERENCES marcas(id),
-  CONSTRAINT fk_assets_model FOREIGN KEY (model_id) REFERENCES modelos(id),
-  CONSTRAINT fk_assets_status FOREIGN KEY (status_id) REFERENCES estados_activo(id),
-  CONSTRAINT fk_assets_area FOREIGN KEY (current_area_id) REFERENCES areas(id),
-  CONSTRAINT fk_assets_location FOREIGN KEY (location_id) REFERENCES ubicaciones(id),
-  CONSTRAINT fk_assets_employee FOREIGN KEY (current_employee_id) REFERENCES trabajadores(id),
-  CONSTRAINT fk_assets_supplier FOREIGN KEY (supplier_id) REFERENCES proveedores(id),
-  CONSTRAINT fk_assets_created_by FOREIGN KEY (created_by) REFERENCES usuarios(id),
-  CONSTRAINT fk_assets_updated_by FOREIGN KEY (updated_by) REFERENCES usuarios(id)
+  numero_telefono VARCHAR(30) NULL,
+  fecha_compra DATE NULL,
+  numero_factura VARCHAR(80) NULL,
+  proveedor_id INT UNSIGNED NULL,
+  costo DECIMAL(12,2) NULL,
+  fin_garantia DATE NULL,
+  observaciones TEXT NULL,
+  activo TINYINT(1) NOT NULL DEFAULT 1,
+  creado_por INT UNSIGNED NULL,
+  actualizado_por INT UNSIGNED NULL,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX ix_assets_search (codigo_activo,codigo_anterior,numero_serie),
+  INDEX ix_assets_status (estado_id),
+  INDEX ix_assets_area (area_actual_id),
+  INDEX ix_assets_employee (trabajador_actual_id),
+  CONSTRAINT fk_assets_type FOREIGN KEY (tipo_activo_id) REFERENCES tipos_activo(id),
+  CONSTRAINT fk_assets_brand FOREIGN KEY (marca_id) REFERENCES marcas(id),
+  CONSTRAINT fk_assets_model FOREIGN KEY (modelo_id) REFERENCES modelos(id),
+  CONSTRAINT fk_assets_status FOREIGN KEY (estado_id) REFERENCES estados_activo(id),
+  CONSTRAINT fk_assets_area FOREIGN KEY (area_actual_id) REFERENCES areas(id),
+  CONSTRAINT fk_assets_location FOREIGN KEY (ubicacion_id) REFERENCES ubicaciones(id),
+  CONSTRAINT fk_assets_employee FOREIGN KEY (trabajador_actual_id) REFERENCES trabajadores(id),
+  CONSTRAINT fk_assets_supplier FOREIGN KEY (proveedor_id) REFERENCES proveedores(id),
+  CONSTRAINT fk_assets_created_by FOREIGN KEY (creado_por) REFERENCES usuarios(id),
+  CONSTRAINT fk_assets_updated_by FOREIGN KEY (actualizado_por) REFERENCES usuarios(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE especificaciones_activo (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  asset_id BIGINT UNSIGNED NOT NULL,
-  spec_key VARCHAR(100) NOT NULL,
-  spec_value VARCHAR(255) NOT NULL,
-  UNIQUE KEY uq_asset_spec (asset_id,spec_key),
-  CONSTRAINT fk_specs_asset FOREIGN KEY (asset_id) REFERENCES activos(id) ON DELETE CASCADE
+  activo_id BIGINT UNSIGNED NOT NULL,
+  clave_especificacion VARCHAR(100) NOT NULL,
+  valor_especificacion VARCHAR(255) NOT NULL,
+  UNIQUE KEY uq_asset_spec (activo_id,clave_especificacion),
+  CONSTRAINT fk_specs_asset FOREIGN KEY (activo_id) REFERENCES activos(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE asignaciones (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  assignment_number VARCHAR(30) NOT NULL UNIQUE,
-  employee_id INT UNSIGNED NOT NULL,
+  numero_asignacion VARCHAR(30) NOT NULL UNIQUE,
+  trabajador_id INT UNSIGNED NOT NULL,
   area_id INT UNSIGNED NULL,
-  status ENUM('BORRADOR','CONFIRMADA','PARCIAL','CERRADA','ANULADA') NOT NULL DEFAULT 'BORRADOR',
-  notes TEXT NULL,
-  assigned_at DATETIME NULL,
-  created_by INT UNSIGNED NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_assign_employee FOREIGN KEY (employee_id) REFERENCES trabajadores(id),
+  estado ENUM('BORRADOR','CONFIRMADA','PARCIAL','CERRADA','ANULADA') NOT NULL DEFAULT 'BORRADOR',
+  observaciones TEXT NULL,
+  asignado_en DATETIME NULL,
+  creado_por INT UNSIGNED NOT NULL,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_assign_employee FOREIGN KEY (trabajador_id) REFERENCES trabajadores(id),
   CONSTRAINT fk_assign_area FOREIGN KEY (area_id) REFERENCES areas(id),
-  CONSTRAINT fk_assign_user FOREIGN KEY (created_by) REFERENCES usuarios(id)
+  CONSTRAINT fk_assign_user FOREIGN KEY (creado_por) REFERENCES usuarios(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE items_asignacion (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  assignment_id BIGINT UNSIGNED NOT NULL,
-  asset_id BIGINT UNSIGNED NOT NULL,
-  condition_out VARCHAR(255) NOT NULL DEFAULT 'Buen estado',
-  returned_at DATETIME NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_assignment_asset (assignment_id,asset_id),
-  INDEX ix_assignment_pending (assignment_id,returned_at),
-  CONSTRAINT fk_assign_item_header FOREIGN KEY (assignment_id) REFERENCES asignaciones(id) ON DELETE CASCADE,
-  CONSTRAINT fk_assign_item_asset FOREIGN KEY (asset_id) REFERENCES activos(id)
+  asignacion_id BIGINT UNSIGNED NOT NULL,
+  activo_id BIGINT UNSIGNED NOT NULL,
+  condicion_salida VARCHAR(255) NOT NULL DEFAULT 'Buen estado',
+  devuelto_en DATETIME NULL,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_assignment_asset (asignacion_id,activo_id),
+  INDEX ix_assignment_pending (asignacion_id,devuelto_en),
+  CONSTRAINT fk_assign_item_header FOREIGN KEY (asignacion_id) REFERENCES asignaciones(id) ON DELETE CASCADE,
+  CONSTRAINT fk_assign_item_asset FOREIGN KEY (activo_id) REFERENCES activos(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE devoluciones_activo (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  return_number VARCHAR(30) NOT NULL UNIQUE,
-  assignment_id BIGINT UNSIGNED NOT NULL,
-  status ENUM('BORRADOR','CONFIRMADA','ANULADA') NOT NULL DEFAULT 'BORRADOR',
-  notes TEXT NULL,
-  returned_at DATETIME NULL,
-  created_by INT UNSIGNED NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_return_assignment FOREIGN KEY (assignment_id) REFERENCES asignaciones(id),
-  CONSTRAINT fk_return_user FOREIGN KEY (created_by) REFERENCES usuarios(id)
+  numero_devolucion VARCHAR(30) NOT NULL UNIQUE,
+  asignacion_id BIGINT UNSIGNED NOT NULL,
+  estado ENUM('BORRADOR','CONFIRMADA','ANULADA') NOT NULL DEFAULT 'BORRADOR',
+  observaciones TEXT NULL,
+  devuelto_en DATETIME NULL,
+  creado_por INT UNSIGNED NOT NULL,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_return_assignment FOREIGN KEY (asignacion_id) REFERENCES asignaciones(id),
+  CONSTRAINT fk_return_user FOREIGN KEY (creado_por) REFERENCES usuarios(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE items_devolucion (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  return_id BIGINT UNSIGNED NOT NULL,
-  assignment_item_id BIGINT UNSIGNED NOT NULL,
-  condition_in VARCHAR(255) NOT NULL,
-  damage_notes VARCHAR(500) NULL,
-  next_status_id INT UNSIGNED NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_return_assignment_item (assignment_item_id),
-  CONSTRAINT fk_return_item_header FOREIGN KEY (return_id) REFERENCES devoluciones_activo(id) ON DELETE CASCADE,
-  CONSTRAINT fk_return_item_assignment FOREIGN KEY (assignment_item_id) REFERENCES items_asignacion(id),
-  CONSTRAINT fk_return_item_status FOREIGN KEY (next_status_id) REFERENCES estados_activo(id)
+  devolucion_id BIGINT UNSIGNED NOT NULL,
+  item_asignacion_id BIGINT UNSIGNED NOT NULL,
+  condicion_entrada VARCHAR(255) NOT NULL,
+  observaciones_danos VARCHAR(500) NULL,
+  siguiente_estado_id INT UNSIGNED NOT NULL,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_return_assignment_item (item_asignacion_id),
+  CONSTRAINT fk_return_item_header FOREIGN KEY (devolucion_id) REFERENCES devoluciones_activo(id) ON DELETE CASCADE,
+  CONSTRAINT fk_return_item_assignment FOREIGN KEY (item_asignacion_id) REFERENCES items_asignacion(id),
+  CONSTRAINT fk_return_item_status FOREIGN KEY (siguiente_estado_id) REFERENCES estados_activo(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE mantenimientos (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  asset_id BIGINT UNSIGNED NOT NULL,
-  type ENUM('PREVENTIVO','CORRECTIVO') NOT NULL,
-  status ENUM('ABIERTO','CERRADO','CANCELADO') NOT NULL DEFAULT 'ABIERTO',
-  previous_status_id INT UNSIGNED NULL,
-  issue TEXT NULL,
-  diagnosis TEXT NULL,
-  actions TEXT NULL,
-  parts_used TEXT NULL,
-  cost DECIMAL(12,2) NOT NULL DEFAULT 0,
-  started_at DATETIME NOT NULL,
-  finished_at DATETIME NULL,
-  next_date DATE NULL,
-  opened_by INT UNSIGNED NOT NULL,
-  closed_by INT UNSIGNED NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_maintenance_asset FOREIGN KEY (asset_id) REFERENCES activos(id),
-  CONSTRAINT fk_maintenance_previous_status FOREIGN KEY (previous_status_id) REFERENCES estados_activo(id),
-  CONSTRAINT fk_maintenance_opened FOREIGN KEY (opened_by) REFERENCES usuarios(id),
-  CONSTRAINT fk_maintenance_closed FOREIGN KEY (closed_by) REFERENCES usuarios(id)
+  activo_id BIGINT UNSIGNED NOT NULL,
+  tipo ENUM('PREVENTIVO','CORRECTIVO') NOT NULL,
+  estado ENUM('ABIERTO','CERRADO','CANCELADO') NOT NULL DEFAULT 'ABIERTO',
+  estado_anterior_id INT UNSIGNED NULL,
+  problema TEXT NULL,
+  diagnostico TEXT NULL,
+  acciones TEXT NULL,
+  repuestos_usados TEXT NULL,
+  costo DECIMAL(12,2) NOT NULL DEFAULT 0,
+  iniciado_en DATETIME NOT NULL,
+  finalizado_en DATETIME NULL,
+  proxima_fecha DATE NULL,
+  abierto_por INT UNSIGNED NOT NULL,
+  cerrado_por INT UNSIGNED NULL,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_maintenance_asset FOREIGN KEY (activo_id) REFERENCES activos(id),
+  CONSTRAINT fk_maintenance_previous_status FOREIGN KEY (estado_anterior_id) REFERENCES estados_activo(id),
+  CONSTRAINT fk_maintenance_opened FOREIGN KEY (abierto_por) REFERENCES usuarios(id),
+  CONSTRAINT fk_maintenance_closed FOREIGN KEY (cerrado_por) REFERENCES usuarios(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE movimientos_activo (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  asset_id BIGINT UNSIGNED NOT NULL,
-  movement_type VARCHAR(50) NOT NULL,
-  reference_type VARCHAR(40) NULL,
-  reference_id BIGINT UNSIGNED NULL,
-  from_status_id INT UNSIGNED NULL,
-  to_status_id INT UNSIGNED NULL,
-  from_area_id INT UNSIGNED NULL,
-  to_area_id INT UNSIGNED NULL,
-  from_employee_id INT UNSIGNED NULL,
-  to_employee_id INT UNSIGNED NULL,
-  notes VARCHAR(500) NULL,
-  user_id INT UNSIGNED NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX ix_movement_asset_date (asset_id,created_at),
-  CONSTRAINT fk_movement_asset FOREIGN KEY (asset_id) REFERENCES activos(id),
-  CONSTRAINT fk_movement_from_status FOREIGN KEY (from_status_id) REFERENCES estados_activo(id),
-  CONSTRAINT fk_movement_to_status FOREIGN KEY (to_status_id) REFERENCES estados_activo(id),
-  CONSTRAINT fk_movement_from_area FOREIGN KEY (from_area_id) REFERENCES areas(id),
-  CONSTRAINT fk_movement_to_area FOREIGN KEY (to_area_id) REFERENCES areas(id),
-  CONSTRAINT fk_movement_from_employee FOREIGN KEY (from_employee_id) REFERENCES trabajadores(id),
-  CONSTRAINT fk_movement_to_employee FOREIGN KEY (to_employee_id) REFERENCES trabajadores(id),
-  CONSTRAINT fk_movement_user FOREIGN KEY (user_id) REFERENCES usuarios(id)
+  activo_id BIGINT UNSIGNED NOT NULL,
+  tipo_movimiento VARCHAR(50) NOT NULL,
+  tipo_referencia VARCHAR(40) NULL,
+  referencia_id BIGINT UNSIGNED NULL,
+  estado_origen_id INT UNSIGNED NULL,
+  estado_destino_id INT UNSIGNED NULL,
+  area_origen_id INT UNSIGNED NULL,
+  area_destino_id INT UNSIGNED NULL,
+  trabajador_origen_id INT UNSIGNED NULL,
+  trabajador_destino_id INT UNSIGNED NULL,
+  observaciones VARCHAR(500) NULL,
+  usuario_id INT UNSIGNED NULL,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX ix_movement_asset_date (activo_id,creado_en),
+  CONSTRAINT fk_movement_asset FOREIGN KEY (activo_id) REFERENCES activos(id),
+  CONSTRAINT fk_movement_from_status FOREIGN KEY (estado_origen_id) REFERENCES estados_activo(id),
+  CONSTRAINT fk_movement_to_status FOREIGN KEY (estado_destino_id) REFERENCES estados_activo(id),
+  CONSTRAINT fk_movement_from_area FOREIGN KEY (area_origen_id) REFERENCES areas(id),
+  CONSTRAINT fk_movement_to_area FOREIGN KEY (area_destino_id) REFERENCES areas(id),
+  CONSTRAINT fk_movement_from_employee FOREIGN KEY (trabajador_origen_id) REFERENCES trabajadores(id),
+  CONSTRAINT fk_movement_to_employee FOREIGN KEY (trabajador_destino_id) REFERENCES trabajadores(id),
+  CONSTRAINT fk_movement_user FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE registros_auditoria (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  user_id INT UNSIGNED NULL,
-  module VARCHAR(80) NOT NULL,
-  action VARCHAR(50) NOT NULL,
-  entity_type VARCHAR(80) NOT NULL,
-  entity_id BIGINT UNSIGNED NULL,
-  old_values LONGTEXT NULL,
-  new_values LONGTEXT NULL,
-  ip_address VARCHAR(45) NULL,
-  user_agent VARCHAR(500) NULL,
-  created_at DATETIME NOT NULL,
-  INDEX ix_audit_date (created_at),
-  CONSTRAINT fk_audit_user FOREIGN KEY (user_id) REFERENCES usuarios(id)
+  usuario_id INT UNSIGNED NULL,
+  modulo VARCHAR(80) NOT NULL,
+  accion VARCHAR(50) NOT NULL,
+  tipo_entidad VARCHAR(80) NOT NULL,
+  entidad_id BIGINT UNSIGNED NULL,
+  valores_anteriores LONGTEXT NULL,
+  valores_nuevos LONGTEXT NULL,
+  direccion_ip VARCHAR(45) NULL,
+  navegador VARCHAR(500) NULL,
+  creado_en DATETIME NOT NULL,
+  INDEX ix_audit_date (creado_en),
+  CONSTRAINT fk_audit_user FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 ) ENGINE=InnoDB;
 
 -- Datos iniciales
-INSERT INTO roles(id,name,description) VALUES
+INSERT INTO roles(id,nombre,descripcion) VALUES
 (1,'ADMIN','Control total del sistema'),
-(2,'TECNICO','Operación del inventario y movimientos'),
+(2,'TECNICO','OperaciÃ³n del inventario y movimientos'),
 (3,'AUDITOR','Consulta y reportes');
 
-INSERT INTO usuarios(id,role_id,name,username,email,password_hash,active) VALUES
+INSERT INTO usuarios(id,rol_id,nombre,usuario,correo,clave_hash,activo) VALUES
 (1,1,'Administrador SIGATI','admin','ti.arequipa@solandra.local','$2y$12$xiwecU9euNq9rnpaqIQGnON/pHhL6VXuMquZaG3uI3GlPZQ96HjEW',1);
 
-INSERT INTO areas(id,name) VALUES
-(1,'Tecnología de la Información'),(2,'Administración'),(3,'Operaciones'),(4,'Mantenimiento'),
-(5,'Seguridad'),(6,'Laboratorio'),(7,'Almacén'),(8,'Recursos Humanos'),(9,'Contabilidad'),
-(10,'Logística'),(11,'Medio Ambiente'),(12,'Calidad'),(13,'Producción'),(14,'Sala de Control'),
-(15,'Taller Mecánico'),(16,'Taller Eléctrico'),(17,'Servicios Generales'),(18,'Planeamiento'),
+INSERT INTO areas(id,nombre) VALUES
+(1,'TecnologÃ­a de la InformaciÃ³n'),(2,'AdministraciÃ³n'),(3,'Operaciones'),(4,'Mantenimiento'),
+(5,'Seguridad'),(6,'Laboratorio'),(7,'AlmacÃ©n'),(8,'Recursos Humanos'),(9,'Contabilidad'),
+(10,'LogÃ­stica'),(11,'Medio Ambiente'),(12,'Calidad'),(13,'ProducciÃ³n'),(14,'Sala de Control'),
+(15,'Taller MecÃ¡nico'),(16,'Taller ElÃ©ctrico'),(17,'Servicios Generales'),(18,'Planeamiento'),
 (19,'Compras'),(20,'Gerencia de Planta'),(21,'Comedor'),(22,'Campamento'),(23,'Garita Principal'),
 (24,'Tratamiento de Agua'),(25,'Proyectos');
 
-INSERT INTO ubicaciones(id,area_id,name) VALUES
-(1,1,'Oficina TI'),(2,1,'Almacén TI'),(3,1,'Taller TI'),(4,2,'Oficina Administrativa'),
+INSERT INTO ubicaciones(id,area_id,nombre) VALUES
+(1,1,'Oficina TI'),(2,1,'AlmacÃ©n TI'),(3,1,'Taller TI'),(4,2,'Oficina Administrativa'),
 (5,3,'Zona Operativa'),(6,5,'Garita Principal'),(7,6,'Laboratorio Principal'),
-(8,14,'Sala de Control'),(9,15,'Taller Mecánico'),(10,16,'Taller Eléctrico');
+(8,14,'Sala de Control'),(9,15,'Taller MecÃ¡nico'),(10,16,'Taller ElÃ©ctrico');
 
-INSERT INTO tipos_activo(id,name,prefix) VALUES
+INSERT INTO tipos_activo(id,nombre,prefijo) VALUES
 (1,'PC','PC'),(2,'Laptop','LAP'),(3,'Monitor','MON'),(4,'Impresora','IMP'),
 (5,'Celular','CEL'),(6,'Radio','RAD'),(7,'Switch','SW'),(8,'Access Point','AP'),
-(9,'Servidor','SRV'),(10,'UPS','UPS'),(11,'Cámara','CAM'),(12,'NVR','NVR'),
+(9,'Servidor','SRV'),(10,'UPS','UPS'),(11,'CÃ¡mara','CAM'),(12,'NVR','NVR'),
 (13,'Starlink','STL'),(14,'Accesorio','ACC'),(15,'Otro','OTR');
 
-INSERT INTO estados_activo(id,code,name,color) VALUES
+INSERT INTO estados_activo(id,codigo,nombre,color) VALUES
 (1,'DISPONIBLE','Disponible','success'),(2,'ASIGNADO','Asignado','primary'),
-(3,'PRESTAMO','En préstamo','primary'),(4,'MANTENIMIENTO','Mantenimiento','warning'),
-(5,'REPARACION','Reparación','danger'),(6,'ALMACEN','En almacén','secondary'),
-(7,'EVALUACION','Pendiente de evaluación','warning'),(8,'BAJA_PENDIENTE','Pendiente de baja','danger'),
+(3,'PRESTAMO','En prÃ©stamo','primary'),(4,'MANTENIMIENTO','Mantenimiento','warning'),
+(5,'REPARACION','ReparaciÃ³n','danger'),(6,'ALMACEN','En almacÃ©n','secondary'),
+(7,'EVALUACION','Pendiente de evaluaciÃ³n','warning'),(8,'BAJA_PENDIENTE','Pendiente de baja','danger'),
 (9,'BAJA','Dado de baja','dark'),(10,'EXTRAVIADO','Extraviado','danger'),
-(11,'ROBADO','Robado','danger'),(12,'TRANSITO','En tránsito','secondary');
+(11,'ROBADO','Robado','danger'),(12,'TRANSITO','En trÃ¡nsito','secondary');
 
-INSERT INTO marcas(id,name) VALUES
+INSERT INTO marcas(id,nombre) VALUES
 (1,'Dell'),(2,'HP'),(3,'Lenovo'),(4,'Epson'),(5,'Samsung'),(6,'Motorola'),
 (7,'TP-Link'),(8,'Starlink'),(9,'LG'),(10,'Acer'),(11,'Brother'),(12,'Cisco');
 
-INSERT INTO modelos(id,brand_id,name) VALUES
+INSERT INTO modelos(id,marca_id,nombre) VALUES
 (1,1,'OptiPlex 7090'),(2,1,'Latitude 5420'),(3,2,'ProDesk 400 G7'),(4,2,'LaserJet Pro M404dn'),
 (5,3,'ThinkPad E14'),(6,4,'EcoTank L6270'),(7,5,'Galaxy A34'),(8,6,'Moto G54'),
 (9,7,'TL-SG3428'),(10,7,'EAP610'),(11,9,'24MP400'),(12,11,'DCP-L5650DN');
 
-INSERT INTO proveedores(id,name) VALUES
+INSERT INTO proveedores(id,nombre) VALUES
 (1,'Proveedor Lima TI'),(2,'Distribuidor Arequipa'),(3,'Compra corporativa SOLANDRA');
 
-INSERT INTO trabajadores(id,employee_code,first_name,last_name,email,phone,position,area_id) VALUES
-(1,'SOL-AQP-001','Víctor','Mendoza','victor@solandra.local','999111111','Técnico TI',1),
+INSERT INTO trabajadores(id,codigo_trabajador,nombres,apellidos,correo,telefono,cargo,area_id) VALUES
+(1,'SOL-AQP-001','VÃ­ctor','Mendoza','victor@solandra.local','999111111','TÃ©cnico TI',1),
 (2,'SOL-AQP-002','Carlos','Quispe','carlos@solandra.local','999222222','Supervisor de Operaciones',3),
-(3,'SOL-AQP-003','María','Torres','maria@solandra.local','999333333','Analista Administrativa',2),
-(4,'SOL-AQP-004','José','Flores','jose@solandra.local','999444444','Técnico de Mantenimiento',4),
+(3,'SOL-AQP-003','MarÃ­a','Torres','maria@solandra.local','999333333','Analista Administrativa',2),
+(4,'SOL-AQP-004','JosÃ©','Flores','jose@solandra.local','999444444','TÃ©cnico de Mantenimiento',4),
 (5,'SOL-AQP-005','Ana','Ramos','ana@solandra.local','999555555','Analista de Laboratorio',6);
 
-INSERT INTO contadores_activo(asset_type_id,current_number) VALUES
+INSERT INTO contadores_activo(tipo_activo_id,numero_actual) VALUES
 (1,3),(2,3),(3,4),(4,2),(5,2),(6,2),(7,1),(8,1),(9,1),(10,1),(13,4);
 
-INSERT INTO activos(id,asset_code,legacy_code,asset_type_id,brand_id,model_id,status_id,current_area_id,location_id,current_employee_id,serial_number,hostname,ip_address,mac_address,imei1,phone_number,purchase_date,invoice_number,supplier_id,cost,warranty_end,notes,created_by,updated_by) VALUES
+INSERT INTO activos(id,codigo_activo,codigo_anterior,tipo_activo_id,marca_id,modelo_id,estado_id,area_actual_id,ubicacion_id,trabajador_actual_id,numero_serie,nombre_equipo,direccion_ip,direccion_mac,imei1,numero_telefono,fecha_compra,numero_factura,proveedor_id,costo,fin_garantia,observaciones,creado_por,actualizado_por) VALUES
 (1,'AQP-PC-000001','FT277701',1,1,1,1,1,2,NULL,'DL-OPT-001','PC-AQP-001','192.168.20.31','00:11:22:33:44:01',NULL,NULL,'2024-02-10','FT2777',1,3200.00,'2027-02-10','Equipo de contingencia',1,1),
 (2,'AQP-PC-000002','FT277702',1,2,3,1,1,2,NULL,'HP-PD-002','PC-AQP-002','192.168.20.32','00:11:22:33:44:02',NULL,NULL,'2024-02-10','FT2777',1,3000.00,'2027-02-10',NULL,1,1),
 (3,'AQP-PC-000003','FT277703',1,1,1,1,3,5,NULL,'DL-OPT-003','PC-AQP-003','192.168.21.33','00:11:22:33:44:03',NULL,NULL,'2024-02-10','FT2777',1,3200.00,'2027-02-10',NULL,1,1),
@@ -367,14 +367,14 @@ INSERT INTO activos(id,asset_code,legacy_code,asset_type_id,brand_id,model_id,st
 (17,'AQP-SW-000001','FT300101',7,7,9,1,1,1,NULL,'TPL-SW-001','SW-CORE-01','192.168.20.2','00:AA:BB:CC:DD:01',NULL,NULL,'2025-04-01','FT3001',3,1800.00,'2028-04-01','Switch administrable de prueba',1,1),
 (18,'AQP-AP-000001','FT300201',8,7,10,1,3,5,NULL,'TPL-AP-001','AP-OPE-01','192.168.20.101','00:AA:BB:CC:EE:01',NULL,NULL,'2025-04-01','FT3002',3,650.00,'2028-04-01','AP de zona operativa',1,1);
 
-INSERT INTO especificaciones_activo(asset_id,spec_key,spec_value) VALUES
+INSERT INTO especificaciones_activo(activo_id,clave_especificacion,valor_especificacion) VALUES
 (1,'Procesador','Intel Core i5'),(1,'RAM','16 GB'),(1,'Almacenamiento','SSD 512 GB'),
 (4,'Procesador','Intel Core i5'),(4,'RAM','16 GB'),(4,'Almacenamiento','SSD 512 GB'),
-(11,'Tipo de tóner','Botellas Epson 544'),(11,'Conectividad','Red / Wi-Fi'),
-(17,'Puertos','24 Gigabit'),(17,'PoE','Sí');
+(11,'Tipo de tÃ³ner','Botellas Epson 544'),(11,'Conectividad','Red / Wi-Fi'),
+(17,'Puertos','24 Gigabit'),(17,'PoE','SÃ­');
 
-INSERT INTO movimientos_activo(asset_id,movement_type,to_status_id,to_area_id,notes,user_id)
-SELECT id,'REGISTRO',status_id,current_area_id,'Carga inicial del sistema',1 FROM activos;
+INSERT INTO movimientos_activo(activo_id,tipo_movimiento,estado_destino_id,area_destino_id,observaciones,usuario_id)
+SELECT id,'REGISTRO',estado_id,area_actual_id,'Carga inicial del sistema',1 FROM activos;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -385,11 +385,11 @@ CREATE PROCEDURE sp_generar_codigo_activo(IN p_asset_type_id INT, OUT p_code VAR
 BEGIN
   DECLARE v_prefix VARCHAR(8);
   DECLARE v_number INT;
-  SELECT prefix INTO v_prefix FROM tipos_activo WHERE id=p_asset_type_id AND active=1;
-  IF v_prefix IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Tipo de activo inválido'; END IF;
-  INSERT INTO contadores_activo(asset_type_id,current_number) VALUES(p_asset_type_id,0)
-    ON DUPLICATE KEY UPDATE current_number=current_number;
-  UPDATE contadores_activo SET current_number=LAST_INSERT_ID(current_number+1) WHERE asset_type_id=p_asset_type_id;
+  SELECT prefijo INTO v_prefix FROM tipos_activo WHERE id=p_asset_type_id AND activo=1;
+  IF v_prefix IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Tipo de activo invÃ¡lido'; END IF;
+  INSERT INTO contadores_activo(tipo_activo_id,numero_actual) VALUES(p_asset_type_id,0)
+    ON DUPLICATE KEY UPDATE numero_actual=numero_actual;
+  UPDATE contadores_activo SET numero_actual=LAST_INSERT_ID(numero_actual+1) WHERE tipo_activo_id=p_asset_type_id;
   SET v_number=LAST_INSERT_ID();
   SET p_code=CONCAT('AQP-',v_prefix,'-',LPAD(v_number,6,'0'));
 END$$
@@ -405,16 +405,16 @@ BEGIN
   DECLARE v_area INT;
   DECLARE v_employee_exists INT DEFAULT 0;
   SET v_year=YEAR(CURDATE());
-  SELECT COUNT(*),MAX(area_id) INTO v_employee_exists,v_area FROM trabajadores WHERE id=p_employee_id AND active=1;
-  IF v_employee_exists=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El trabajador no existe o está inactivo'; END IF;
+  SELECT COUNT(*),MAX(area_id) INTO v_employee_exists,v_area FROM trabajadores WHERE id=p_employee_id AND activo=1;
+  IF v_employee_exists=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El trabajador no existe o estÃ¡ inactivo'; END IF;
   IF p_area_id IS NOT NULL AND p_area_id>0 THEN SET v_area=p_area_id; END IF;
-  INSERT INTO contadores_documento(document_type,document_year,current_number) VALUES('ASG',v_year,0)
-    ON DUPLICATE KEY UPDATE current_number=current_number;
-  UPDATE contadores_documento SET current_number=LAST_INSERT_ID(current_number+1)
-    WHERE document_type='ASG' AND document_year=v_year;
+  INSERT INTO contadores_documento(tipo_documento,anio_documento,numero_actual) VALUES('ASG',v_year,0)
+    ON DUPLICATE KEY UPDATE numero_actual=numero_actual;
+  UPDATE contadores_documento SET numero_actual=LAST_INSERT_ID(numero_actual+1)
+    WHERE tipo_documento='ASG' AND anio_documento=v_year;
   SET v_num=LAST_INSERT_ID();
   SET p_assignment_number=CONCAT('ASG-',v_year,'-',LPAD(v_num,6,'0'));
-  INSERT INTO asignaciones(assignment_number,employee_id,area_id,status,notes,created_by)
+  INSERT INTO asignaciones(numero_asignacion,trabajador_id,area_id,estado,observaciones,creado_por)
   VALUES(p_assignment_number,p_employee_id,v_area,'BORRADOR',NULLIF(p_notes,''),p_user_id);
   SET p_assignment_id=LAST_INSERT_ID();
 END$$
@@ -426,13 +426,13 @@ CREATE PROCEDURE sp_agregar_activo_asignacion(
 BEGIN
   DECLARE v_status_code VARCHAR(40);
   DECLARE v_header_status VARCHAR(20);
-  SELECT status INTO v_header_status FROM asignaciones WHERE id=p_assignment_id FOR UPDATE;
-  IF v_header_status IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignación inexistente'; END IF;
-  IF v_header_status<>'BORRADOR' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignación ya no está en borrador'; END IF;
-  SELECT s.code INTO v_status_code FROM activos a JOIN estados_activo s ON s.id=a.status_id WHERE a.id=p_asset_id AND a.active=1 FOR UPDATE;
+  SELECT estado INTO v_header_status FROM asignaciones WHERE id=p_assignment_id FOR UPDATE;
+  IF v_header_status IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='AsignaciÃ³n inexistente'; END IF;
+  IF v_header_status<>'BORRADOR' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignaciÃ³n ya no estÃ¡ en borrador'; END IF;
+  SELECT s.codigo INTO v_status_code FROM activos a JOIN estados_activo s ON s.id=a.estado_id WHERE a.id=p_asset_id AND a.activo=1 FOR UPDATE;
   IF v_status_code IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Activo inexistente'; END IF;
-  IF v_status_code<>'DISPONIBLE' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Uno de los activos ya no está disponible'; END IF;
-  INSERT INTO items_asignacion(assignment_id,asset_id,condition_out)
+  IF v_status_code<>'DISPONIBLE' THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Uno de los activos ya no estÃ¡ disponible'; END IF;
+  INSERT INTO items_asignacion(asignacion_id,activo_id,condicion_salida)
   VALUES(p_assignment_id,p_asset_id,COALESCE(NULLIF(p_condition,''),'Buen estado'));
 END$$
 
@@ -443,19 +443,19 @@ BEGIN
   DECLARE v_area INT;
   DECLARE v_status INT;
   DECLARE v_count INT;
-  SELECT employee_id,area_id INTO v_employee,v_area FROM asignaciones WHERE id=p_assignment_id AND status='BORRADOR' FOR UPDATE;
-  IF v_employee IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignación no disponible para confirmar'; END IF;
-  SELECT COUNT(*) INTO v_count FROM items_asignacion WHERE assignment_id=p_assignment_id;
-  IF v_count=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignación no contiene activos'; END IF;
-  SELECT id INTO v_status FROM estados_activo WHERE code='ASIGNADO';
-  INSERT INTO movimientos_activo(asset_id,movement_type,reference_type,reference_id,from_status_id,to_status_id,from_area_id,to_area_id,from_employee_id,to_employee_id,notes,user_id)
-  SELECT a.id,'ASIGNACION','assignment',p_assignment_id,a.status_id,v_status,a.current_area_id,v_area,a.current_employee_id,v_employee,CONCAT('Asignado mediante ',x.assignment_number),p_user_id
-  FROM items_asignacion ai JOIN activos a ON a.id=ai.asset_id JOIN asignaciones x ON x.id=ai.assignment_id
-  WHERE ai.assignment_id=p_assignment_id;
-  UPDATE activos a JOIN items_asignacion ai ON ai.asset_id=a.id
-  SET a.status_id=v_status,a.current_employee_id=v_employee,a.current_area_id=v_area,a.updated_by=p_user_id
-  WHERE ai.assignment_id=p_assignment_id;
-  UPDATE asignaciones SET status='CONFIRMADA',assigned_at=NOW() WHERE id=p_assignment_id;
+  SELECT trabajador_id,area_id INTO v_employee,v_area FROM asignaciones WHERE id=p_assignment_id AND estado='BORRADOR' FOR UPDATE;
+  IF v_employee IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='AsignaciÃ³n no disponible para confirmar'; END IF;
+  SELECT COUNT(*) INTO v_count FROM items_asignacion WHERE asignacion_id=p_assignment_id;
+  IF v_count=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La asignaciÃ³n no contiene activos'; END IF;
+  SELECT id INTO v_status FROM estados_activo WHERE codigo='ASIGNADO';
+  INSERT INTO movimientos_activo(activo_id,tipo_movimiento,tipo_referencia,referencia_id,estado_origen_id,estado_destino_id,area_origen_id,area_destino_id,trabajador_origen_id,trabajador_destino_id,observaciones,usuario_id)
+  SELECT a.id,'ASIGNACION','assignment',p_assignment_id,a.estado_id,v_status,a.area_actual_id,v_area,a.trabajador_actual_id,v_employee,CONCAT('Asignado mediante ',x.numero_asignacion),p_user_id
+  FROM items_asignacion ai JOIN activos a ON a.id=ai.activo_id JOIN asignaciones x ON x.id=ai.asignacion_id
+  WHERE ai.asignacion_id=p_assignment_id;
+  UPDATE activos a JOIN items_asignacion ai ON ai.activo_id=a.id
+  SET a.estado_id=v_status,a.trabajador_actual_id=v_employee,a.area_actual_id=v_area,a.actualizado_por=p_user_id
+  WHERE ai.asignacion_id=p_assignment_id;
+  UPDATE asignaciones SET estado='CONFIRMADA',asignado_en=NOW() WHERE id=p_assignment_id;
 END$$
 
 DROP PROCEDURE IF EXISTS sp_crear_devolucion$$
@@ -467,16 +467,16 @@ BEGIN
   DECLARE v_year SMALLINT;
   DECLARE v_num INT;
   DECLARE v_ok INT;
-  SELECT COUNT(*) INTO v_ok FROM asignaciones WHERE id=p_assignment_id AND status IN('CONFIRMADA','PARCIAL');
-  IF v_ok=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Asignación no disponible para devolución'; END IF;
+  SELECT COUNT(*) INTO v_ok FROM asignaciones WHERE id=p_assignment_id AND estado IN('CONFIRMADA','PARCIAL');
+  IF v_ok=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='AsignaciÃ³n no disponible para devoluciÃ³n'; END IF;
   SET v_year=YEAR(CURDATE());
-  INSERT INTO contadores_documento(document_type,document_year,current_number) VALUES('DEV',v_year,0)
-    ON DUPLICATE KEY UPDATE current_number=current_number;
-  UPDATE contadores_documento SET current_number=LAST_INSERT_ID(current_number+1)
-    WHERE document_type='DEV' AND document_year=v_year;
+  INSERT INTO contadores_documento(tipo_documento,anio_documento,numero_actual) VALUES('DEV',v_year,0)
+    ON DUPLICATE KEY UPDATE numero_actual=numero_actual;
+  UPDATE contadores_documento SET numero_actual=LAST_INSERT_ID(numero_actual+1)
+    WHERE tipo_documento='DEV' AND anio_documento=v_year;
   SET v_num=LAST_INSERT_ID();
   SET p_return_number=CONCAT('DEV-',v_year,'-',LPAD(v_num,6,'0'));
-  INSERT INTO devoluciones_activo(return_number,assignment_id,status,notes,created_by)
+  INSERT INTO devoluciones_activo(numero_devolucion,asignacion_id,estado,observaciones,creado_por)
   VALUES(p_return_number,p_assignment_id,'BORRADOR',NULLIF(p_notes,''),p_user_id);
   SET p_return_id=LAST_INSERT_ID();
 END$$
@@ -493,17 +493,17 @@ BEGIN
   DECLARE v_from_status INT;
   DECLARE v_from_area INT;
   DECLARE v_from_employee INT;
-  SELECT assignment_id INTO v_return_assignment FROM devoluciones_activo WHERE id=p_return_id AND status='BORRADOR' FOR UPDATE;
-  SELECT ai.asset_id,ai.assignment_id INTO v_asset,v_assignment FROM items_asignacion ai WHERE ai.id=p_assignment_item_id AND ai.returned_at IS NULL FOR UPDATE;
-  IF v_asset IS NULL OR v_assignment<>v_return_assignment THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El activo no pertenece a la asignación o ya fue devuelto'; END IF;
-  IF NOT EXISTS(SELECT 1 FROM estados_activo WHERE id=p_next_status_id AND active=1) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Estado posterior inválido'; END IF;
-  SELECT status_id,current_area_id,current_employee_id INTO v_from_status,v_from_area,v_from_employee FROM activos WHERE id=v_asset FOR UPDATE;
-  INSERT INTO items_devolucion(return_id,assignment_item_id,condition_in,damage_notes,next_status_id)
+  SELECT asignacion_id INTO v_return_assignment FROM devoluciones_activo WHERE id=p_return_id AND estado='BORRADOR' FOR UPDATE;
+  SELECT ai.activo_id,ai.asignacion_id INTO v_asset,v_assignment FROM items_asignacion ai WHERE ai.id=p_assignment_item_id AND ai.devuelto_en IS NULL FOR UPDATE;
+  IF v_asset IS NULL OR v_assignment<>v_return_assignment THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El activo no pertenece a la asignaciÃ³n o ya fue devuelto'; END IF;
+  IF NOT EXISTS(SELECT 1 FROM estados_activo WHERE id=p_next_status_id AND activo=1) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Estado posterior invÃ¡lido'; END IF;
+  SELECT estado_id,area_actual_id,trabajador_actual_id INTO v_from_status,v_from_area,v_from_employee FROM activos WHERE id=v_asset FOR UPDATE;
+  INSERT INTO items_devolucion(devolucion_id,item_asignacion_id,condicion_entrada,observaciones_danos,siguiente_estado_id)
   VALUES(p_return_id,p_assignment_item_id,COALESCE(NULLIF(p_condition,''),'Sin especificar'),NULLIF(p_damage,''),p_next_status_id);
-  UPDATE items_asignacion SET returned_at=NOW() WHERE id=p_assignment_item_id;
-  UPDATE activos SET status_id=p_next_status_id,current_employee_id=NULL,updated_by=p_user_id WHERE id=v_asset;
-  INSERT INTO movimientos_activo(asset_id,movement_type,reference_type,reference_id,from_status_id,to_status_id,from_area_id,to_area_id,from_employee_id,to_employee_id,notes,user_id)
-  VALUES(v_asset,'DEVOLUCION','return',p_return_id,v_from_status,p_next_status_id,v_from_area,v_from_area,v_from_employee,NULL,COALESCE(NULLIF(p_damage,''),'Equipo recibido sin daños reportados'),p_user_id);
+  UPDATE items_asignacion SET devuelto_en=NOW() WHERE id=p_assignment_item_id;
+  UPDATE activos SET estado_id=p_next_status_id,trabajador_actual_id=NULL,actualizado_por=p_user_id WHERE id=v_asset;
+  INSERT INTO movimientos_activo(activo_id,tipo_movimiento,tipo_referencia,referencia_id,estado_origen_id,estado_destino_id,area_origen_id,area_destino_id,trabajador_origen_id,trabajador_destino_id,observaciones,usuario_id)
+  VALUES(v_asset,'DEVOLUCION','return',p_return_id,v_from_status,p_next_status_id,v_from_area,v_from_area,v_from_employee,NULL,COALESCE(NULLIF(p_damage,''),'Equipo recibido sin daÃ±os reportados'),p_user_id);
 END$$
 
 DROP PROCEDURE IF EXISTS sp_confirmar_devolucion$$
@@ -512,13 +512,13 @@ BEGIN
   DECLARE v_assignment BIGINT;
   DECLARE v_items INT;
   DECLARE v_pending INT;
-  SELECT assignment_id INTO v_assignment FROM devoluciones_activo WHERE id=p_return_id AND status='BORRADOR' FOR UPDATE;
-  IF v_assignment IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Devolución no disponible para confirmar'; END IF;
-  SELECT COUNT(*) INTO v_items FROM items_devolucion WHERE return_id=p_return_id;
-  IF v_items=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La devolución no contiene equipos'; END IF;
-  UPDATE devoluciones_activo SET status='CONFIRMADA',returned_at=NOW() WHERE id=p_return_id;
-  SELECT COUNT(*) INTO v_pending FROM items_asignacion WHERE assignment_id=v_assignment AND returned_at IS NULL;
-  UPDATE asignaciones SET status=IF(v_pending=0,'CERRADA','PARCIAL') WHERE id=v_assignment;
+  SELECT asignacion_id INTO v_assignment FROM devoluciones_activo WHERE id=p_return_id AND estado='BORRADOR' FOR UPDATE;
+  IF v_assignment IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='DevoluciÃ³n no disponible para confirmar'; END IF;
+  SELECT COUNT(*) INTO v_items FROM items_devolucion WHERE devolucion_id=p_return_id;
+  IF v_items=0 THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='La devoluciÃ³n no contiene equipos'; END IF;
+  UPDATE devoluciones_activo SET estado='CONFIRMADA',devuelto_en=NOW() WHERE id=p_return_id;
+  SELECT COUNT(*) INTO v_pending FROM items_asignacion WHERE asignacion_id=v_assignment AND devuelto_en IS NULL;
+  UPDATE asignaciones SET estado=IF(v_pending=0,'CERRADA','PARCIAL') WHERE id=v_assignment;
 END$$
 
 DROP PROCEDURE IF EXISTS sp_abrir_mantenimiento$$
@@ -531,15 +531,15 @@ BEGIN
   DECLARE v_maintenance_status INT;
   DECLARE v_area INT;
   DECLARE v_employee INT;
-  SELECT status_id,current_area_id,current_employee_id INTO v_old_status,v_area,v_employee FROM activos WHERE id=p_asset_id AND active=1 FOR UPDATE;
+  SELECT estado_id,area_actual_id,trabajador_actual_id INTO v_old_status,v_area,v_employee FROM activos WHERE id=p_asset_id AND activo=1 FOR UPDATE;
   IF v_old_status IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Activo inexistente'; END IF;
-  IF EXISTS(SELECT 1 FROM mantenimientos WHERE asset_id=p_asset_id AND status='ABIERTO') THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El activo ya tiene un mantenimiento abierto'; END IF;
-  SELECT id INTO v_maintenance_status FROM estados_activo WHERE code='MANTENIMIENTO';
-  INSERT INTO mantenimientos(asset_id,type,status,previous_status_id,issue,diagnosis,actions,cost,started_at,opened_by)
+  IF EXISTS(SELECT 1 FROM mantenimientos WHERE activo_id=p_asset_id AND estado='ABIERTO') THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='El activo ya tiene un mantenimiento abierto'; END IF;
+  SELECT id INTO v_maintenance_status FROM estados_activo WHERE codigo='MANTENIMIENTO';
+  INSERT INTO mantenimientos(activo_id,tipo,estado,estado_anterior_id,problema,diagnostico,acciones,costo,iniciado_en,abierto_por)
   VALUES(p_asset_id,IF(p_type='CORRECTIVO','CORRECTIVO','PREVENTIVO'),'ABIERTO',v_old_status,NULLIF(p_issue,''),NULLIF(p_diagnosis,''),NULLIF(p_actions,''),COALESCE(p_cost,0),NOW(),p_user_id);
   SET p_maintenance_id=LAST_INSERT_ID();
-  UPDATE activos SET status_id=v_maintenance_status,updated_by=p_user_id WHERE id=p_asset_id;
-  INSERT INTO movimientos_activo(asset_id,movement_type,reference_type,reference_id,from_status_id,to_status_id,from_area_id,to_area_id,from_employee_id,to_employee_id,notes,user_id)
+  UPDATE activos SET estado_id=v_maintenance_status,actualizado_por=p_user_id WHERE id=p_asset_id;
+  INSERT INTO movimientos_activo(activo_id,tipo_movimiento,tipo_referencia,referencia_id,estado_origen_id,estado_destino_id,area_origen_id,area_destino_id,trabajador_origen_id,trabajador_destino_id,observaciones,usuario_id)
   VALUES(p_asset_id,'MANTENIMIENTO','maintenance',p_maintenance_id,v_old_status,v_maintenance_status,v_area,v_area,v_employee,v_employee,COALESCE(NULLIF(p_issue,''),'Ingreso a mantenimiento'),p_user_id);
 END$$
 
@@ -554,13 +554,13 @@ BEGIN
   DECLARE v_current_status INT;
   DECLARE v_area INT;
   DECLARE v_employee INT;
-  SELECT asset_id,previous_status_id INTO v_asset,v_restore_status FROM mantenimientos WHERE id=p_maintenance_id AND status='ABIERTO' FOR UPDATE;
+  SELECT activo_id,estado_anterior_id INTO v_asset,v_restore_status FROM mantenimientos WHERE id=p_maintenance_id AND estado='ABIERTO' FOR UPDATE;
   IF v_asset IS NULL THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Mantenimiento no disponible para cerrar'; END IF;
-  SELECT status_id,current_area_id,current_employee_id INTO v_current_status,v_area,v_employee FROM activos WHERE id=v_asset FOR UPDATE;
-  IF v_restore_status IS NULL THEN SELECT id INTO v_restore_status FROM estados_activo WHERE code='DISPONIBLE'; END IF;
-  UPDATE mantenimientos SET status='CERRADO',diagnosis=NULLIF(p_diagnosis,''),actions=NULLIF(p_actions,''),parts_used=NULLIF(p_parts,''),cost=COALESCE(p_cost,0),next_date=p_next_date,finished_at=NOW(),closed_by=p_user_id WHERE id=p_maintenance_id;
-  UPDATE activos SET status_id=v_restore_status,updated_by=p_user_id WHERE id=v_asset;
-  INSERT INTO movimientos_activo(asset_id,movement_type,reference_type,reference_id,from_status_id,to_status_id,from_area_id,to_area_id,from_employee_id,to_employee_id,notes,user_id)
+  SELECT estado_id,area_actual_id,trabajador_actual_id INTO v_current_status,v_area,v_employee FROM activos WHERE id=v_asset FOR UPDATE;
+  IF v_restore_status IS NULL THEN SELECT id INTO v_restore_status FROM estados_activo WHERE codigo='DISPONIBLE'; END IF;
+  UPDATE mantenimientos SET estado='CERRADO',diagnostico=NULLIF(p_diagnosis,''),acciones=NULLIF(p_actions,''),repuestos_usados=NULLIF(p_parts,''),costo=COALESCE(p_cost,0),proxima_fecha=p_next_date,finalizado_en=NOW(),cerrado_por=p_user_id WHERE id=p_maintenance_id;
+  UPDATE activos SET estado_id=v_restore_status,actualizado_por=p_user_id WHERE id=v_asset;
+  INSERT INTO movimientos_activo(activo_id,tipo_movimiento,tipo_referencia,referencia_id,estado_origen_id,estado_destino_id,area_origen_id,area_destino_id,trabajador_origen_id,trabajador_destino_id,observaciones,usuario_id)
   VALUES(v_asset,'CIERRE_MANTENIMIENTO','maintenance',p_maintenance_id,v_current_status,v_restore_status,v_area,v_area,v_employee,v_employee,COALESCE(NULLIF(p_actions,''),'Mantenimiento finalizado'),p_user_id);
 END$$
 
@@ -570,69 +570,69 @@ DELIMITER ;
 DROP VIEW IF EXISTS vw_inventario_general;
 CREATE VIEW vw_inventario_general AS
 SELECT
-  a.asset_code AS codigo,
-  a.legacy_code AS codigo_anterior,
-  t.name AS tipo,
-  b.name AS marca,
-  m.name AS modelo,
-  a.serial_number AS serie,
-  s.name AS estado,
-  ar.name AS area,
-  l.name AS ubicacion,
-  CONCAT_WS(' ',e.first_name,e.last_name) AS responsable,
-  a.hostname,
-  a.ip_address AS ip,
-  a.mac_address AS mac,
+  a.codigo_activo AS codigo_activo,
+  a.codigo_anterior AS codigo_anterior,
+  t.nombre AS tipo,
+  b.nombre AS marca,
+  m.nombre AS modelo,
+  a.numero_serie AS numero_serie,
+  s.nombre AS estado,
+  ar.nombre AS area,
+  l.nombre AS ubicacion,
+  CONCAT_WS(' ',e.nombres,e.apellidos) AS responsable,
+  a.nombre_equipo,
+  a.direccion_ip AS direccion_ip,
+  a.direccion_mac AS direccion_mac,
   a.imei1,
-  a.phone_number AS telefono,
-  DATE_FORMAT(a.purchase_date,'%Y-%m-%d') AS fecha_compra,
-  a.invoice_number AS factura,
-  sup.name AS proveedor,
-  a.cost AS costo,
-  DATE_FORMAT(a.warranty_end,'%Y-%m-%d') AS garantia,
-  DATE_FORMAT(a.created_at,'%Y-%m-%d %H:%i') AS creado
+  a.numero_telefono AS numero_telefono,
+  DATE_FORMAT(a.fecha_compra,'%Y-%m-%d') AS fecha_compra,
+  a.numero_factura AS numero_factura,
+  sup.nombre AS proveedor,
+  a.costo AS costo,
+  DATE_FORMAT(a.fin_garantia,'%Y-%m-%d') AS fin_garantia,
+  DATE_FORMAT(a.creado_en,'%Y-%m-%d %H:%i') AS creado_en
 FROM activos a
-JOIN tipos_activo t ON t.id=a.asset_type_id
-JOIN estados_activo s ON s.id=a.status_id
-LEFT JOIN marcas b ON b.id=a.brand_id
-LEFT JOIN modelos m ON m.id=a.model_id
-LEFT JOIN areas ar ON ar.id=a.current_area_id
-LEFT JOIN ubicaciones l ON l.id=a.location_id
-LEFT JOIN trabajadores e ON e.id=a.current_employee_id
-LEFT JOIN proveedores sup ON sup.id=a.supplier_id
-WHERE a.active=1;
+JOIN tipos_activo t ON t.id=a.tipo_activo_id
+JOIN estados_activo s ON s.id=a.estado_id
+LEFT JOIN marcas b ON b.id=a.marca_id
+LEFT JOIN modelos m ON m.id=a.modelo_id
+LEFT JOIN areas ar ON ar.id=a.area_actual_id
+LEFT JOIN ubicaciones l ON l.id=a.ubicacion_id
+LEFT JOIN trabajadores e ON e.id=a.trabajador_actual_id
+LEFT JOIN proveedores sup ON sup.id=a.proveedor_id
+WHERE a.activo=1;
 
 DROP VIEW IF EXISTS vw_activos_por_estado;
 CREATE VIEW vw_activos_por_estado AS
-SELECT s.id,s.name,s.code,s.color,COUNT(a.id) total
-FROM estados_activo s LEFT JOIN activos a ON a.status_id=s.id AND a.active=1
-WHERE s.active=1 GROUP BY s.id,s.name,s.code,s.color HAVING total>0 ORDER BY total DESC;
+SELECT s.id,s.nombre,s.codigo,s.color,COUNT(a.id) total
+FROM estados_activo s LEFT JOIN activos a ON a.estado_id=s.id AND a.activo=1
+WHERE s.activo=1 GROUP BY s.id,s.nombre,s.codigo,s.color HAVING total>0 ORDER BY total DESC;
 
 DROP VIEW IF EXISTS vw_activos_por_tipo;
 CREATE VIEW vw_activos_por_tipo AS
-SELECT t.id,t.name,t.prefix,COUNT(a.id) total
-FROM tipos_activo t LEFT JOIN activos a ON a.asset_type_id=t.id AND a.active=1
-WHERE t.active=1 GROUP BY t.id,t.name,t.prefix HAVING total>0 ORDER BY total DESC;
+SELECT t.id,t.nombre,t.prefijo,COUNT(a.id) total
+FROM tipos_activo t LEFT JOIN activos a ON a.tipo_activo_id=t.id AND a.activo=1
+WHERE t.activo=1 GROUP BY t.id,t.nombre,t.prefijo HAVING total>0 ORDER BY total DESC;
 
 DROP VIEW IF EXISTS vw_activos_por_area;
 CREATE VIEW vw_activos_por_area AS
-SELECT COALESCE(ar.id,0) id,COALESCE(ar.name,'Sin área') name,COUNT(a.id) total
-FROM activos a LEFT JOIN areas ar ON ar.id=a.current_area_id
-WHERE a.active=1 GROUP BY ar.id,ar.name ORDER BY total DESC;
+SELECT COALESCE(ar.id,0) id,COALESCE(ar.nombre,'Sin Ã¡rea') nombre,COUNT(a.id) total
+FROM activos a LEFT JOIN areas ar ON ar.id=a.area_actual_id
+WHERE a.activo=1 GROUP BY ar.id,ar.nombre ORDER BY total DESC;
 
 DROP VIEW IF EXISTS vw_resumen_panel;
 CREATE VIEW vw_resumen_panel AS
 SELECT
-  (SELECT COUNT(*) FROM activos WHERE active=1) total_assets,
-  (SELECT COUNT(*) FROM activos a JOIN estados_activo s ON s.id=a.status_id WHERE a.active=1 AND s.code='ASIGNADO') assigned_assets,
-  (SELECT COUNT(*) FROM activos a JOIN estados_activo s ON s.id=a.status_id WHERE a.active=1 AND s.code='DISPONIBLE') available_assets,
-  (SELECT COUNT(*) FROM activos a JOIN estados_activo s ON s.id=a.status_id WHERE a.active=1 AND s.code IN('MANTENIMIENTO','REPARACION')) maintenance_assets,
-  (SELECT COUNT(*) FROM trabajadores WHERE active=1) total_employees,
-  (SELECT COUNT(*) FROM asignaciones WHERE status IN('CONFIRMADA','PARCIAL')) active_assignments,
-  (SELECT COUNT(*) FROM mantenimientos WHERE status='ABIERTO') open_maintenances;
+  (SELECT COUNT(*) FROM activos WHERE activo=1) total_activos,
+  (SELECT COUNT(*) FROM activos a JOIN estados_activo s ON s.id=a.estado_id WHERE a.activo=1 AND s.codigo='ASIGNADO') activos_asignados,
+  (SELECT COUNT(*) FROM activos a JOIN estados_activo s ON s.id=a.estado_id WHERE a.activo=1 AND s.codigo='DISPONIBLE') activos_disponibles,
+  (SELECT COUNT(*) FROM activos a JOIN estados_activo s ON s.id=a.estado_id WHERE a.activo=1 AND s.codigo IN('MANTENIMIENTO','REPARACION')) activos_mantenimiento,
+  (SELECT COUNT(*) FROM trabajadores WHERE activo=1) total_trabajadores,
+  (SELECT COUNT(*) FROM asignaciones WHERE estado IN('CONFIRMADA','PARCIAL')) asignaciones_activas,
+  (SELECT COUNT(*) FROM mantenimientos WHERE estado='ABIERTO') mantenimientos_abiertos;
 
--- Asignación demostrativa, creada mediante los procedimientos del sistema
-CALL sp_crear_asignacion(3,2,'Asignación inicial de demostración',1,@demo_assignment,@demo_assignment_number);
+-- AsignaciÃ³n demostrativa, creada mediante los procedimientos del sistema
+CALL sp_crear_asignacion(3,2,'AsignaciÃ³n inicial de demostraciÃ³n',1,@demo_assignment,@demo_assignment_number);
 CALL sp_agregar_activo_asignacion(@demo_assignment,4,'Buen estado, incluye cargador y mochila',1);
 CALL sp_agregar_activo_asignacion(@demo_assignment,7,'Buen estado, incluye cable de poder y HDMI',1);
 CALL sp_confirmar_asignacion(@demo_assignment,1);

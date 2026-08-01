@@ -25,20 +25,20 @@
                     <?php foreach ($filas as $mantenimiento): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('activos/'.$mantenimiento['asset_id']) ?>">
-                                    <?= e($mantenimiento['asset_code']) ?>
+                                <a class="asset-code" href="<?= url('activos/'.$mantenimiento['activo_id']) ?>">
+                                    <?= e($mantenimiento['codigo_activo']) ?>
                                 </a>
                                 <small>
-                                    <?= e($mantenimiento['type_name'].' '.trim(($mantenimiento['brand_name'] ?? '').' '.($mantenimiento['model_name'] ?? ''))) ?>
+                                    <?= e($mantenimiento['nombre_tipo'].' '.trim(($mantenimiento['nombre_marca'] ?? '').' '.($mantenimiento['nombre_modelo'] ?? ''))) ?>
                                 </small>
                             </td>
-                            <td><?= e($mantenimiento['type']) ?></td>
-                            <td><?= e($mantenimiento['issue'] ?: 'Mantenimiento programado') ?></td>
-                            <td><?= badge($mantenimiento['status']) ?></td>
-                            <td><?= date_pe($mantenimiento['started_at']) ?></td>
-                            <td><?= money($mantenimiento['cost']) ?></td>
+                            <td><?= e($mantenimiento['tipo']) ?></td>
+                            <td><?= e($mantenimiento['problema'] ?: 'Mantenimiento programado') ?></td>
+                            <td><?= badge($mantenimiento['estado']) ?></td>
+                            <td><?= date_pe($mantenimiento['iniciado_en']) ?></td>
+                            <td><?= money($mantenimiento['costo']) ?></td>
                             <td>
-                                <?php if ($mantenimiento['status'] === 'ABIERTO'): ?>
+                                <?php if ($mantenimiento['estado'] === 'ABIERTO'): ?>
                                     <button
                                         class="icon-btn"
                                         type="button"
@@ -47,12 +47,12 @@
                                         Cerrar
                                     </button>
                                 <?php else: ?>
-                                    <span class="muted">Cerrado <?= date_pe($mantenimiento['finished_at']) ?></span>
+                                    <span class="muted">Cerrado <?= date_pe($mantenimiento['finalizado_en']) ?></span>
                                 <?php endif; ?>
                             </td>
                         </tr>
 
-                        <?php if ($mantenimiento['status'] === 'ABIERTO'): ?>
+                        <?php if ($mantenimiento['estado'] === 'ABIERTO'): ?>
                             <tr class="modal-row">
                                 <td colspan="7">
                                     <dialog id="close-<?= $mantenimiento['id'] ?>" class="modal">
@@ -62,7 +62,7 @@
                                             <div class="modal-head">
                                                 <div>
                                                     <h3>Cerrar mantenimiento</h3>
-                                                    <p><?= e($mantenimiento['asset_code']) ?></p>
+                                                    <p><?= e($mantenimiento['codigo_activo']) ?></p>
                                                 </div>
                                                 <button type="button" data-close-modal>×</button>
                                             </div>
@@ -70,17 +70,17 @@
                                             <div class="form-grid cols-2">
                                                 <label>
                                                     Diagnóstico
-                                                    <textarea name="diagnosis" rows="3"><?= e($mantenimiento['diagnosis'] ?? '') ?></textarea>
+                                                    <textarea name="diagnostico" rows="3"><?= e($mantenimiento['diagnostico'] ?? '') ?></textarea>
                                                 </label>
 
                                                 <label>
                                                     Acciones realizadas
-                                                    <textarea name="actions" rows="3"><?= e($mantenimiento['actions'] ?? '') ?></textarea>
+                                                    <textarea name="acciones" rows="3"><?= e($mantenimiento['acciones'] ?? '') ?></textarea>
                                                 </label>
 
                                                 <label>
                                                     Repuestos utilizados
-                                                    <input name="parts">
+                                                    <input name="repuestos">
                                                 </label>
 
                                                 <label>
@@ -89,14 +89,14 @@
                                                         type="number"
                                                         step="0.01"
                                                         min="0"
-                                                        name="cost"
-                                                        value="<?= e($mantenimiento['cost']) ?>"
+                                                        name="costo"
+                                                        value="<?= e($mantenimiento['costo']) ?>"
                                                     >
                                                 </label>
 
                                                 <label>
                                                     Próximo mantenimiento
-                                                    <input type="date" name="next_date">
+                                                    <input type="date" name="proxima_fecha">
                                                 </label>
                                             </div>
 

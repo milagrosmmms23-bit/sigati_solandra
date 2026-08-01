@@ -9,12 +9,12 @@ final class Mantenimiento extends ModeloBase
     {
         return $this->db
             ->query(
-                "SELECT m.*, a.asset_code, t.name type_name, b.name brand_name, mo.name model_name
+                "SELECT m.*, a.codigo_activo, t.nombre nombre_tipo, b.nombre nombre_marca, mo.nombre nombre_modelo
                  FROM mantenimientos m
-                 JOIN activos a ON a.id = m.asset_id
-                 JOIN tipos_activo t ON t.id = a.asset_type_id
-                 LEFT JOIN marcas b ON b.id = a.brand_id
-                 LEFT JOIN modelos mo ON mo.id = a.model_id
+                 JOIN activos a ON a.id = m.activo_id
+                 JOIN tipos_activo t ON t.id = a.tipo_activo_id
+                 LEFT JOIN marcas b ON b.id = a.marca_id
+                 LEFT JOIN modelos mo ON mo.id = a.modelo_id
                  ORDER BY m.id DESC"
             )
             ->fetchAll();
@@ -24,7 +24,7 @@ final class Mantenimiento extends ModeloBase
     {
         $consulta = $this->db->prepare('CALL sp_abrir_mantenimiento(?,?,?,?,?,?,?,@id)');
         $consulta->execute([
-            $datos['asset_id'],
+            $datos['activo_id'],
             $datos['tipo'],
             $datos['problema'] ?: null,
             $datos['diagnostico'] ?: null,

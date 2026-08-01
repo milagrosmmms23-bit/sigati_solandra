@@ -40,8 +40,8 @@ final class AsignacionControlador extends Controlador
     {
         Csrf::verificar();
 
-        $trabajadorId = (int) ($_POST['employee_id'] ?? 0);
-        $activosIds = array_values(array_unique(array_map('intval', $_POST['asset_ids'] ?? [])));
+        $trabajadorId = (int) ($_POST['trabajador_id'] ?? 0);
+        $activosIds = array_values(array_unique(array_map('intval', $_POST['activo_ids'] ?? [])));
 
         if (!$trabajadorId || !$activosIds) {
             Flash::error('Selecciona un trabajador y al menos un activo.');
@@ -51,8 +51,8 @@ final class AsignacionControlador extends Controlador
         $elementos = [];
         foreach ($activosIds as $activoId) {
             $elementos[] = [
-                'asset_id' => $activoId,
-                'condition' => trim($_POST['condition'][$activoId] ?? 'Buen estado'),
+                'activo_id' => $activoId,
+                'condicion' => trim($_POST['condicion'][$activoId] ?? 'Buen estado'),
             ];
         }
 
@@ -60,7 +60,7 @@ final class AsignacionControlador extends Controlador
             $id = $this->modelo->crear(
                 $trabajadorId,
                 (int) ($_POST['area_id'] ?? 0) ?: null,
-                trim($_POST['notes'] ?? ''),
+                trim($_POST['observaciones'] ?? ''),
                 $elementos,
                 Auth::id()
             );
@@ -83,7 +83,7 @@ final class AsignacionControlador extends Controlador
 
         $this->vista('asignaciones', [
             'modo' => 'detalle',
-            'titulo' => $asignacion['assignment_number'],
+            'titulo' => $asignacion['numero_asignacion'],
             'registro' => $asignacion,
         ]);
     }
@@ -98,7 +98,7 @@ final class AsignacionControlador extends Controlador
 
         $this->vista(
             'imprimir',
-            ['doc' => 'assignment', 'titulo' => $asignacion['assignment_number'], 'registro' => $asignacion],
+            ['doc' => 'assignment', 'titulo' => $asignacion['numero_asignacion'], 'registro' => $asignacion],
             'plantilla_impresion'
         );
     }
@@ -125,6 +125,6 @@ final class AsignacionControlador extends Controlador
         $pdf->loadHtml($html, 'UTF-8');
         $pdf->setPaper('A4');
         $pdf->render();
-        $pdf->stream($asignacion['assignment_number'].'.pdf', ['Attachment' => true]);
+        $pdf->stream($asignacion['numero_asignacion'].'.pdf', ['Attachment' => true]);
     }
 }

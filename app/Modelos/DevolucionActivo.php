@@ -11,12 +11,12 @@ final class DevolucionActivo extends ModeloBase
     {
         return $this->db
             ->query(
-                "SELECT r.*, a.assignment_number, CONCAT(e.first_name, ' ', e.last_name) employee_name,
-                        COUNT(ri.id) item_count
+                "SELECT r.*, a.numero_asignacion, CONCAT(e.nombres, ' ', e.apellidos) nombre_trabajador,
+                        COUNT(ri.id) cantidad_items
                  FROM devoluciones_activo r
-                 JOIN asignaciones a ON a.id = r.assignment_id
-                 JOIN trabajadores e ON e.id = a.employee_id
-                 LEFT JOIN items_devolucion ri ON ri.return_id = r.id
+                 JOIN asignaciones a ON a.id = r.asignacion_id
+                 JOIN trabajadores e ON e.id = a.trabajador_id
+                 LEFT JOIN items_devolucion ri ON ri.devolucion_id = r.id
                  GROUP BY r.id
                  ORDER BY r.id DESC"
             )
@@ -26,13 +26,13 @@ final class DevolucionActivo extends ModeloBase
     public function buscar(int $id): ?array
     {
         $consulta = $this->db->prepare(
-            "SELECT r.*, a.assignment_number, CONCAT(e.first_name, ' ', e.last_name) employee_name,
-                    e.employee_code, e.position, ar.name area_name, u.name created_by_name
+            "SELECT r.*, a.numero_asignacion, CONCAT(e.nombres, ' ', e.apellidos) nombre_trabajador,
+                    e.codigo_trabajador, e.cargo, ar.nombre nombre_area, u.nombre nombre_creador
              FROM devoluciones_activo r
-             JOIN asignaciones a ON a.id = r.assignment_id
-             JOIN trabajadores e ON e.id = a.employee_id
+             JOIN asignaciones a ON a.id = r.asignacion_id
+             JOIN trabajadores e ON e.id = a.trabajador_id
              LEFT JOIN areas ar ON ar.id = a.area_id
-             LEFT JOIN usuarios u ON u.id = r.created_by
+             LEFT JOIN usuarios u ON u.id = r.creado_por
              WHERE r.id = ?"
         );
         $consulta->execute([$id]);
@@ -43,19 +43,19 @@ final class DevolucionActivo extends ModeloBase
         }
 
         $consulta = $this->db->prepare(
-            "SELECT ri.*, x.asset_code, x.serial_number, t.name type_name, b.name brand_name,
-                    m.name model_name, st.name next_status_name
+            "SELECT ri.*, x.codigo_activo, x.numero_serie, t.nombre nombre_tipo, b.nombre nombre_marca,
+                    m.nombre nombre_modelo, st.nombre nombre_siguiente_estado
              FROM items_devolucion ri
-             JOIN items_asignacion ai ON ai.id = ri.assignment_item_id
-             JOIN activos x ON x.id = ai.asset_id
-             JOIN tipos_activo t ON t.id = x.asset_type_id
-             LEFT JOIN marcas b ON b.id = x.brand_id
-             LEFT JOIN modelos m ON m.id = x.model_id
-             JOIN estados_activo st ON st.id = ri.next_status_id
-             WHERE ri.return_id = ?"
+             JOIN items_asignacion ai ON ai.id = ri.item_asignacion_id
+             JOIN activos x ON x.id = ai.activo_id
+             JOIN tipos_activo t ON t.id = x.tipo_activo_id
+             LEFT JOIN marcas b ON b.id = x.marca_id
+             LEFT JOIN modelos m ON m.id = x.modelo_id
+             JOIN estados_activo st ON st.id = ri.siguiente_estado_id
+             WHERE ri.devolucion_id = ?"
         );
         $consulta->execute([$id]);
-        $devolucion['items'] = $consulta->fetchAll();
+        $devolucion['elementos'] = $consulta->fetchAll();
 
         return $devolucion;
     }
@@ -75,10 +75,10 @@ final class DevolucionActivo extends ModeloBase
                 $consulta = $this->db->prepare('CALL sp_devolver_activo(?,?,?,?,?,?)');
                 $consulta->execute([
                     $id,
-                    $registro['item_id'],
-                    $registro['condition'],
-                    $registro['damage'] ?: null,
-                    $registro['status_id'],
+                    $registro['item_asignacion_id'],
+                    $registro['condicion'],
+                    $registro['danos'] ?: null,
+                    $registro['estado_id'],
                     $usuarioId,
                 ]);
                 $consulta->closeCursor();

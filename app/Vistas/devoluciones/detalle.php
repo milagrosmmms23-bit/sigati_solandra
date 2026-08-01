@@ -1,8 +1,8 @@
 <div class="page-actions">
         <div>
             <div class="eyebrow">Acta de devolución</div>
-            <h2><?= e($registro['return_number']) ?></h2>
-            <p><?= e($registro['employee_name']) ?> · Referencia <?= e($registro['assignment_number']) ?></p>
+            <h2><?= e($registro['numero_devolucion']) ?></h2>
+            <p><?= e($registro['nombre_trabajador']) ?> · Referencia <?= e($registro['numero_asignacion']) ?></p>
         </div>
 
         <div class="actions">
@@ -19,19 +19,19 @@
         <div class="detail-grid">
             <div>
                 <span>Trabajador</span>
-                <strong><?= e($registro['employee_name']) ?></strong>
+                <strong><?= e($registro['nombre_trabajador']) ?></strong>
             </div>
             <div>
                 <span>Código</span>
-                <strong><?= e($registro['employee_code']) ?></strong>
+                <strong><?= e($registro['codigo_trabajador']) ?></strong>
             </div>
             <div>
                 <span>Área</span>
-                <strong><?= e($registro['area_name'] ?: '—') ?></strong>
+                <strong><?= e($registro['nombre_area'] ?: '—') ?></strong>
             </div>
             <div>
                 <span>Fecha</span>
-                <strong><?= datetime_pe($registro['returned_at']) ?></strong>
+                <strong><?= datetime_pe($registro['devuelto_en']) ?></strong>
             </div>
         </div>
     </section>
@@ -49,20 +49,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($registro['items'] as $activo): ?>
+                    <?php foreach ($registro['elementos'] as $activo): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('activos/'.$activo['asset_id']) ?>">
-                                    <?= e($activo['asset_code']) ?>
+                                <a class="asset-code" href="<?= url('activos/'.$activo['activo_id']) ?>">
+                                    <?= e($activo['codigo_activo']) ?>
                                 </a>
                             </td>
                             <td>
-                                <?= e($activo['type_name'].' '.trim(($activo['brand_name'] ?? '').' '.($activo['model_name'] ?? ''))) ?>
-                                <small>Serie: <?= e($activo['serial_number'] ?: '—') ?></small>
+                                <?= e($activo['nombre_tipo'].' '.trim(($activo['nombre_marca'] ?? '').' '.($activo['nombre_modelo'] ?? ''))) ?>
+                                <small>Serie: <?= e($activo['numero_serie'] ?: '—') ?></small>
                             </td>
-                            <td><?= e($activo['condition_in']) ?></td>
-                            <td><?= e($activo['damage_notes'] ?: 'Sin daños') ?></td>
-                            <td><?= badge($activo['next_status_name']) ?></td>
+                            <td><?= e($activo['condicion_entrada']) ?></td>
+                            <td><?= e($activo['observaciones_danos'] ?: 'Sin daños') ?></td>
+                            <td><?= badge($activo['nombre_siguiente_estado']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

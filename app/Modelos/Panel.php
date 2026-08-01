@@ -21,12 +21,12 @@ final class Panel extends ModeloBase
     private function mapearResumen(array $resumen): array
     {
         return [
-            'total_activos' => $resumen['total_assets'] ?? 0,
-            'activos_asignados' => $resumen['assigned_assets'] ?? 0,
-            'activos_disponibles' => $resumen['available_assets'] ?? 0,
-            'activos_mantenimiento' => $resumen['maintenance_assets'] ?? 0,
-            'total_trabajadores' => $resumen['total_employees'] ?? 0,
-            'asignaciones_activas' => $resumen['active_assignments'] ?? 0,
+            'total_activos' => $resumen['total_activos'] ?? 0,
+            'activos_asignados' => $resumen['activos_asignados'] ?? 0,
+            'activos_disponibles' => $resumen['activos_disponibles'] ?? 0,
+            'activos_mantenimiento' => $resumen['activos_mantenimiento'] ?? 0,
+            'total_trabajadores' => $resumen['total_trabajadores'] ?? 0,
+            'asignaciones_activas' => $resumen['asignaciones_activas'] ?? 0,
         ];
     }
 
@@ -34,10 +34,10 @@ final class Panel extends ModeloBase
     {
         return $this->db
             ->query(
-                "SELECT am.*, a.asset_code, u.name user_name
+                "SELECT am.*, a.codigo_activo, u.nombre nombre_usuario
                  FROM movimientos_activo am
-                 JOIN activos a ON a.id = am.asset_id
-                 LEFT JOIN usuarios u ON u.id = am.user_id
+                 JOIN activos a ON a.id = am.activo_id
+                 LEFT JOIN usuarios u ON u.id = am.usuario_id
                  ORDER BY am.id DESC
                  LIMIT 8"
             )

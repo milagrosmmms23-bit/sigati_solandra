@@ -1,8 +1,8 @@
 <div class="page-actions">
         <div>
             <div class="eyebrow">Acta de asignación</div>
-            <h2><?= e($registro['assignment_number']) ?></h2>
-            <p><?= e($registro['employee_name']) ?> · <?= e($registro['area_name'] ?: 'Sin área') ?></p>
+            <h2><?= e($registro['numero_asignacion']) ?></h2>
+            <p><?= e($registro['nombre_trabajador']) ?> · <?= e($registro['nombre_area'] ?: 'Sin área') ?></p>
         </div>
 
         <div class="actions">
@@ -20,39 +20,39 @@
             <div class="detail-grid">
                 <div>
                     <span>Trabajador</span>
-                    <strong><?= e($registro['employee_name']) ?></strong>
+                    <strong><?= e($registro['nombre_trabajador']) ?></strong>
                 </div>
                 <div>
                     <span>Código</span>
-                    <strong><?= e($registro['employee_code']) ?></strong>
+                    <strong><?= e($registro['codigo_trabajador']) ?></strong>
                 </div>
                 <div>
                     <span>Cargo</span>
-                    <strong><?= e($registro['position'] ?: '—') ?></strong>
+                    <strong><?= e($registro['cargo'] ?: '—') ?></strong>
                 </div>
                 <div>
                     <span>Área</span>
-                    <strong><?= e($registro['area_name'] ?: '—') ?></strong>
+                    <strong><?= e($registro['nombre_area'] ?: '—') ?></strong>
                 </div>
                 <div>
                     <span>Estado</span>
-                    <strong><?= badge($registro['status']) ?></strong>
+                    <strong><?= badge($registro['estado']) ?></strong>
                 </div>
                 <div>
                     <span>Fecha</span>
-                    <strong><?= datetime_pe($registro['assigned_at']) ?></strong>
+                    <strong><?= datetime_pe($registro['asignado_en']) ?></strong>
                 </div>
             </div>
 
             <div class="notes-box">
                 <span>Observaciones</span>
-                <p><?= nl2br(e($registro['notes'] ?: 'Sin observaciones.')) ?></p>
+                <p><?= nl2br(e($registro['observaciones'] ?: 'Sin observaciones.')) ?></p>
             </div>
         </section>
 
         <aside class="panel action-panel">
             <h3>Acciones</h3>
-            <a class="action-link" href="<?= url('devoluciones/crear?assignment_id='.$registro['id']) ?>">
+            <a class="action-link" href="<?= url('devoluciones/crear?asignacion_id='.$registro['id']) ?>">
                 <b>↩ Registrar devolución</b>
                 <small>Devolver uno o varios equipos</small>
             </a>
@@ -67,7 +67,7 @@
         <div class="panel-head">
             <div>
                 <h3>Equipos asignados</h3>
-                <p><?= count($registro['items']) ?> elementos en el acta</p>
+                <p><?= count($registro['elementos']) ?> elementos en el acta</p>
             </div>
         </div>
 
@@ -84,19 +84,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($registro['items'] as $activo): ?>
+                    <?php foreach ($registro['elementos'] as $activo): ?>
                         <tr>
                             <td>
-                                <a class="asset-code" href="<?= url('activos/'.$activo['asset_id']) ?>">
-                                    <?= e($activo['asset_code']) ?>
+                                <a class="asset-code" href="<?= url('activos/'.$activo['activo_id']) ?>">
+                                    <?= e($activo['codigo_activo']) ?>
                                 </a>
                             </td>
-                            <td><?= e($activo['type_name']) ?></td>
-                            <td><?= e(trim(($activo['brand_name'] ?? '').' '.($activo['model_name'] ?? '')) ?: '—') ?></td>
-                            <td><?= e($activo['serial_number'] ?: '—') ?></td>
-                            <td><?= e($activo['condition_out']) ?></td>
+                            <td><?= e($activo['nombre_tipo']) ?></td>
+                            <td><?= e(trim(($activo['nombre_marca'] ?? '').' '.($activo['nombre_modelo'] ?? '')) ?: '—') ?></td>
+                            <td><?= e($activo['numero_serie'] ?: '—') ?></td>
+                            <td><?= e($activo['condicion_salida']) ?></td>
                             <td>
-                                <?php if ($activo['returned_at']): ?>
+                                <?php if ($activo['devuelto_en']): ?>
                                     <span class="badge badge-dark">Devuelto</span>
                                 <?php else: ?>
                                     <span class="badge badge-primary">Asignado</span>

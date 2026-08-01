@@ -19,7 +19,7 @@ final class CodigoQrControlador
         }
 
         if (!class_exists('chillerlan\\QRCode\\QRCode')) {
-            $this->mostrarSvgAlternativo($activo['asset_code']);
+            $this->mostrarSvgAlternativo($activo['codigo_activo']);
             return;
         }
 

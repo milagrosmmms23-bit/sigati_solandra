@@ -25,13 +25,13 @@
                         <tr>
                             <td>
                                 <a class="asset-code" href="<?= url('devoluciones/'.$devolucion['id']) ?>">
-                                    <?= e($devolucion['return_number']) ?>
+                                    <?= e($devolucion['numero_devolucion']) ?>
                                 </a>
                             </td>
-                            <td><?= e($devolucion['assignment_number']) ?></td>
-                            <td><?= e($devolucion['employee_name']) ?></td>
-                            <td><?= (int) $devolucion['item_count'] ?></td>
-                            <td><?= datetime_pe($devolucion['returned_at']) ?></td>
+                            <td><?= e($devolucion['numero_asignacion']) ?></td>
+                            <td><?= e($devolucion['nombre_trabajador']) ?></td>
+                            <td><?= (int) $devolucion['cantidad_items'] ?></td>
+                            <td><?= datetime_pe($devolucion['devuelto_en']) ?></td>
                             <td class="text-right">
                                 <a class="icon-btn" target="_blank" href="<?= url('devoluciones/'.$devolucion['id'].'/imprimir') ?>">
                                     Imprimir

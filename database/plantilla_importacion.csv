@@ -1,3 +1,3 @@
-tipo,codigo_anterior,marca,modelo,serie,area,ubicacion,hostname,ip,mac,imei1,imei2,telefono,fecha_compra,factura,proveedor,costo,fin_garantia,observaciones
-PC,FT400101,Dell,OptiPlex 7090,SERIE-DEMO-001,Tecnología de la Información,Almacén TI,PC-AQP-101,192.168.20.101,00:AA:BB:CC:00:01,,,,2026-01-15,FT4001,Proveedor Lima TI,3200.00,2029-01-15,Registro de ejemplo
+tipo,codigo_anterior,marca,modelo,serie,area,ubicacion,nombre_equipo,ip,mac,imei1,imei2,telefono,fecha_compra,factura,proveedor,costo,fin_garantia,observaciones
+PC,FT400101,Dell,OptiPlex 7090,SERIE-DEMO-001,Tecnologia de la Informacion,Almacen TI,PC-AQP-101,192.168.20.101,00:AA:BB:CC:00:01,,,,2026-01-15,FT4001,Proveedor Lima TI,3200.00,2029-01-15,Registro de ejemplo
 Celular,FT400102,Samsung,Galaxy A34,SM-DEMO-002,Operaciones,Zona Operativa,,,,353333333333333,354444444444444,950000099,2026-01-15,FT4001,Proveedor Lima TI,1100.00,2027-01-15,Incluye cargador y funda

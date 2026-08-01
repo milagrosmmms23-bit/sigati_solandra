@@ -10,11 +10,11 @@ final class Asignacion extends ModeloBase
     public function listar(): array
     {
         return $this->db
-            ->query("SELECT a.*, CONCAT(e.first_name,' ',e.last_name) employee_name, ar.name area_name, COUNT(ai.id) item_count
+            ->query("SELECT a.*, CONCAT(e.nombres,' ',e.apellidos) nombre_trabajador, ar.nombre nombre_area, COUNT(ai.id) cantidad_items
                      FROM asignaciones a
-                     JOIN trabajadores e ON e.id = a.employee_id
+                     JOIN trabajadores e ON e.id = a.trabajador_id
                      LEFT JOIN areas ar ON ar.id = a.area_id
-                     LEFT JOIN items_asignacion ai ON ai.assignment_id = a.id
+                     LEFT JOIN items_asignacion ai ON ai.asignacion_id = a.id
                      GROUP BY a.id
                      ORDER BY a.id DESC")
             ->fetchAll();
@@ -23,14 +23,14 @@ final class Asignacion extends ModeloBase
     public function activas(): array
     {
         return $this->db
-            ->query("SELECT a.id, a.assignment_number, CONCAT(e.first_name,' ',e.last_name) employee_name,
-                            SUM(ai.returned_at IS NULL) pending
+            ->query("SELECT a.id, a.numero_asignacion, CONCAT(e.nombres,' ',e.apellidos) nombre_trabajador,
+                            SUM(ai.devuelto_en IS NULL) pendientes
                      FROM asignaciones a
-                     JOIN trabajadores e ON e.id = a.employee_id
-                     JOIN items_asignacion ai ON ai.assignment_id = a.id
-                     WHERE a.status IN('CONFIRMADA','PARCIAL')
+                     JOIN trabajadores e ON e.id = a.trabajador_id
+                     JOIN items_asignacion ai ON ai.asignacion_id = a.id
+                     WHERE a.estado IN('CONFIRMADA','PARCIAL')
                      GROUP BY a.id
-                     HAVING pending > 0
+                     HAVING pendientes > 0
                      ORDER BY a.id DESC")
             ->fetchAll();
     }
@@ -38,12 +38,12 @@ final class Asignacion extends ModeloBase
     public function buscar(int $id): ?array
     {
         $consulta = $this->db->prepare(
-            "SELECT a.*, CONCAT(e.first_name,' ',e.last_name) employee_name, e.employee_code, e.position,
-                    ar.name area_name, u.name created_by_name
+            "SELECT a.*, CONCAT(e.nombres,' ',e.apellidos) nombre_trabajador, e.codigo_trabajador, e.cargo,
+                    ar.nombre nombre_area, u.nombre nombre_creador
              FROM asignaciones a
-             JOIN trabajadores e ON e.id = a.employee_id
+             JOIN trabajadores e ON e.id = a.trabajador_id
              LEFT JOIN areas ar ON ar.id = a.area_id
-             LEFT JOIN usuarios u ON u.id = a.created_by
+             LEFT JOIN usuarios u ON u.id = a.creado_por
              WHERE a.id = ?"
         );
         $consulta->execute([$id]);
@@ -54,23 +54,23 @@ final class Asignacion extends ModeloBase
         }
 
         $consulta = $this->db->prepare(
-            "SELECT ai.*, x.asset_code, x.serial_number, x.phone_number, x.imei1, x.imei2, x.notes asset_notes,
-                    t.name type_name, b.name brand_name, m.name model_name,
+            "SELECT ai.*, x.codigo_activo, x.numero_serie, x.numero_telefono, x.imei1, x.imei2, x.observaciones observaciones_activo,
+                    t.nombre nombre_tipo, b.nombre nombre_marca, m.nombre nombre_modelo,
                     (
-                        SELECT GROUP_CONCAT(CONCAT(s.spec_key, ' ', s.spec_value) SEPARATOR ', ')
+                        SELECT GROUP_CONCAT(CONCAT(s.clave_especificacion, ' ', s.valor_especificacion) SEPARATOR ', ')
                         FROM especificaciones_activo s
-                        WHERE s.asset_id = x.id
-                    ) specs_text
+                        WHERE s.activo_id = x.id
+                    ) texto_especificaciones
              FROM items_asignacion ai
-             JOIN activos x ON x.id = ai.asset_id
-             JOIN tipos_activo t ON t.id = x.asset_type_id
-             LEFT JOIN marcas b ON b.id = x.brand_id
-             LEFT JOIN modelos m ON m.id = x.model_id
-             WHERE ai.assignment_id = ?
+             JOIN activos x ON x.id = ai.activo_id
+             JOIN tipos_activo t ON t.id = x.tipo_activo_id
+             LEFT JOIN marcas b ON b.id = x.marca_id
+             LEFT JOIN modelos m ON m.id = x.modelo_id
+             WHERE ai.asignacion_id = ?
              ORDER BY ai.id"
         );
         $consulta->execute([$id]);
-        $asignacion['items'] = $consulta->fetchAll();
+        $asignacion['elementos'] = $consulta->fetchAll();
 
         return $asignacion;
     }
@@ -87,7 +87,7 @@ final class Asignacion extends ModeloBase
 
             foreach ($elementos as $registro) {
                 $consulta = $this->db->prepare('CALL sp_agregar_activo_asignacion(?,?,?,?)');
-                $consulta->execute([$id, $registro['asset_id'], $registro['condition'], $usuarioId]);
+                $consulta->execute([$id, $registro['activo_id'], $registro['condicion'], $usuarioId]);
                 $consulta->closeCursor();
             }
 

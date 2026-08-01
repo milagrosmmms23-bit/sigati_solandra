@@ -23,8 +23,8 @@ final class ActivoControlador extends Controlador
     {
         $filtros = [
             'q' => trim($_GET['q'] ?? ''),
-            'type_id' => $_GET['type_id'] ?? '',
-            'status_id' => $_GET['status_id'] ?? '',
+            'tipo_activo_id' => $_GET['tipo_activo_id'] ?? '',
+            'estado_id' => $_GET['estado_id'] ?? '',
             'area_id' => $_GET['area_id'] ?? '',
         ];
 
@@ -54,9 +54,9 @@ final class ActivoControlador extends Controlador
 
         $datos = $this->datosFormulario();
         $errores = $this->validar($datos, [
-            'asset_type_id' => 'required',
-            'status_id' => 'required',
-            'serial_number' => 'max:150',
+            'tipo_activo_id' => 'required',
+            'estado_id' => 'required',
+            'numero_serie' => 'max:150',
         ]);
 
         if ($errores) {
@@ -85,7 +85,7 @@ final class ActivoControlador extends Controlador
 
         $this->vista('activos', [
             'modo' => 'detalle',
-            'titulo' => $activo['asset_code'],
+            'titulo' => $activo['codigo_activo'],
             'registro' => $activo,
         ]);
     }
@@ -100,7 +100,7 @@ final class ActivoControlador extends Controlador
 
         $this->vista('activos', [
             'modo' => 'formulario',
-            'titulo' => 'Editar '.$activo['asset_code'],
+            'titulo' => 'Editar '.$activo['codigo_activo'],
             'registro' => $activo,
         ] + $this->catalogos());
     }
@@ -117,8 +117,8 @@ final class ActivoControlador extends Controlador
 
         $datos = $this->datosFormulario();
         $errores = $this->validar($datos, [
-            'asset_type_id' => 'required',
-            'status_id' => 'required',
+            'tipo_activo_id' => 'required',
+            'estado_id' => 'required',
         ]);
 
         if ($errores) {
@@ -207,33 +207,33 @@ final class ActivoControlador extends Controlador
     private function datosFormulario(): array
     {
         return [
-            'legacy_code' => trim($_POST['legacy_code'] ?? ''),
-            'asset_type_id' => (int) ($_POST['asset_type_id'] ?? 0),
-            'brand_id' => (int) ($_POST['brand_id'] ?? 0),
-            'model_id' => (int) ($_POST['model_id'] ?? 0),
-            'status_id' => (int) ($_POST['status_id'] ?? 0),
-            'current_area_id' => (int) ($_POST['current_area_id'] ?? 0),
-            'location_id' => (int) ($_POST['location_id'] ?? 0),
-            'serial_number' => trim($_POST['serial_number'] ?? ''),
-            'hostname' => trim($_POST['hostname'] ?? ''),
-            'ip_address' => trim($_POST['ip_address'] ?? ''),
-            'mac_address' => trim($_POST['mac_address'] ?? ''),
+            'codigo_anterior' => trim($_POST['codigo_anterior'] ?? ''),
+            'tipo_activo_id' => (int) ($_POST['tipo_activo_id'] ?? 0),
+            'marca_id' => (int) ($_POST['marca_id'] ?? 0),
+            'modelo_id' => (int) ($_POST['modelo_id'] ?? 0),
+            'estado_id' => (int) ($_POST['estado_id'] ?? 0),
+            'area_actual_id' => (int) ($_POST['area_actual_id'] ?? 0),
+            'ubicacion_id' => (int) ($_POST['ubicacion_id'] ?? 0),
+            'numero_serie' => trim($_POST['numero_serie'] ?? ''),
+            'nombre_equipo' => trim($_POST['nombre_equipo'] ?? ''),
+            'direccion_ip' => trim($_POST['direccion_ip'] ?? ''),
+            'direccion_mac' => trim($_POST['direccion_mac'] ?? ''),
             'imei1' => trim($_POST['imei1'] ?? ''),
             'imei2' => trim($_POST['imei2'] ?? ''),
-            'phone_number' => trim($_POST['phone_number'] ?? ''),
-            'purchase_date' => trim($_POST['purchase_date'] ?? ''),
-            'invoice_number' => trim($_POST['invoice_number'] ?? ''),
-            'supplier_id' => (int) ($_POST['supplier_id'] ?? 0),
-            'cost' => trim($_POST['cost'] ?? ''),
-            'warranty_end' => trim($_POST['warranty_end'] ?? ''),
-            'notes' => trim($_POST['notes'] ?? ''),
+            'numero_telefono' => trim($_POST['numero_telefono'] ?? ''),
+            'fecha_compra' => trim($_POST['fecha_compra'] ?? ''),
+            'numero_factura' => trim($_POST['numero_factura'] ?? ''),
+            'proveedor_id' => (int) ($_POST['proveedor_id'] ?? 0),
+            'costo' => trim($_POST['costo'] ?? ''),
+            'fin_garantia' => trim($_POST['fin_garantia'] ?? ''),
+            'observaciones' => trim($_POST['observaciones'] ?? ''),
         ];
     }
 
     private function especificaciones(): array
     {
-        $claves = $_POST['spec_key'] ?? [];
-        $valors = $_POST['spec_value'] ?? [];
+        $claves = $_POST['clave_especificacion'] ?? [];
+        $valors = $_POST['valor_especificacion'] ?? [];
         $especificaciones = [];
 
         foreach ($claves as $indice => $clave) {
@@ -259,26 +259,26 @@ final class ActivoControlador extends Controlador
         $area = $this->buscarOCrear('areas', $registro['area'] ?? '');
 
         return [
-            'legacy_code' => $registro['codigo_anterior'] ?? '',
-            'asset_type_id' => $tipo,
-            'brand_id' => $marca,
-            'model_id' => $this->buscarModelo($marca, $registro['modelo'] ?? ''),
-            'status_id' => $this->buscarPorCodigo('estados_activo', 'DISPONIBLE'),
-            'current_area_id' => $area,
-            'location_id' => $this->buscarUbicacion($area, $registro['ubicacion'] ?? ''),
-            'serial_number' => $registro['serie'] ?? '',
-            'hostname' => $registro['hostname'] ?? '',
-            'ip_address' => $registro['ip'] ?? '',
-            'mac_address' => $registro['mac'] ?? '',
+            'codigo_anterior' => $registro['codigo_anterior'] ?? '',
+            'tipo_activo_id' => $tipo,
+            'marca_id' => $marca,
+            'modelo_id' => $this->buscarModelo($marca, $registro['modelo'] ?? ''),
+            'estado_id' => $this->buscarPorCodigo('estados_activo', 'DISPONIBLE'),
+            'area_actual_id' => $area,
+            'ubicacion_id' => $this->buscarUbicacion($area, $registro['ubicacion'] ?? ''),
+            'numero_serie' => $registro['serie'] ?? '',
+            'nombre_equipo' => $registro['nombre_equipo'] ?? '',
+            'direccion_ip' => $registro['ip'] ?? '',
+            'direccion_mac' => $registro['mac'] ?? '',
             'imei1' => $registro['imei1'] ?? '',
             'imei2' => $registro['imei2'] ?? '',
-            'phone_number' => $registro['telefono'] ?? '',
-            'purchase_date' => $registro['fecha_compra'] ?? '',
-            'invoice_number' => $registro['factura'] ?? '',
-            'supplier_id' => $this->buscarOCrear('proveedores', $registro['proveedor'] ?? ''),
-            'cost' => $registro['costo'] ?? '',
-            'warranty_end' => $registro['fin_garantia'] ?? '',
-            'notes' => $registro['observaciones'] ?? '',
+            'numero_telefono' => $registro['telefono'] ?? '',
+            'fecha_compra' => $registro['fecha_compra'] ?? '',
+            'numero_factura' => $registro['factura'] ?? '',
+            'proveedor_id' => $this->buscarOCrear('proveedores', $registro['proveedor'] ?? ''),
+            'costo' => $registro['costo'] ?? '',
+            'fin_garantia' => $registro['fin_garantia'] ?? '',
+            'observaciones' => $registro['observaciones'] ?? '',
         ];
     }
 
@@ -288,7 +288,7 @@ final class ActivoControlador extends Controlador
             return null;
         }
 
-        $consulta = BD::pdo()->prepare("SELECT id FROM $tabla WHERE LOWER(name) = LOWER(?) LIMIT 1");
+        $consulta = BD::pdo()->prepare("SELECT id FROM $tabla WHERE LOWER(nombre) = LOWER(?) LIMIT 1");
         $consulta->execute([trim($nombre)]);
         $id = $consulta->fetchColumn();
 
@@ -297,7 +297,7 @@ final class ActivoControlador extends Controlador
 
     private function buscarPorCodigo(string $tabla, string $codigo): int
     {
-        $consulta = BD::pdo()->prepare("SELECT id FROM $tabla WHERE code = ?");
+        $consulta = BD::pdo()->prepare("SELECT id FROM $tabla WHERE codigo = ?");
         $consulta->execute([$codigo]);
 
         return (int) $consulta->fetchColumn();
@@ -315,7 +315,7 @@ final class ActivoControlador extends Controlador
             return $id;
         }
 
-        $consulta = BD::pdo()->prepare("INSERT INTO $tabla(name, active) VALUES(?, 1)");
+        $consulta = BD::pdo()->prepare("INSERT INTO $tabla(nombre, activo) VALUES(?, 1)");
         $consulta->execute([trim($nombre)]);
 
         return (int) BD::pdo()->lastInsertId();
@@ -328,7 +328,7 @@ final class ActivoControlador extends Controlador
         }
 
         $consulta = BD::pdo()->prepare(
-            'SELECT id FROM modelos WHERE brand_id <=> ? AND LOWER(name) = LOWER(?)'
+            'SELECT id FROM modelos WHERE marca_id <=> ? AND LOWER(nombre) = LOWER(?)'
         );
         $consulta->execute([$marcaId, trim($nombre)]);
         $id = $consulta->fetchColumn();
@@ -337,7 +337,7 @@ final class ActivoControlador extends Controlador
             return (int) $id;
         }
 
-        $consulta = BD::pdo()->prepare('INSERT INTO modelos(brand_id, name, active) VALUES(?, ?, 1)');
+        $consulta = BD::pdo()->prepare('INSERT INTO modelos(marca_id, nombre, activo) VALUES(?, ?, 1)');
         $consulta->execute([$marcaId, trim($nombre)]);
 
         return (int) BD::pdo()->lastInsertId();
@@ -350,7 +350,7 @@ final class ActivoControlador extends Controlador
         }
 
         $consulta = BD::pdo()->prepare(
-            'SELECT id FROM ubicaciones WHERE area_id <=> ? AND LOWER(name) = LOWER(?)'
+            'SELECT id FROM ubicaciones WHERE area_id <=> ? AND LOWER(nombre) = LOWER(?)'
         );
         $consulta->execute([$areaId, trim($nombre)]);
         $id = $consulta->fetchColumn();
@@ -359,7 +359,7 @@ final class ActivoControlador extends Controlador
             return (int) $id;
         }
 
-        $consulta = BD::pdo()->prepare('INSERT INTO ubicaciones(area_id, name, active) VALUES(?, ?, 1)');
+        $consulta = BD::pdo()->prepare('INSERT INTO ubicaciones(area_id, nombre, activo) VALUES(?, ?, 1)');
         $consulta->execute([$areaId, trim($nombre)]);
 
         return (int) BD::pdo()->lastInsertId();

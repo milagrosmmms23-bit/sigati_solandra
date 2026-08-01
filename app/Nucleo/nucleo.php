@@ -112,25 +112,25 @@ final class Auth
     public static function intentar(string $usuario, string $clave): bool
     {
         $consulta = BD::pdo()->prepare(
-            'SELECT u.*, r.name role_name
+            'SELECT u.*, r.nombre nombre_rol
              FROM usuarios u
-             JOIN roles r ON r.id = u.role_id
-             WHERE u.username = ? AND u.active = 1
+             JOIN roles r ON r.id = u.rol_id
+             WHERE u.usuario = ? AND u.activo = 1
              LIMIT 1'
         );
         $consulta->execute([$usuario]);
         $usuarioEncontrado = $consulta->fetch();
 
-        if (!$usuarioEncontrado || !password_verify($clave, $usuarioEncontrado['password_hash'])) {
+        if (!$usuarioEncontrado || !password_verify($clave, $usuarioEncontrado['clave_hash'])) {
             return false;
         }
 
-        unset($usuarioEncontrado['password_hash']);
+        unset($usuarioEncontrado['clave_hash']);
         session_regenerate_id(true);
-        $_SESSION['user'] = $usuarioEncontrado;
+        $_SESSION['usuario'] = $usuarioEncontrado;
 
         BD::pdo()
-            ->prepare('UPDATE usuarios SET last_login_at = NOW() WHERE id = ?')
+            ->prepare('UPDATE usuarios SET ultimo_ingreso_en = NOW() WHERE id = ?')
             ->execute([$usuarioEncontrado['id']]);
 
         return true;
@@ -138,22 +138,22 @@ final class Auth
 
     public static function autenticado(): bool
     {
-        return isset($_SESSION['user']);
+        return isset($_SESSION['usuario']);
     }
 
     public static function usuario(): ?array
     {
-        return $_SESSION['user'] ?? null;
+        return $_SESSION['usuario'] ?? null;
     }
 
     public static function id(): ?int
     {
-        return isset($_SESSION['user']['id']) ? (int) $_SESSION['user']['id'] : null;
+        return isset($_SESSION['usuario']['id']) ? (int) $_SESSION['usuario']['id'] : null;
     }
 
     public static function rol(): ?string
     {
-        return $_SESSION['user']['role_name'] ?? null;
+        return $_SESSION['usuario']['nombre_rol'] ?? null;
     }
 
     public static function requerirIngreso(): void
@@ -175,7 +175,7 @@ final class Auth
 
     public static function cerrarSesion(): void
     {
-        unset($_SESSION['user']);
+        unset($_SESSION['usuario']);
         session_regenerate_id(true);
     }
 }
@@ -193,7 +193,7 @@ final class Auditoria
         try {
             $consulta = BD::pdo()->prepare(
                 'INSERT INTO registros_auditoria
-                    (user_id, module, action, entity_type, entity_id, old_values, new_values, ip_address, user_agent, created_at)
+                    (usuario_id, modulo, accion, tipo_entidad, entidad_id, valores_anteriores, valores_nuevos, direccion_ip, navegador, creado_en)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())'
             );
 
@@ -266,7 +266,7 @@ abstract class Controlador
                     $errores[$campo] = 'Campo obligatorio.';
                 }
 
-                if ($regla === 'email' && $valor !== '' && !filter_var($valor, FILTER_VALIDATE_EMAIL)) {
+                if (in_array($regla, ['email', 'correo'], true) && $valor !== '' && !filter_var($valor, FILTER_VALIDATE_EMAIL)) {
                     $errores[$campo] = 'Correo inválido.';
                 }
 

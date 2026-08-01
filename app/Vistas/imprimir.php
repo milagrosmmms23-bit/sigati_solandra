@@ -2,7 +2,7 @@
 $doc = $doc ?? '';
 $registro = $registro ?? [];
 $esAsignacion = $doc === 'assignment';
-$fecha = $esAsignacion ? ($registro['assigned_at'] ?? '') : ($registro['returned_at'] ?? '');
+$fecha = $esAsignacion ? ($registro['asignado_en'] ?? '') : ($registro['devuelto_en'] ?? '');
 
 $fechaCorta = static function (?string $valor): string {
     if (!$valor || strtotime($valor) === false) {
@@ -36,9 +36,9 @@ $descripcionActivo = static function (?array $activo) use ($limpiar): string {
     }
 
     $partes = array_filter([
-        $activo['type_name'] ?? '',
-        $activo['brand_name'] ?? '',
-        $activo['model_name'] ?? '',
+        $activo['nombre_tipo'] ?? '',
+        $activo['nombre_marca'] ?? '',
+        $activo['nombre_modelo'] ?? '',
     ], static fn ($valor): bool => trim((string) $valor) !== '');
 
     return $limpiar(implode(' ', $partes));
@@ -51,7 +51,7 @@ $observacionesActivo = static function (?array $activo, array $asignacion, strin
 
     $partes = [];
 
-    foreach (['specs_text', 'asset_notes'] as $clave) {
+    foreach (['texto_especificaciones', 'observaciones_activo'] as $clave) {
         $texto = trim((string) ($activo[$clave] ?? ''));
 
         if ($texto !== '') {
@@ -60,7 +60,7 @@ $observacionesActivo = static function (?array $activo, array $asignacion, strin
     }
 
     if (!$partes) {
-        $nota = trim((string) ($asignacion['notes'] ?? ''));
+        $nota = trim((string) ($asignacion['observaciones'] ?? ''));
 
         if ($nota !== '') {
             $partes[] = $nota;
@@ -72,15 +72,15 @@ $observacionesActivo = static function (?array $activo, array $asignacion, strin
 
 $esCelular = static function (array $activo): bool {
     $texto = mb_strtoupper(implode(' ', [
-        $activo['type_name'] ?? '',
-        $activo['brand_name'] ?? '',
-        $activo['model_name'] ?? '',
-        $activo['phone_number'] ?? '',
+        $activo['nombre_tipo'] ?? '',
+        $activo['nombre_marca'] ?? '',
+        $activo['nombre_modelo'] ?? '',
+        $activo['numero_telefono'] ?? '',
         $activo['imei1'] ?? '',
         $activo['imei2'] ?? '',
     ]), 'UTF-8');
 
-    if (trim((string) ($activo['phone_number'] ?? '')) !== '' || trim((string) ($activo['imei1'] ?? '')) !== '' || trim((string) ($activo['imei2'] ?? '')) !== '') {
+    if (trim((string) ($activo['numero_telefono'] ?? '')) !== '' || trim((string) ($activo['imei1'] ?? '')) !== '' || trim((string) ($activo['imei2'] ?? '')) !== '') {
         return true;
     }
 

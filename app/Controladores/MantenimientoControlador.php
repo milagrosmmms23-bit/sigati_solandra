@@ -30,11 +30,11 @@ final class MantenimientoControlador extends Controlador
     {
         $activos = BD::pdo()
             ->query(
-                "SELECT a.id, a.asset_code, a.serial_number, t.name type_name
+                "SELECT a.id, a.codigo_activo, a.numero_serie, t.nombre nombre_tipo
                  FROM activos a
-                 JOIN tipos_activo t ON t.id = a.asset_type_id
-                 WHERE a.active = 1
-                 ORDER BY a.asset_code"
+                 JOIN tipos_activo t ON t.id = a.tipo_activo_id
+                 WHERE a.activo = 1
+                 ORDER BY a.codigo_activo"
             )
             ->fetchAll();
 
@@ -50,12 +50,12 @@ final class MantenimientoControlador extends Controlador
         Csrf::verificar();
 
         $datos = [
-            'asset_id' => (int) ($_POST['asset_id'] ?? 0),
-            'tipo' => $_POST['type'] ?? 'PREVENTIVO',
-            'problema' => trim($_POST['issue'] ?? ''),
-            'diagnostico' => trim($_POST['diagnosis'] ?? ''),
-            'acciones' => trim($_POST['actions'] ?? ''),
-            'costo' => trim($_POST['cost'] ?? '0'),
+            'activo_id' => (int) ($_POST['activo_id'] ?? 0),
+            'tipo' => $_POST['tipo'] ?? 'PREVENTIVO',
+            'problema' => trim($_POST['problema'] ?? ''),
+            'diagnostico' => trim($_POST['diagnostico'] ?? ''),
+            'acciones' => trim($_POST['acciones'] ?? ''),
+            'costo' => trim($_POST['costo'] ?? '0'),
         ];
 
         try {
@@ -73,11 +73,11 @@ final class MantenimientoControlador extends Controlador
         Csrf::verificar();
 
         $datos = [
-            'diagnostico' => trim($_POST['diagnosis'] ?? ''),
-            'acciones' => trim($_POST['actions'] ?? ''),
-            'repuestos' => trim($_POST['parts'] ?? ''),
-            'costo' => trim($_POST['cost'] ?? '0'),
-            'proxima_fecha' => trim($_POST['next_date'] ?? ''),
+            'diagnostico' => trim($_POST['diagnostico'] ?? ''),
+            'acciones' => trim($_POST['acciones'] ?? ''),
+            'repuestos' => trim($_POST['repuestos'] ?? ''),
+            'costo' => trim($_POST['costo'] ?? '0'),
+            'proxima_fecha' => trim($_POST['proxima_fecha'] ?? ''),
         ];
 
         try {

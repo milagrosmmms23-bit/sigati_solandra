@@ -17,17 +17,17 @@ final class Activo extends ModeloBase
         $total = (int) $count->fetchColumn();
 
         $consulta = $this->db->prepare(
-            "SELECT a.*, t.name type_name, s.name status_name, s.color,
-                    b.name brand_name, m.name model_name, ar.name area_name,
-                    l.name location_name, CONCAT(e.first_name, ' ', e.last_name) employee_name
+            "SELECT a.*, t.nombre nombre_tipo, s.nombre nombre_estado, s.color,
+                    b.nombre nombre_marca, m.nombre nombre_modelo, ar.nombre nombre_area,
+                    l.nombre nombre_ubicacion, CONCAT(e.nombres, ' ', e.apellidos) nombre_trabajador
              FROM activos a
-             JOIN tipos_activo t ON t.id = a.asset_type_id
-             JOIN estados_activo s ON s.id = a.status_id
-             LEFT JOIN marcas b ON b.id = a.brand_id
-             LEFT JOIN modelos m ON m.id = a.model_id
-             LEFT JOIN areas ar ON ar.id = a.current_area_id
-             LEFT JOIN ubicaciones l ON l.id = a.location_id
-             LEFT JOIN trabajadores e ON e.id = a.current_employee_id
+             JOIN tipos_activo t ON t.id = a.tipo_activo_id
+             JOIN estados_activo s ON s.id = a.estado_id
+             LEFT JOIN marcas b ON b.id = a.marca_id
+             LEFT JOIN modelos m ON m.id = a.modelo_id
+             LEFT JOIN areas ar ON ar.id = a.area_actual_id
+             LEFT JOIN ubicaciones l ON l.id = a.ubicacion_id
+             LEFT JOIN trabajadores e ON e.id = a.trabajador_actual_id
              WHERE $where
              ORDER BY a.id DESC
              LIMIT $porPagina OFFSET $offset"
@@ -45,19 +45,19 @@ final class Activo extends ModeloBase
     public function buscar(int $id): ?array
     {
         $consulta = $this->db->prepare(
-            "SELECT a.*, t.name type_name, s.name status_name, s.color,
-                    b.name brand_name, m.name model_name, ar.name area_name,
-                    l.name location_name, CONCAT(e.first_name, ' ', e.last_name) employee_name,
-                    sup.name supplier_name
+            "SELECT a.*, t.nombre nombre_tipo, s.nombre nombre_estado, s.color,
+                    b.nombre nombre_marca, m.nombre nombre_modelo, ar.nombre nombre_area,
+                    l.nombre nombre_ubicacion, CONCAT(e.nombres, ' ', e.apellidos) nombre_trabajador,
+                    sup.nombre nombre_proveedor
              FROM activos a
-             JOIN tipos_activo t ON t.id = a.asset_type_id
-             JOIN estados_activo s ON s.id = a.status_id
-             LEFT JOIN marcas b ON b.id = a.brand_id
-             LEFT JOIN modelos m ON m.id = a.model_id
-             LEFT JOIN areas ar ON ar.id = a.current_area_id
-             LEFT JOIN ubicaciones l ON l.id = a.location_id
-             LEFT JOIN trabajadores e ON e.id = a.current_employee_id
-             LEFT JOIN proveedores sup ON sup.id = a.supplier_id
+             JOIN tipos_activo t ON t.id = a.tipo_activo_id
+             JOIN estados_activo s ON s.id = a.estado_id
+             LEFT JOIN marcas b ON b.id = a.marca_id
+             LEFT JOIN modelos m ON m.id = a.modelo_id
+             LEFT JOIN areas ar ON ar.id = a.area_actual_id
+             LEFT JOIN ubicaciones l ON l.id = a.ubicacion_id
+             LEFT JOIN trabajadores e ON e.id = a.trabajador_actual_id
+             LEFT JOIN proveedores sup ON sup.id = a.proveedor_id
              WHERE a.id = ?"
         );
         $consulta->execute([$id]);
@@ -67,8 +67,8 @@ final class Activo extends ModeloBase
             return null;
         }
 
-        $activo['specs'] = $this->especificacionesGuardadas($id);
-        $activo['movements'] = $this->movimientos($id);
+        $activo['especificaciones'] = $this->especificacionesGuardadas($id);
+        $activo['movimientos'] = $this->movimientos($id);
         $activo['mantenimientos'] = $this->mantenimientos($id);
 
         return $activo;
@@ -78,15 +78,15 @@ final class Activo extends ModeloBase
     {
         return $this->db
             ->query(
-                "SELECT a.id, a.asset_code, a.serial_number, t.name type_name,
-                        b.name brand_name, m.name model_name
+                "SELECT a.id, a.codigo_activo, a.numero_serie, t.nombre nombre_tipo,
+                        b.nombre nombre_marca, m.nombre nombre_modelo
                  FROM activos a
-                 JOIN tipos_activo t ON t.id = a.asset_type_id
-                 JOIN estados_activo s ON s.id = a.status_id
-                 LEFT JOIN marcas b ON b.id = a.brand_id
-                 LEFT JOIN modelos m ON m.id = a.model_id
-                 WHERE a.active = 1 AND s.code = 'DISPONIBLE'
-                 ORDER BY t.name, a.asset_code"
+                 JOIN tipos_activo t ON t.id = a.tipo_activo_id
+                 JOIN estados_activo s ON s.id = a.estado_id
+                 LEFT JOIN marcas b ON b.id = a.marca_id
+                 LEFT JOIN modelos m ON m.id = a.modelo_id
+                 WHERE a.activo = 1 AND s.codigo = 'DISPONIBLE'
+                 ORDER BY t.nombre, a.codigo_activo"
             )
             ->fetchAll();
     }
@@ -115,24 +115,24 @@ final class Activo extends ModeloBase
     public function exportar(): array
     {
         return $this->db
-            ->query('SELECT * FROM vw_inventario_general ORDER BY asset_code')
+            ->query('SELECT * FROM vw_inventario_general ORDER BY codigo_activo')
             ->fetchAll();
     }
 
     private function armarFiltros(array $filtros): array
     {
-        $where = ['a.active = 1'];
+        $where = ['a.activo = 1'];
         $params = [];
 
         if ($filtros['q'] ?? '') {
-            $where[] = '(a.asset_code LIKE :q OR a.legacy_code LIKE :q OR a.serial_number LIKE :q OR a.hostname LIKE :q OR a.imei1 LIKE :q OR a.phone_number LIKE :q)';
+            $where[] = '(a.codigo_activo LIKE :q OR a.codigo_anterior LIKE :q OR a.numero_serie LIKE :q OR a.nombre_equipo LIKE :q OR a.imei1 LIKE :q OR a.numero_telefono LIKE :q)';
             $params['q'] = '%'.$filtros['q'].'%';
         }
 
         $allowedFilters = [
-            'type_id' => 'a.asset_type_id',
-            'status_id' => 'a.status_id',
-            'area_id' => 'a.current_area_id',
+            'tipo_activo_id' => 'a.tipo_activo_id',
+            'estado_id' => 'a.estado_id',
+            'area_id' => 'a.area_actual_id',
         ];
 
         foreach ($allowedFilters as $clave => $column) {
@@ -147,17 +147,17 @@ final class Activo extends ModeloBase
 
     private function insertar(array $datos, int $usuarioId): int
     {
-        $consulta = $this->db->prepare('CALL sp_generar_codigo_activo(?, @code)');
-        $consulta->execute([$datos['asset_type_id']]);
+        $consulta = $this->db->prepare('CALL sp_generar_codigo_activo(?, @codigo)');
+        $consulta->execute([$datos['tipo_activo_id']]);
         $consulta->closeCursor();
 
-        $codigo = $this->db->query('SELECT @code')->fetchColumn();
+        $codigo = $this->db->query('SELECT @codigo')->fetchColumn();
         $consulta = $this->db->prepare(
             'INSERT INTO activos(
-                asset_code, legacy_code, asset_type_id, brand_id, model_id, status_id,
-                current_area_id, location_id, serial_number, hostname, ip_address, mac_address,
-                imei1, imei2, phone_number, purchase_date, invoice_number, supplier_id,
-                cost, warranty_end, notes, active, created_by, updated_by
+                codigo_activo, codigo_anterior, tipo_activo_id, marca_id, modelo_id, estado_id,
+                area_actual_id, ubicacion_id, numero_serie, nombre_equipo, direccion_ip, direccion_mac,
+                imei1, imei2, numero_telefono, fecha_compra, numero_factura, proveedor_id,
+                costo, fin_garantia, observaciones, activo, creado_por, actualizado_por
              ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)'
         );
         $consulta->execute(array_merge([$codigo], $this->argumentos($datos), [$usuarioId, $usuarioId]));
@@ -172,11 +172,11 @@ final class Activo extends ModeloBase
     {
         $consulta = $this->db->prepare(
             'UPDATE activos
-             SET legacy_code = ?, asset_type_id = ?, brand_id = ?, model_id = ?, status_id = ?,
-                 current_area_id = ?, location_id = ?, serial_number = ?, hostname = ?, ip_address = ?,
-                 mac_address = ?, imei1 = ?, imei2 = ?, phone_number = ?, purchase_date = ?,
-                 invoice_number = ?, supplier_id = ?, cost = ?, warranty_end = ?, notes = ?,
-                 updated_by = ?, updated_at = NOW()
+             SET codigo_anterior = ?, tipo_activo_id = ?, marca_id = ?, modelo_id = ?, estado_id = ?,
+                 area_actual_id = ?, ubicacion_id = ?, numero_serie = ?, nombre_equipo = ?, direccion_ip = ?,
+                 direccion_mac = ?, imei1 = ?, imei2 = ?, numero_telefono = ?, fecha_compra = ?,
+                 numero_factura = ?, proveedor_id = ?, costo = ?, fin_garantia = ?, observaciones = ?,
+                 actualizado_por = ?, actualizado_en = NOW()
              WHERE id = ?'
         );
 
@@ -186,40 +186,40 @@ final class Activo extends ModeloBase
         $consulta->execute($argumentos);
 
         $this->db
-            ->prepare('DELETE FROM especificaciones_activo WHERE asset_id = ?')
+            ->prepare('DELETE FROM especificaciones_activo WHERE activo_id = ?')
             ->execute([$id]);
     }
 
     private function argumentos(array $datos): array
     {
         return [
-            $datos['legacy_code'] ?: null,
-            $datos['asset_type_id'],
-            $datos['brand_id'] ?: null,
-            $datos['model_id'] ?: null,
-            $datos['status_id'],
-            $datos['current_area_id'] ?: null,
-            $datos['location_id'] ?: null,
-            $datos['serial_number'] ?: null,
-            $datos['hostname'] ?: null,
-            $datos['ip_address'] ?: null,
-            $datos['mac_address'] ?: null,
+            $datos['codigo_anterior'] ?: null,
+            $datos['tipo_activo_id'],
+            $datos['marca_id'] ?: null,
+            $datos['modelo_id'] ?: null,
+            $datos['estado_id'],
+            $datos['area_actual_id'] ?: null,
+            $datos['ubicacion_id'] ?: null,
+            $datos['numero_serie'] ?: null,
+            $datos['nombre_equipo'] ?: null,
+            $datos['direccion_ip'] ?: null,
+            $datos['direccion_mac'] ?: null,
             $datos['imei1'] ?: null,
             $datos['imei2'] ?: null,
-            $datos['phone_number'] ?: null,
-            $datos['purchase_date'] ?: null,
-            $datos['invoice_number'] ?: null,
-            $datos['supplier_id'] ?: null,
-            $datos['cost'] ?: null,
-            $datos['warranty_end'] ?: null,
-            $datos['notes'] ?: null,
+            $datos['numero_telefono'] ?: null,
+            $datos['fecha_compra'] ?: null,
+            $datos['numero_factura'] ?: null,
+            $datos['proveedor_id'] ?: null,
+            $datos['costo'] ?: null,
+            $datos['fin_garantia'] ?: null,
+            $datos['observaciones'] ?: null,
         ];
     }
 
     private function guardarEspecificaciones(int $activoId, array $especificaciones): void
     {
         $consulta = $this->db->prepare(
-            'INSERT INTO especificaciones_activo(asset_id, spec_key, spec_value) VALUES(?, ?, ?)'
+            'INSERT INTO especificaciones_activo(activo_id, clave_especificacion, valor_especificacion) VALUES(?, ?, ?)'
         );
 
         foreach ($especificaciones as $clave => $valor) {
@@ -235,13 +235,13 @@ final class Activo extends ModeloBase
     private function registrarMovimientoInicial(int $activoId, array $datos, int $usuarioId): void
     {
         $consulta = $this->db->prepare(
-            "INSERT INTO movimientos_activo(asset_id, movement_type, to_status_id, to_area_id, notes, user_id)
+            "INSERT INTO movimientos_activo(activo_id, tipo_movimiento, estado_destino_id, area_destino_id, observaciones, usuario_id)
              VALUES(?, 'REGISTRO', ?, ?, ?, ?)"
         );
         $consulta->execute([
             $activoId,
-            $datos['status_id'],
-            $datos['current_area_id'] ?: null,
+            $datos['estado_id'],
+            $datos['area_actual_id'] ?: null,
             'Registro inicial',
             $usuarioId,
         ]);
@@ -250,7 +250,7 @@ final class Activo extends ModeloBase
     private function especificacionesGuardadas(int $activoId): array
     {
         $consulta = $this->db->prepare(
-            'SELECT spec_key, spec_value FROM especificaciones_activo WHERE asset_id = ? ORDER BY spec_key'
+            'SELECT clave_especificacion, valor_especificacion FROM especificaciones_activo WHERE activo_id = ? ORDER BY clave_especificacion'
         );
         $consulta->execute([$activoId]);
 
@@ -260,10 +260,10 @@ final class Activo extends ModeloBase
     private function movimientos(int $activoId): array
     {
         $consulta = $this->db->prepare(
-            "SELECT am.*, u.name user_name
+            "SELECT am.*, u.nombre nombre_usuario
              FROM movimientos_activo am
-             LEFT JOIN usuarios u ON u.id = am.user_id
-             WHERE am.asset_id = ?
+             LEFT JOIN usuarios u ON u.id = am.usuario_id
+             WHERE am.activo_id = ?
              ORDER BY am.id DESC
              LIMIT 50"
         );
@@ -275,7 +275,7 @@ final class Activo extends ModeloBase
     private function mantenimientos(int $activoId): array
     {
         $consulta = $this->db->prepare(
-            'SELECT * FROM mantenimientos WHERE asset_id = ? ORDER BY id DESC'
+            'SELECT * FROM mantenimientos WHERE activo_id = ? ORDER BY id DESC'
         );
         $consulta->execute([$activoId]);
 

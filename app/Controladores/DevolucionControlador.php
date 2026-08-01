@@ -28,7 +28,7 @@ final class DevolucionControlador extends Controlador
 
     public function crear(): void
     {
-        $asignacionId = (int) ($_GET['assignment_id'] ?? 0);
+        $asignacionId = (int) ($_GET['asignacion_id'] ?? 0);
         $asignacion = $asignacionId ? (new Asignacion())->buscar($asignacionId) : null;
 
         $this->vista('devoluciones', [
@@ -44,28 +44,28 @@ final class DevolucionControlador extends Controlador
     {
         Csrf::verificar();
 
-        $asignacionId = (int) ($_POST['assignment_id'] ?? 0);
-        $elementosIds = array_values(array_unique(array_map('intval', $_POST['item_ids'] ?? [])));
+        $asignacionId = (int) ($_POST['asignacion_id'] ?? 0);
+        $elementosIds = array_values(array_unique(array_map('intval', $_POST['item_asignacion_ids'] ?? [])));
 
         if (!$asignacionId || !$elementosIds) {
             Flash::error('Selecciona al menos un equipo.');
-            redirect('devoluciones/crear?assignment_id='.$asignacionId);
+            redirect('devoluciones/crear?asignacion_id='.$asignacionId);
         }
 
         $elementos = [];
         foreach ($elementosIds as $itemId) {
             $elementos[] = [
-                'item_id' => $itemId,
-                'condition' => trim($_POST['condition'][$itemId] ?? 'Buen estado'),
-                'damage' => trim($_POST['damage'][$itemId] ?? ''),
-                'status_id' => (int) ($_POST['status_id'][$itemId] ?? 0),
+                'item_asignacion_id' => $itemId,
+                'condicion' => trim($_POST['condicion'][$itemId] ?? 'Buen estado'),
+                'danos' => trim($_POST['danos'][$itemId] ?? ''),
+                'estado_id' => (int) ($_POST['estado_id'][$itemId] ?? 0),
             ];
         }
 
         try {
             $id = $this->modelo->crear(
                 $asignacionId,
-                trim($_POST['notes'] ?? ''),
+                trim($_POST['observaciones'] ?? ''),
                 $elementos,
                 Auth::id()
             );
@@ -74,7 +74,7 @@ final class DevolucionControlador extends Controlador
             redirect('devoluciones/'.$id);
         } catch (Throwable $exception) {
             Flash::error($exception->getMessage());
-            redirect('devoluciones/crear?assignment_id='.$asignacionId);
+            redirect('devoluciones/crear?asignacion_id='.$asignacionId);
         }
     }
 
@@ -88,7 +88,7 @@ final class DevolucionControlador extends Controlador
 
         $this->vista('devoluciones', [
             'modo' => 'detalle',
-            'titulo' => $devolucion['return_number'],
+            'titulo' => $devolucion['numero_devolucion'],
             'registro' => $devolucion,
         ]);
     }
@@ -103,7 +103,7 @@ final class DevolucionControlador extends Controlador
 
         $this->vista(
             'imprimir',
-            ['doc' => 'return', 'titulo' => $devolucion['return_number'], 'registro' => $devolucion],
+            ['doc' => 'return', 'titulo' => $devolucion['numero_devolucion'], 'registro' => $devolucion],
             'plantilla_impresion'
         );
     }
@@ -130,6 +130,6 @@ final class DevolucionControlador extends Controlador
         $pdf->loadHtml($html, 'UTF-8');
         $pdf->setPaper('A4');
         $pdf->render();
-        $pdf->stream($devolucion['return_number'].'.pdf', ['Attachment' => true]);
+        $pdf->stream($devolucion['numero_devolucion'].'.pdf', ['Attachment' => true]);
     }
 }

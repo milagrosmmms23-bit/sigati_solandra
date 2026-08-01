@@ -31,13 +31,13 @@
                 <tbody>
                     <?php foreach ($filas as $trabajador): ?>
                         <tr>
-                            <td><strong><?= e($trabajador['employee_code']) ?></strong></td>
-                            <td><strong><?= e($trabajador['first_name'].' '.$trabajador['last_name']) ?></strong></td>
-                            <td><?= e($trabajador['position'] ?: '—') ?></td>
-                            <td><?= e($trabajador['area_name'] ?: 'Sin área') ?></td>
+                            <td><strong><?= e($trabajador['codigo_trabajador']) ?></strong></td>
+                            <td><strong><?= e($trabajador['nombres'].' '.$trabajador['apellidos']) ?></strong></td>
+                            <td><?= e($trabajador['cargo'] ?: '—') ?></td>
+                            <td><?= e($trabajador['nombre_area'] ?: 'Sin área') ?></td>
                             <td>
-                                <?= e($trabajador['email'] ?: '—') ?>
-                                <small><?= e($trabajador['phone'] ?: '') ?></small>
+                                <?= e($trabajador['correo'] ?: '—') ?>
+                                <small><?= e($trabajador['telefono'] ?: '') ?></small>
                             </td>
                             <td class="text-right">
                                 <a class="icon-btn" href="<?= url('trabajadores/'.$trabajador['id'].'/editar') ?>">

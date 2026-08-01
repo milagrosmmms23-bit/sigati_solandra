@@ -20,13 +20,13 @@
             <label>
                 Código de trabajador *
                 <input
-                    name="employee_code"
+                    name="codigo_trabajador"
                     required
-                    value="<?= e(old('employee_code', $registro['employee_code'] ?? '')) ?>"
+                    value="<?= e(old('codigo_trabajador', $registro['codigo_trabajador'] ?? '')) ?>"
                 >
 
-                <?php if (isset($errores['employee_code'])): ?>
-                    <small class="error"><?= e($errores['employee_code']) ?></small>
+                <?php if (isset($errores['codigo_trabajador'])): ?>
+                    <small class="error"><?= e($errores['codigo_trabajador']) ?></small>
                 <?php endif; ?>
             </label>
 
@@ -39,7 +39,7 @@
                             value="<?= $area['id'] ?>"
                             <?= selected(old('area_id', $registro['area_id'] ?? ''), $area['id']) ?>
                         >
-                            <?= e($area['name']) ?>
+                            <?= e($area['nombre']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -47,27 +47,27 @@
 
             <label>
                 Nombres *
-                <input name="first_name" required value="<?= e(old('first_name', $registro['first_name'] ?? '')) ?>">
+                <input name="nombres" required value="<?= e(old('nombres', $registro['nombres'] ?? '')) ?>">
             </label>
 
             <label>
                 Apellidos *
-                <input name="last_name" required value="<?= e(old('last_name', $registro['last_name'] ?? '')) ?>">
+                <input name="apellidos" required value="<?= e(old('apellidos', $registro['apellidos'] ?? '')) ?>">
             </label>
 
             <label>
                 Cargo
-                <input name="position" value="<?= e(old('position', $registro['position'] ?? '')) ?>">
+                <input name="cargo" value="<?= e(old('cargo', $registro['cargo'] ?? '')) ?>">
             </label>
 
             <label>
                 Teléfono
-                <input name="phone" value="<?= e(old('phone', $registro['phone'] ?? '')) ?>">
+                <input name="telefono" value="<?= e(old('telefono', $registro['telefono'] ?? '')) ?>">
             </label>
 
             <label class="span-2">
                 Correo
-                <input type="email" name="email" value="<?= e(old('email', $registro['email'] ?? '')) ?>">
+                <input type="email" name="correo" value="<?= e(old('correo', $registro['correo'] ?? '')) ?>">
             </label>
         </div>
 

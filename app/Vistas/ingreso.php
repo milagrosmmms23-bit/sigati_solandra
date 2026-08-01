@@ -41,13 +41,13 @@
 
             <label>
                 Usuario
-                <input name="username" required autofocus placeholder="admin">
+                <input name="usuario" required autofocus placeholder="admin">
             </label>
 
             <label>
                 Contraseña
                 <div class="password-wrap">
-                    <input id="password" type="password" name="password" required placeholder="••••••••">
+                    <input id="password" type="password" name="clave" required placeholder="••••••••">
                     <button type="button" data-password-toggle>Ver</button>
                 </div>
             </label>

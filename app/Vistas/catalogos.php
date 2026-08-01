@@ -24,10 +24,10 @@ $filas = $filas ?? [];
                 <?= csrf_field() ?>
 
                 <?php if ($tabla === 'modelos'): ?>
-                    <select name="brand_id">
+                    <select name="marca_id">
                         <option value="">Sin marca</option>
                         <?php foreach ($filas['marcas'] as $marca): ?>
-                            <option value="<?= $marca['id'] ?>"><?= e($marca['name']) ?></option>
+                            <option value="<?= $marca['id'] ?>"><?= e($marca['nombre']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 <?php endif; ?>
@@ -36,19 +36,19 @@ $filas = $filas ?? [];
                     <select name="area_id">
                         <option value="">Sin área</option>
                         <?php foreach ($filas['areas'] as $area): ?>
-                            <option value="<?= $area['id'] ?>"><?= e($area['name']) ?></option>
+                            <option value="<?= $area['id'] ?>"><?= e($area['nombre']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 <?php endif; ?>
 
-                <input name="name" required placeholder="Nuevo registro">
+                <input name="nombre" required placeholder="Nuevo registro">
 
                 <?php if ($tabla === 'tipos_activo'): ?>
-                    <input name="prefix" maxlength="5" required placeholder="Prefijo">
+                    <input name="prefijo" maxlength="5" required placeholder="Prefijo">
                 <?php endif; ?>
 
                 <?php if ($tabla === 'estados_activo'): ?>
-                    <input name="code" maxlength="40" placeholder="Código (opcional)">
+                    <input name="codigo" maxlength="40" placeholder="Código (opcional)">
                     <select name="color">
                         <option value="secondary">Gris</option>
                         <option value="success">Verde</option>
@@ -64,9 +64,9 @@ $filas = $filas ?? [];
             <div class="tag-list">
                 <?php foreach ($filas[$tabla] as $registro): ?>
                     <span>
-                        <?= e($registro['name']) ?>
-                        <?php if (isset($registro['prefix'])): ?>
-                            <small><?= e($registro['prefix']) ?></small>
+                        <?= e($registro['nombre']) ?>
+                        <?php if (isset($registro['prefijo'])): ?>
+                            <small><?= e($registro['prefijo']) ?></small>
                         <?php endif; ?>
                     </span>
                 <?php endforeach; ?>

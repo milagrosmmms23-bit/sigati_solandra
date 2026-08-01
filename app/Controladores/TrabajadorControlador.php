@@ -47,10 +47,10 @@ final class TrabajadorControlador extends Controlador
 
         $datos = $this->datosFormulario();
         $errores = $this->validar($datos, [
-            'employee_code' => 'required|max:50',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'email',
+            'codigo_trabajador' => 'required|max:50',
+            'nombres' => 'required',
+            'apellidos' => 'required',
+            'correo' => 'correo',
         ]);
 
         if ($errores) {
@@ -96,10 +96,10 @@ final class TrabajadorControlador extends Controlador
 
         $datos = $this->datosFormulario();
         $errores = $this->validar($datos, [
-            'employee_code' => 'required',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'email',
+            'codigo_trabajador' => 'required',
+            'nombres' => 'required',
+            'apellidos' => 'required',
+            'correo' => 'correo',
         ]);
 
         if ($errores) {
@@ -115,12 +115,12 @@ final class TrabajadorControlador extends Controlador
     private function datosFormulario(): array
     {
         return [
-            'employee_code' => trim($_POST['employee_code'] ?? ''),
-            'first_name' => trim($_POST['first_name'] ?? ''),
-            'last_name' => trim($_POST['last_name'] ?? ''),
-            'email' => trim($_POST['email'] ?? ''),
-            'phone' => trim($_POST['phone'] ?? ''),
-            'position' => trim($_POST['position'] ?? ''),
+            'codigo_trabajador' => trim($_POST['codigo_trabajador'] ?? ''),
+            'nombres' => trim($_POST['nombres'] ?? ''),
+            'apellidos' => trim($_POST['apellidos'] ?? ''),
+            'correo' => trim($_POST['correo'] ?? ''),
+            'telefono' => trim($_POST['telefono'] ?? ''),
+            'cargo' => trim($_POST['cargo'] ?? ''),
             'area_id' => (int) ($_POST['area_id'] ?? 0),
         ];
     }

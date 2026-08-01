@@ -1,16 +1,16 @@
 <?php
-    $elementos = $registro['items'] ?? [];
+    $elementos = $registro['elementos'] ?? [];
     $celulares = array_values(array_filter($elementos, $esCelular));
     $equipos = array_values(array_filter($elementos, static fn (array $activo): bool => !$esCelular($activo)));
     $equipo = $equipos[0] ?? null;
     $celular = $celulares[0] ?? null;
     $equiposExtra = array_slice($equipos, 1);
-    $accesoriosEquipo = $textoActivo($equipo, 'condition_out');
+    $accesoriosEquipo = $textoActivo($equipo, 'condicion_salida');
     $descripcionesExtra = [];
 
     foreach ($equiposExtra as $equipoExtra) {
         $detalle = $descripcionActivo($equipoExtra);
-        $serie = $limpiar($equipoExtra['serial_number'] ?? '', '');
+        $serie = $limpiar($equipoExtra['numero_serie'] ?? '', '');
 
         if ($serie !== '') {
             $detalle .= ' S/N '.$serie;
@@ -62,21 +62,21 @@
             <tr><th class="section-title" colspan="7">Datos del Equipo</th></tr>
             <tr>
                 <td class="field-label">Nombre Equipo</td>
-                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'asset_code')) ?>" colspan="3"><?= e($textoActivo($equipo, 'asset_code')) ?></td>
+                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'codigo_activo')) ?>" colspan="3"><?= e($textoActivo($equipo, 'codigo_activo')) ?></td>
                 <td class="field-label">C&oacute;digo</td>
-                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'asset_code')) ?>" colspan="2"><?= e($textoActivo($equipo, 'asset_code')) ?></td>
+                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'codigo_activo')) ?>" colspan="2"><?= e($textoActivo($equipo, 'codigo_activo')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Marca</td>
-                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'brand_name')) ?>"><?= e($textoActivo($equipo, 'brand_name')) ?></td>
+                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'nombre_marca')) ?>"><?= e($textoActivo($equipo, 'nombre_marca')) ?></td>
                 <td class="field-label">Serie</td>
-                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'serial_number')) ?>"><?= e($textoActivo($equipo, 'serial_number')) ?></td>
+                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'numero_serie')) ?>"><?= e($textoActivo($equipo, 'numero_serie')) ?></td>
                 <td class="field-label" colspan="2">Modelo</td>
-                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'model_name')) ?>"><?= e($textoActivo($equipo, 'model_name')) ?></td>
+                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'nombre_modelo')) ?>"><?= e($textoActivo($equipo, 'nombre_modelo')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Tipo de Equipo</td>
-                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'type_name')) ?>" colspan="6"><?= e($textoActivo($equipo, 'type_name')) ?></td>
+                <td class="field-value<?= $claseCelda($textoActivo($equipo, 'nombre_tipo')) ?>" colspan="6"><?= e($textoActivo($equipo, 'nombre_tipo')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Accesorios</td>
@@ -93,17 +93,17 @@
             <tr><th class="section-title" colspan="8">Descripci&oacute;n de Celular y SIM CARD (cuando aplique)</th></tr>
             <tr>
                 <td class="field-label">Chip de L&iacute;nea</td>
-                <td class="field-value<?= $claseCelda($textoActivo($celular, 'phone_number')) ?>" colspan="2"><?= e($textoActivo($celular, 'phone_number')) ?></td>
+                <td class="field-value<?= $claseCelda($textoActivo($celular, 'numero_telefono')) ?>" colspan="2"><?= e($textoActivo($celular, 'numero_telefono')) ?></td>
                 <td class="field-label">Marca</td>
-                <td class="field-value<?= $claseCelda($textoActivo($celular, 'brand_name')) ?>" colspan="2"><?= e($textoActivo($celular, 'brand_name')) ?></td>
+                <td class="field-value<?= $claseCelda($textoActivo($celular, 'nombre_marca')) ?>" colspan="2"><?= e($textoActivo($celular, 'nombre_marca')) ?></td>
                 <td class="field-label">IMEI</td>
                 <td class="field-value<?= $claseCelda($textoActivo($celular, 'imei1') !== '-' ? $textoActivo($celular, 'imei1') : $textoActivo($celular, 'imei2')) ?>"><?= e($textoActivo($celular, 'imei1') !== '-' ? $textoActivo($celular, 'imei1') : $textoActivo($celular, 'imei2')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Modelo</td>
-                <td class="field-value<?= $claseCelda($textoActivo($celular, 'model_name')) ?>"><?= e($textoActivo($celular, 'model_name')) ?></td>
+                <td class="field-value<?= $claseCelda($textoActivo($celular, 'nombre_modelo')) ?>"><?= e($textoActivo($celular, 'nombre_modelo')) ?></td>
                 <td class="field-label" colspan="3">Accesorios</td>
-                <td class="<?= trim($claseCelda($textoActivo($celular, 'condition_out'))) ?>" colspan="3"><?= e($textoActivo($celular, 'condition_out')) ?></td>
+                <td class="<?= trim($claseCelda($textoActivo($celular, 'condicion_salida'))) ?>" colspan="3"><?= e($textoActivo($celular, 'condicion_salida')) ?></td>
             </tr>
             <tr>
                 <td class="field-label">Observaciones</td>
@@ -116,7 +116,7 @@
             <colgroup><col><col><col><col><col><col></colgroup>
             <tr>
                 <td class="field-label">Nombre y Apellidos</td>
-                <td class="field-value" colspan="3"><?= e($mayusculas($registro['employee_name'] ?? '')) ?></td>
+                <td class="field-value" colspan="3"><?= e($mayusculas($registro['nombre_trabajador'] ?? '')) ?></td>
                 <td class="field-label">Fecha</td>
                 <td class="field-value"><?= e($fechaCorta($fecha)) ?></td>
             </tr>
@@ -124,7 +124,7 @@
                 <td class="field-label">Sede</td>
                 <td class="field-value"><?= e($mayusculas(config('aplicacion.sede', ''))) ?></td>
                 <td class="field-label">&Aacute;rea</td>
-                <td class="field-value" colspan="3"><?= e($mayusculas($registro['area_name'] ?? '')) ?></td>
+                <td class="field-value" colspan="3"><?= e($mayusculas($registro['nombre_area'] ?? '')) ?></td>
             </tr>
         </table>
 

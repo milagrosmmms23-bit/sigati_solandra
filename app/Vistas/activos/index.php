@@ -16,17 +16,17 @@
             <input
                 name="q"
                 value="<?= e($filtros['q']) ?>"
-                placeholder="Código, serie, hostname, IMEI o teléfono"
+                placeholder="Código, serie, nombre_equipo, IMEI o teléfono"
             >
         </div>
 
         <div class="field">
             <label>Tipo</label>
-            <select name="type_id">
+            <select name="tipo_activo_id">
                 <option value="">Todos</option>
                 <?php foreach ($tipos as $tipo): ?>
-                    <option value="<?= $tipo['id'] ?>" <?= selected($filtros['type_id'], $tipo['id']) ?>>
-                        <?= e($tipo['name']) ?>
+                    <option value="<?= $tipo['id'] ?>" <?= selected($filtros['tipo_activo_id'], $tipo['id']) ?>>
+                        <?= e($tipo['nombre']) ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -34,11 +34,11 @@
 
         <div class="field">
             <label>Estado</label>
-            <select name="status_id">
+            <select name="estado_id">
                 <option value="">Todos</option>
                 <?php foreach ($estados as $estado): ?>
-                    <option value="<?= $estado['id'] ?>" <?= selected($filtros['status_id'], $estado['id']) ?>>
-                        <?= e($estado['name']) ?>
+                    <option value="<?= $estado['id'] ?>" <?= selected($filtros['estado_id'], $estado['id']) ?>>
+                        <?= e($estado['nombre']) ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -50,7 +50,7 @@
                 <option value="">Todas</option>
                 <?php foreach ($areas as $area): ?>
                     <option value="<?= $area['id'] ?>" <?= selected($filtros['area_id'], $area['id']) ?>>
-                        <?= e($area['name']) ?>
+                        <?= e($area['nombre']) ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -78,26 +78,26 @@
                         <tr>
                             <td>
                                 <a class="asset-code" href="<?= url('activos/'.$activo['id']) ?>">
-                                    <?= e($activo['asset_code']) ?>
+                                    <?= e($activo['codigo_activo']) ?>
                                 </a>
-                                <small><?= e($activo['legacy_code'] ?: 'Sin código anterior') ?></small>
+                                <small><?= e($activo['codigo_anterior'] ?: 'Sin código anterior') ?></small>
                             </td>
                             <td>
-                                <strong><?= e($activo['type_name']) ?></strong>
+                                <strong><?= e($activo['nombre_tipo']) ?></strong>
                                 <small>
-                                    <?= e(trim(($activo['brand_name'] ?? '').' '.($activo['model_name'] ?? '')) ?: 'Sin marca/modelo') ?>
+                                    <?= e(trim(($activo['nombre_marca'] ?? '').' '.($activo['nombre_modelo'] ?? '')) ?: 'Sin marca/modelo') ?>
                                 </small>
                             </td>
                             <td>
-                                <?= e($activo['serial_number'] ?: '—') ?>
-                                <small><?= e($activo['hostname'] ?: '') ?></small>
+                                <?= e($activo['numero_serie'] ?: '—') ?>
+                                <small><?= e($activo['nombre_equipo'] ?: '') ?></small>
                             </td>
                             <td>
-                                <?= e($activo['area_name'] ?: 'Sin área') ?>
-                                <small><?= e($activo['employee_name'] ?: 'Sin responsable') ?></small>
+                                <?= e($activo['nombre_area'] ?: 'Sin área') ?>
+                                <small><?= e($activo['nombre_trabajador'] ?: 'Sin responsable') ?></small>
                             </td>
-                            <td><?= badge($activo['status_name']) ?></td>
-                            <td><?= date_pe($activo['updated_at'] ?: $activo['created_at']) ?></td>
+                            <td><?= badge($activo['nombre_estado']) ?></td>
+                            <td><?= date_pe($activo['actualizado_en'] ?: $activo['creado_en']) ?></td>
                             <td class="text-right">
                                 <a class="icon-btn" href="<?= url('activos/'.$activo['id'].'/editar') ?>">Editar</a>
                             </td>

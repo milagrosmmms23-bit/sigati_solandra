@@ -1,10 +1,10 @@
 <?php
     $isEdit = !empty($registro);
-    $selectedStatus = old('status_id', $registro['status_id'] ?? '');
-    $specRows = $registro['specs'] ?? [['spec_key' => '', 'spec_value' => '']];
+    $selectedStatus = old('estado_id', $registro['estado_id'] ?? '');
+    $filasEspecificaciones = $registro['especificaciones'] ?? [['clave_especificacion' => '', 'valor_especificacion' => '']];
 
-    if (!$specRows) {
-        $specRows = [['spec_key' => '', 'spec_value' => '']];
+    if (!$filasEspecificaciones) {
+        $filasEspecificaciones = [['clave_especificacion' => '', 'valor_especificacion' => '']];
     }
     ?>
 
@@ -38,36 +38,36 @@
             <div class="form-grid cols-3">
                 <label>
                     Tipo de activo *
-                    <select name="asset_type_id" required>
+                    <select name="tipo_activo_id" required>
                         <option value="">Seleccionar</option>
                         <?php foreach ($tipos as $tipo): ?>
                             <option
                                 value="<?= $tipo['id'] ?>"
-                                <?= selected(old('asset_type_id', $registro['asset_type_id'] ?? ''), $tipo['id']) ?>
+                                <?= selected(old('tipo_activo_id', $registro['tipo_activo_id'] ?? ''), $tipo['id']) ?>
                             >
-                                <?= e($tipo['name']) ?>
+                                <?= e($tipo['nombre']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
 
-                    <?php if (isset($errores['asset_type_id'])): ?>
-                        <small class="error"><?= e($errores['asset_type_id']) ?></small>
+                    <?php if (isset($errores['tipo_activo_id'])): ?>
+                        <small class="error"><?= e($errores['tipo_activo_id']) ?></small>
                     <?php endif; ?>
                 </label>
 
                 <label>
                     Estado *
-                    <select name="status_id" required>
+                    <select name="estado_id" required>
                         <?php foreach ($estados as $estado): ?>
                             <?php
-                            $isDefaultStatus = $selectedStatus === '' && ($estado['code'] ?? '') === 'DISPONIBLE';
+                            $isDefaultStatus = $selectedStatus === '' && ($estado['codigo'] ?? '') === 'DISPONIBLE';
                             $isSelectedStatus = (string) $selectedStatus === (string) $estado['id'];
                             ?>
                             <option
                                 value="<?= $estado['id'] ?>"
                                 <?= ($isSelectedStatus || $isDefaultStatus) ? 'selected' : '' ?>
                             >
-                                <?= e($estado['name']) ?>
+                                <?= e($estado['nombre']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -76,22 +76,22 @@
                 <label>
                     Código anterior
                     <input
-                        name="legacy_code"
-                        value="<?= e(old('legacy_code', $registro['legacy_code'] ?? '')) ?>"
+                        name="codigo_anterior"
+                        value="<?= e(old('codigo_anterior', $registro['codigo_anterior'] ?? '')) ?>"
                         placeholder="Ej. FT277701"
                     >
                 </label>
 
                 <label>
                     Marca
-                    <select name="brand_id">
+                    <select name="marca_id">
                         <option value="">Sin definir</option>
                         <?php foreach ($marcas as $marca): ?>
                             <option
                                 value="<?= $marca['id'] ?>"
-                                <?= selected(old('brand_id', $registro['brand_id'] ?? ''), $marca['id']) ?>
+                                <?= selected(old('marca_id', $registro['marca_id'] ?? ''), $marca['id']) ?>
                             >
-                                <?= e($marca['name']) ?>
+                                <?= e($marca['nombre']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -99,14 +99,14 @@
 
                 <label>
                     Modelo
-                    <select name="model_id">
+                    <select name="modelo_id">
                         <option value="">Sin definir</option>
                         <?php foreach ($modelos as $modelo): ?>
                             <option
                                 value="<?= $modelo['id'] ?>"
-                                <?= selected(old('model_id', $registro['model_id'] ?? ''), $modelo['id']) ?>
+                                <?= selected(old('modelo_id', $registro['modelo_id'] ?? ''), $modelo['id']) ?>
                             >
-                                <?= e($modelo['name']) ?>
+                                <?= e($modelo['nombre']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -115,8 +115,8 @@
                 <label>
                     Número de serie
                     <input
-                        name="serial_number"
-                        value="<?= e(old('serial_number', $registro['serial_number'] ?? '')) ?>"
+                        name="numero_serie"
+                        value="<?= e(old('numero_serie', $registro['numero_serie'] ?? '')) ?>"
                         placeholder="Serie del fabricante"
                     >
                 </label>
@@ -135,14 +135,14 @@
             <div class="form-grid cols-3">
                 <label>
                     Área
-                    <select name="current_area_id">
+                    <select name="area_actual_id">
                         <option value="">Sin área</option>
                         <?php foreach ($areas as $area): ?>
                             <option
                                 value="<?= $area['id'] ?>"
-                                <?= selected(old('current_area_id', $registro['current_area_id'] ?? ''), $area['id']) ?>
+                                <?= selected(old('area_actual_id', $registro['area_actual_id'] ?? ''), $area['id']) ?>
                             >
-                                <?= e($area['name']) ?>
+                                <?= e($area['nombre']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -150,14 +150,14 @@
 
                 <label>
                     Ubicación
-                    <select name="location_id">
+                    <select name="ubicacion_id">
                         <option value="">Sin ubicación</option>
                         <?php foreach ($ubicaciones as $ubicacion): ?>
                             <option
                                 value="<?= $ubicacion['id'] ?>"
-                                <?= selected(old('location_id', $registro['location_id'] ?? ''), $ubicacion['id']) ?>
+                                <?= selected(old('ubicacion_id', $registro['ubicacion_id'] ?? ''), $ubicacion['id']) ?>
                             >
-                                <?= e($ubicacion['name']) ?>
+                                <?= e($ubicacion['nombre']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -166,8 +166,8 @@
                 <label>
                     Hostname
                     <input
-                        name="hostname"
-                        value="<?= e(old('hostname', $registro['hostname'] ?? '')) ?>"
+                        name="nombre_equipo"
+                        value="<?= e(old('nombre_equipo', $registro['nombre_equipo'] ?? '')) ?>"
                         placeholder="PC-AQP-001"
                     >
                 </label>
@@ -175,8 +175,8 @@
                 <label>
                     Dirección IP
                     <input
-                        name="ip_address"
-                        value="<?= e(old('ip_address', $registro['ip_address'] ?? '')) ?>"
+                        name="direccion_ip"
+                        value="<?= e(old('direccion_ip', $registro['direccion_ip'] ?? '')) ?>"
                         placeholder="192.168.x.x"
                     >
                 </label>
@@ -184,8 +184,8 @@
                 <label>
                     Dirección MAC
                     <input
-                        name="mac_address"
-                        value="<?= e(old('mac_address', $registro['mac_address'] ?? '')) ?>"
+                        name="direccion_mac"
+                        value="<?= e(old('direccion_mac', $registro['direccion_mac'] ?? '')) ?>"
                         placeholder="00:00:00:00:00:00"
                     >
                 </label>
@@ -193,8 +193,8 @@
                 <label>
                     Teléfono
                     <input
-                        name="phone_number"
-                        value="<?= e(old('phone_number', $registro['phone_number'] ?? '')) ?>"
+                        name="numero_telefono"
+                        value="<?= e(old('numero_telefono', $registro['numero_telefono'] ?? '')) ?>"
                         placeholder="Número corporativo"
                     >
                 </label>
@@ -225,29 +225,29 @@
                     Fecha de compra
                     <input
                         type="date"
-                        name="purchase_date"
-                        value="<?= e(old('purchase_date', $registro['purchase_date'] ?? '')) ?>"
+                        name="fecha_compra"
+                        value="<?= e(old('fecha_compra', $registro['fecha_compra'] ?? '')) ?>"
                     >
                 </label>
 
                 <label>
                     Número de factura
                     <input
-                        name="invoice_number"
-                        value="<?= e(old('invoice_number', $registro['invoice_number'] ?? '')) ?>"
+                        name="numero_factura"
+                        value="<?= e(old('numero_factura', $registro['numero_factura'] ?? '')) ?>"
                     >
                 </label>
 
                 <label>
                     Proveedor
-                    <select name="supplier_id">
+                    <select name="proveedor_id">
                         <option value="">Sin definir</option>
                         <?php foreach ($proveedores as $proveedor): ?>
                             <option
                                 value="<?= $proveedor['id'] ?>"
-                                <?= selected(old('supplier_id', $registro['supplier_id'] ?? ''), $proveedor['id']) ?>
+                                <?= selected(old('proveedor_id', $registro['proveedor_id'] ?? ''), $proveedor['id']) ?>
                             >
-                                <?= e($proveedor['name']) ?>
+                                <?= e($proveedor['nombre']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -259,8 +259,8 @@
                         type="number"
                         step="0.01"
                         min="0"
-                        name="cost"
-                        value="<?= e(old('cost', $registro['cost'] ?? '')) ?>"
+                        name="costo"
+                        value="<?= e(old('costo', $registro['costo'] ?? '')) ?>"
                     >
                 </label>
 
@@ -268,8 +268,8 @@
                     Fin de garantía
                     <input
                         type="date"
-                        name="warranty_end"
-                        value="<?= e(old('warranty_end', $registro['warranty_end'] ?? '')) ?>"
+                        name="fin_garantia"
+                        value="<?= e(old('fin_garantia', $registro['fin_garantia'] ?? '')) ?>"
                     >
                 </label>
             </div>
@@ -284,17 +284,17 @@
                 </div>
             </div>
 
-            <div id="specRows" class="spec-list">
-                <?php foreach ($specRows as $especificacion): ?>
+            <div id="filasEspecificaciones" class="spec-list">
+                <?php foreach ($filasEspecificaciones as $especificacion): ?>
                     <div class="spec-row">
                         <input
-                            name="spec_key[]"
-                            value="<?= e($especificacion['spec_key']) ?>"
+                            name="clave_especificacion[]"
+                            value="<?= e($especificacion['clave_especificacion']) ?>"
                             placeholder="Ej. RAM"
                         >
                         <input
-                            name="spec_value[]"
-                            value="<?= e($especificacion['spec_value']) ?>"
+                            name="valor_especificacion[]"
+                            value="<?= e($especificacion['valor_especificacion']) ?>"
                             placeholder="Ej. 16 GB"
                         >
                         <button type="button" class="icon-btn danger" data-remove-row>×</button>
@@ -309,10 +309,10 @@
             <label class="full-label">
                 Observaciones
                 <textarea
-                    name="notes"
+                    name="observaciones"
                     rows="4"
                     placeholder="Estado físico, accesorios, información relevante..."
-                ><?= e(old('notes', $registro['notes'] ?? '')) ?></textarea>
+                ><?= e(old('observaciones', $registro['observaciones'] ?? '')) ?></textarea>
             </label>
         </div>
 

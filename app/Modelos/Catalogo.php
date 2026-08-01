@@ -22,7 +22,7 @@ final class Catalogo extends ModeloBase
         $this->validarTablaPermitida($tabla);
 
         return $this->db
-            ->query("SELECT * FROM $tabla WHERE active = 1 ORDER BY name")
+            ->query("SELECT * FROM $tabla WHERE activo = 1 ORDER BY nombre")
             ->fetchAll();
     }
 
@@ -32,9 +32,9 @@ final class Catalogo extends ModeloBase
 
         if ($tabla === 'tipos_activo') {
             $consulta = $this->db->prepare(
-                'INSERT INTO tipos_activo(name, prefix, active) VALUES(?, ?, 1)'
+                'INSERT INTO tipos_activo(nombre, prefijo, activo) VALUES(?, ?, 1)'
             );
-            $consulta->execute([$datos['name'], strtoupper($datos['prefix'])]);
+            $consulta->execute([$datos['nombre'], strtoupper($datos['prefijo'])]);
 
             return (int) $this->db->lastInsertId();
         }
@@ -42,33 +42,33 @@ final class Catalogo extends ModeloBase
         if ($tabla === 'estados_activo') {
             $codigo = $this->codigoEstado($datos);
             $consulta = $this->db->prepare(
-                'INSERT INTO estados_activo(code, name, color, active) VALUES(?, ?, ?, 1)'
+                'INSERT INTO estados_activo(codigo, nombre, color, activo) VALUES(?, ?, ?, 1)'
             );
-            $consulta->execute([$codigo, $datos['name'], $datos['color'] ?? 'secondary']);
+            $consulta->execute([$codigo, $datos['nombre'], $datos['color'] ?? 'secondary']);
 
             return (int) $this->db->lastInsertId();
         }
 
         if ($tabla === 'modelos') {
             $consulta = $this->db->prepare(
-                'INSERT INTO modelos(brand_id, name, active) VALUES(?, ?, 1)'
+                'INSERT INTO modelos(marca_id, nombre, activo) VALUES(?, ?, 1)'
             );
-            $consulta->execute([$datos['brand_id'] ?: null, $datos['name']]);
+            $consulta->execute([$datos['marca_id'] ?: null, $datos['nombre']]);
 
             return (int) $this->db->lastInsertId();
         }
 
         if ($tabla === 'ubicaciones') {
             $consulta = $this->db->prepare(
-                'INSERT INTO ubicaciones(area_id, name, active) VALUES(?, ?, 1)'
+                'INSERT INTO ubicaciones(area_id, nombre, activo) VALUES(?, ?, 1)'
             );
-            $consulta->execute([$datos['area_id'] ?: null, $datos['name']]);
+            $consulta->execute([$datos['area_id'] ?: null, $datos['nombre']]);
 
             return (int) $this->db->lastInsertId();
         }
 
-        $consulta = $this->db->prepare("INSERT INTO $tabla(name, active) VALUES(?, 1)");
-        $consulta->execute([$datos['name']]);
+        $consulta = $this->db->prepare("INSERT INTO $tabla(nombre, activo) VALUES(?, 1)");
+        $consulta->execute([$datos['nombre']]);
 
         return (int) $this->db->lastInsertId();
     }
@@ -82,13 +82,13 @@ final class Catalogo extends ModeloBase
 
     private function codigoEstado(array $datos): string
     {
-        $codigo = strtoupper(trim((string) ($datos['code'] ?? '')));
+        $codigo = strtoupper(trim((string) ($datos['codigo'] ?? '')));
 
         if ($codigo !== '') {
             return trim($codigo, '_');
         }
 
-        $base = iconv('UTF-8', 'ASCII//TRANSLIT', (string) $datos['name']) ?: $datos['name'];
+        $base = iconv('UTF-8', 'ASCII//TRANSLIT', (string) $datos['nombre']) ?: $datos['nombre'];
         $codigo = preg_replace('/[^A-Z0-9]+/', '_', strtoupper($base));
 
         return trim($codigo, '_');

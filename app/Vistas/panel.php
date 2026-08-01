@@ -56,7 +56,7 @@ $cards = [
                 <?php $percent = round(((int) $estado['total'] / $total) * 100, 1); ?>
                 <div class="bar-row">
                     <div class="bar-label">
-                        <span><?= e($estado['name']) ?></span>
+                        <span><?= e($estado['nombre']) ?></span>
                         <b><?= (int) $estado['total'] ?></b>
                     </div>
                     <div class="bar-track">
@@ -79,7 +79,7 @@ $cards = [
             <div class="donut" style="--p:<?= min(100, round(((int) ($porTipo[0]['total'] ?? 0) / $total) * 100)) ?>">
                 <div>
                     <strong><?= number_format((int) ($porTipo[0]['total'] ?? 0)) ?></strong>
-                    <span><?= e($porTipo[0]['name'] ?? 'Activos') ?></span>
+                    <span><?= e($porTipo[0]['nombre'] ?? 'Activos') ?></span>
                 </div>
             </div>
 
@@ -87,7 +87,7 @@ $cards = [
                 <?php foreach (array_slice($porTipo, 0, 6) as $tipo): ?>
                     <div>
                         <i></i>
-                        <span><?= e($tipo['name']) ?></span>
+                        <span><?= e($tipo['nombre']) ?></span>
                         <b><?= (int) $tipo['total'] ?></b>
                     </div>
                 <?php endforeach; ?>
@@ -107,7 +107,7 @@ $cards = [
         <div class="area-list">
             <?php foreach ($porArea as $area): ?>
                 <div>
-                    <span><?= e($area['name']) ?></span>
+                    <span><?= e($area['nombre']) ?></span>
                     <b><?= (int) $area['total'] ?></b>
                 </div>
             <?php endforeach; ?>
@@ -127,10 +127,10 @@ $cards = [
                 <div class="timeline-item">
                     <i></i>
                     <div>
-                        <strong><?= e($movimiento['asset_code']) ?> · <?= e($movimiento['movement_type']) ?></strong>
-                        <p><?= e($movimiento['notes'] ?: 'Movimiento registrado') ?></p>
+                        <strong><?= e($movimiento['codigo_activo']) ?> · <?= e($movimiento['tipo_movimiento']) ?></strong>
+                        <p><?= e($movimiento['observaciones'] ?: 'Movimiento registrado') ?></p>
                         <small>
-                            <?= datetime_pe($movimiento['created_at']) ?> · <?= e($movimiento['user_name'] ?? 'Sistema') ?>
+                            <?= datetime_pe($movimiento['creado_en']) ?> · <?= e($movimiento['nombre_usuario'] ?? 'Sistema') ?>
                         </small>
                     </div>
                 </div>

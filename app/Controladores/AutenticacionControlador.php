@@ -20,8 +20,8 @@ final class AutenticacionControlador extends Controlador
     {
         Csrf::verificar();
 
-        $usuario = trim($_POST['username'] ?? '');
-        $clave = (string) ($_POST['password'] ?? '');
+        $usuario = trim($_POST['usuario'] ?? '');
+        $clave = (string) ($_POST['clave'] ?? '');
 
         if (Auth::intentar($usuario, $clave)) {
             Flash::exito('Bienvenido a SIGATI SOLANDRA.');

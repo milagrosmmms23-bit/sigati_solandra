@@ -13,11 +13,11 @@
         <div class="form-grid cols-2">
             <label class="span-2">
                 Activo *
-                <select name="asset_id" required>
+                <select name="activo_id" required>
                     <option value="">Seleccionar equipo</option>
                     <?php foreach ($activos as $activo): ?>
                         <option value="<?= $activo['id'] ?>">
-                            <?= e($activo['asset_code'].' · '.$activo['type_name'].' · '.trim(($activo['brand_name'] ?? '').' '.($activo['model_name'] ?? '')).' · Serie '.($activo['serial_number'] ?: '—')) ?>
+                            <?= e($activo['codigo_activo'].' · '.$activo['nombre_tipo'].' · '.trim(($activo['nombre_marca'] ?? '').' '.($activo['nombre_modelo'] ?? '')).' · Serie '.($activo['numero_serie'] ?: '—')) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -25,7 +25,7 @@
 
             <label>
                 Tipo
-                <select name="type">
+                <select name="tipo">
                     <option>PREVENTIVO</option>
                     <option>CORRECTIVO</option>
                 </select>
@@ -33,22 +33,22 @@
 
             <label>
                 Costo inicial (S/)
-                <input type="number" step="0.01" min="0" name="cost" value="0">
+                <input type="number" step="0.01" min="0" name="costo" value="0">
             </label>
 
             <label class="span-2">
                 Falla o motivo
-                <textarea name="issue" rows="3" required placeholder="Describe el motivo del mantenimiento"></textarea>
+                <textarea name="problema" rows="3" required placeholder="Describe el motivo del mantenimiento"></textarea>
             </label>
 
             <label>
                 Diagnóstico inicial
-                <textarea name="diagnosis" rows="3"></textarea>
+                <textarea name="diagnostico" rows="3"></textarea>
             </label>
 
             <label>
                 Acciones iniciales
-                <textarea name="actions" rows="3"></textarea>
+                <textarea name="acciones" rows="3"></textarea>
             </label>
         </div>
 

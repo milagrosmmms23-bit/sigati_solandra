@@ -19,11 +19,11 @@ document.addEventListener("DOMContentLoaded", () => {
         .forEach((x) => x.remove()),
     5000,
   );
-  const spec = document.querySelector("#specRows");
+  const spec = document.querySelector("#filasEspecificaciones");
   document.querySelector("[data-add-spec]")?.addEventListener("click", () => {
     spec?.insertAdjacentHTML(
       "beforeend",
-      '<div class="spec-row"><input name="spec_key[]" placeholder="Ej. RAM"><input name="spec_value[]" placeholder="Ej. 16 GB"><button type="button" class="icon-btn danger" data-remove-row>X</button></div>',
+      '<div class="spec-row"><input name="clave_especificacion[]" placeholder="Ej. RAM"><input name="valor_especificacion[]" placeholder="Ej. 16 GB"><button type="button" class="icon-btn danger" data-remove-row>X</button></div>',
     );
   });
   document.addEventListener("click", (e) => {

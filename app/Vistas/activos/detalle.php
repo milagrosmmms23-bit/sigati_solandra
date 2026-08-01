@@ -1,23 +1,23 @@
 <?php
     $generalFields = [
-        'Tipo' => $registro['type_name'],
-        'Marca' => $registro['brand_name'],
-        'Modelo' => $registro['model_name'],
-        'Ubicación' => $registro['location_name'],
-        'Fecha de compra' => date_pe($registro['purchase_date']),
-        'Factura' => $registro['invoice_number'],
-        'Proveedor' => $registro['supplier_name'],
-        'Costo' => money($registro['cost']),
-        'Fin de garantía' => date_pe($registro['warranty_end']),
-        'Registrado' => datetime_pe($registro['created_at']),
+        'Tipo' => $registro['nombre_tipo'],
+        'Marca' => $registro['nombre_marca'],
+        'Modelo' => $registro['nombre_modelo'],
+        'Ubicación' => $registro['nombre_ubicacion'],
+        'Fecha de compra' => date_pe($registro['fecha_compra']),
+        'Factura' => $registro['numero_factura'],
+        'Proveedor' => $registro['nombre_proveedor'],
+        'Costo' => money($registro['costo']),
+        'Fin de garantía' => date_pe($registro['fin_garantia']),
+        'Registrado' => datetime_pe($registro['creado_en']),
     ];
     ?>
 
     <div class="page-actions">
         <div>
-            <div class="eyebrow"><?= e($registro['type_name']) ?></div>
-            <h2><?= e($registro['asset_code']) ?></h2>
-            <p><?= e(trim(($registro['brand_name'] ?? '').' '.($registro['model_name'] ?? '')) ?: 'Sin marca o modelo') ?></p>
+            <div class="eyebrow"><?= e($registro['nombre_tipo']) ?></div>
+            <h2><?= e($registro['codigo_activo']) ?></h2>
+            <p><?= e(trim(($registro['nombre_marca'] ?? '').' '.($registro['nombre_modelo'] ?? '')) ?: 'Sin marca o modelo') ?></p>
         </div>
 
         <div class="actions">
@@ -29,10 +29,10 @@
     <div class="asset-detail-grid">
         <section class="panel asset-summary">
             <div class="asset-head">
-                <div class="asset-visual"><?= e(substr($registro['type_name'], 0, 2)) ?></div>
+                <div class="asset-visual"><?= e(substr($registro['nombre_tipo'], 0, 2)) ?></div>
                 <div>
-                    <h3><?= e($registro['asset_code']) ?></h3>
-                    <?= badge($registro['status_name']) ?>
+                    <h3><?= e($registro['codigo_activo']) ?></h3>
+                    <?= badge($registro['nombre_estado']) ?>
                 </div>
             </div>
 
@@ -42,19 +42,19 @@
             <div class="summary-lines">
                 <div>
                     <span>Código anterior</span>
-                    <b><?= e($registro['legacy_code'] ?: '—') ?></b>
+                    <b><?= e($registro['codigo_anterior'] ?: '—') ?></b>
                 </div>
                 <div>
                     <span>Serie</span>
-                    <b><?= e($registro['serial_number'] ?: '—') ?></b>
+                    <b><?= e($registro['numero_serie'] ?: '—') ?></b>
                 </div>
                 <div>
                     <span>Responsable</span>
-                    <b><?= e($registro['employee_name'] ?: 'Sin asignar') ?></b>
+                    <b><?= e($registro['nombre_trabajador'] ?: 'Sin asignar') ?></b>
                 </div>
                 <div>
                     <span>Área</span>
-                    <b><?= e($registro['area_name'] ?: 'Sin área') ?></b>
+                    <b><?= e($registro['nombre_area'] ?: 'Sin área') ?></b>
                 </div>
             </div>
         </section>
@@ -79,7 +79,7 @@
 
                 <div class="notes-box">
                     <span>Observaciones</span>
-                    <p><?= nl2br(e($registro['notes'] ?: 'Sin observaciones.')) ?></p>
+                    <p><?= nl2br(e($registro['observaciones'] ?: 'Sin observaciones.')) ?></p>
                 </div>
             </div>
 
@@ -87,19 +87,19 @@
                 <div class="detail-grid">
                     <div>
                         <span>Hostname</span>
-                        <strong><?= e($registro['hostname'] ?: '—') ?></strong>
+                        <strong><?= e($registro['nombre_equipo'] ?: '—') ?></strong>
                     </div>
                     <div>
                         <span>IP</span>
-                        <strong><?= e($registro['ip_address'] ?: '—') ?></strong>
+                        <strong><?= e($registro['direccion_ip'] ?: '—') ?></strong>
                     </div>
                     <div>
                         <span>MAC</span>
-                        <strong><?= e($registro['mac_address'] ?: '—') ?></strong>
+                        <strong><?= e($registro['direccion_mac'] ?: '—') ?></strong>
                     </div>
                     <div>
                         <span>Teléfono</span>
-                        <strong><?= e($registro['phone_number'] ?: '—') ?></strong>
+                        <strong><?= e($registro['numero_telefono'] ?: '—') ?></strong>
                     </div>
                     <div>
                         <span>IMEI 1</span>
@@ -110,10 +110,10 @@
                         <strong><?= e($registro['imei2'] ?: '—') ?></strong>
                     </div>
 
-                    <?php foreach ($registro['specs'] as $especificacion): ?>
+                    <?php foreach ($registro['especificaciones'] as $especificacion): ?>
                         <div>
-                            <span><?= e($especificacion['spec_key']) ?></span>
-                            <strong><?= e($especificacion['spec_value']) ?></strong>
+                            <span><?= e($especificacion['clave_especificacion']) ?></span>
+                            <strong><?= e($especificacion['valor_especificacion']) ?></strong>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -121,20 +121,20 @@
 
             <div class="tab-pane" data-pane="history">
                 <div class="timeline">
-                    <?php foreach ($registro['movements'] as $movimiento): ?>
+                    <?php foreach ($registro['movimientos'] as $movimiento): ?>
                         <div class="timeline-item">
                             <i></i>
                             <div>
-                                <strong><?= e($movimiento['movement_type']) ?></strong>
-                                <p><?= e($movimiento['notes'] ?: 'Movimiento registrado') ?></p>
+                                <strong><?= e($movimiento['tipo_movimiento']) ?></strong>
+                                <p><?= e($movimiento['observaciones'] ?: 'Movimiento registrado') ?></p>
                                 <small>
-                                    <?= datetime_pe($movimiento['created_at']) ?> · <?= e($movimiento['user_name'] ?? 'Sistema') ?>
+                                    <?= datetime_pe($movimiento['creado_en']) ?> · <?= e($movimiento['nombre_usuario'] ?? 'Sistema') ?>
                                 </small>
                             </div>
                         </div>
                     <?php endforeach; ?>
 
-                    <?php if (!$registro['movements']): ?>
+                    <?php if (!$registro['movimientos']): ?>
                         <div class="empty">Sin movimientos.</div>
                     <?php endif; ?>
                 </div>
@@ -155,11 +155,11 @@
                         <tbody>
                             <?php foreach ($registro['mantenimientos'] as $mantenimiento): ?>
                                 <tr>
-                                    <td><?= e($mantenimiento['type']) ?></td>
-                                    <td><?= badge($mantenimiento['status']) ?></td>
-                                    <td><?= e($mantenimiento['issue'] ?: '—') ?></td>
-                                    <td><?= date_pe($mantenimiento['started_at']) ?></td>
-                                    <td><?= money($mantenimiento['cost']) ?></td>
+                                    <td><?= e($mantenimiento['tipo']) ?></td>
+                                    <td><?= badge($mantenimiento['estado']) ?></td>
+                                    <td><?= e($mantenimiento['problema'] ?: '—') ?></td>
+                                    <td><?= date_pe($mantenimiento['iniciado_en']) ?></td>
+                                    <td><?= money($mantenimiento['costo']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
 

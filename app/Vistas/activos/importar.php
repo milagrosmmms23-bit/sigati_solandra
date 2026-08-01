@@ -32,7 +32,7 @@
         <section class="panel">
             <h3>Columnas reconocidas</h3>
             <div class="code-block">
-                tipo, codigo_anterior, marca, modelo, serie, area, ubicacion, hostname, ip, mac,
+                tipo, codigo_anterior, marca, modelo, serie, area, ubicacion, nombre_equipo, ip, mac,
                 imei1, imei2, telefono, fecha_compra, factura, proveedor, costo, fin_garantia,
                 observaciones
             </div>

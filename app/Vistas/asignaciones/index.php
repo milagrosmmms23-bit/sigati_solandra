@@ -26,14 +26,14 @@
                         <tr>
                             <td>
                                 <a class="asset-code" href="<?= url('asignaciones/'.$asignacion['id']) ?>">
-                                    <?= e($asignacion['assignment_number']) ?>
+                                    <?= e($asignacion['numero_asignacion']) ?>
                                 </a>
                             </td>
-                            <td><strong><?= e($asignacion['employee_name']) ?></strong></td>
-                            <td><?= e($asignacion['area_name'] ?: '—') ?></td>
-                            <td><?= (int) $asignacion['item_count'] ?></td>
-                            <td><?= badge($asignacion['status']) ?></td>
-                            <td><?= datetime_pe($asignacion['assigned_at']) ?></td>
+                            <td><strong><?= e($asignacion['nombre_trabajador']) ?></strong></td>
+                            <td><?= e($asignacion['nombre_area'] ?: '—') ?></td>
+                            <td><?= (int) $asignacion['cantidad_items'] ?></td>
+                            <td><?= badge($asignacion['estado']) ?></td>
+                            <td><?= datetime_pe($asignacion['asignado_en']) ?></td>
                             <td class="text-right">
                                 <a
                                     class="icon-btn"
