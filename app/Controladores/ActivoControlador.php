@@ -141,6 +141,7 @@ final class ActivoControlador extends Controlador
         $this->vista('activos', [
             'modo' => 'importar',
             'titulo' => 'Importar inventario',
+            'preview' => $_SESSION['importacion_activos'] ?? null,
         ]);
     }
 
@@ -148,49 +149,51 @@ final class ActivoControlador extends Controlador
     {
         Csrf::verificar();
 
+        if (isset($_POST['cancelar'])) {
+            unset($_SESSION['importacion_activos']);
+            Flash::advertencia('Importacion cancelada.');
+            redirect('activos/importar');
+        }
+
+        if (isset($_POST['confirmar'])) {
+            $preview = $_SESSION['importacion_activos'] ?? null;
+
+            if (!$preview || !empty($preview['bloqueado'])) {
+                Flash::error('No hay una importacion valida para confirmar.');
+                redirect('activos/importar');
+            }
+
+            [$importados, $errores] = $this->guardarImportacionValidada($preview['filas']);
+            unset($_SESSION['importacion_activos']);
+            Flash::exito("Se importaron $importados activos.");
+
+            if ($errores) {
+                Flash::advertencia(implode(' | ', array_slice($errores, 0, 4)));
+            }
+
+            redirect('activos');
+        }
+
         if (empty($_FILES['csv']['tmp_name'])) {
-            Flash::error('Selecciona un CSV.');
+            Flash::error('Selecciona un archivo CSV.');
             redirect('activos/importar');
         }
 
-        $archivo = fopen($_FILES['csv']['tmp_name'], 'r');
-        $cabeceras = fgetcsv($archivo, 0, ',');
-
-        if (!$cabeceras) {
-            Flash::error('CSV vacio.');
+        try {
+            $preview = $this->prepararImportacionCsv($_FILES['csv']['tmp_name'], $_FILES['csv']['name'] ?? 'inventario.csv');
+        } catch (Throwable $exception) {
+            Flash::error($exception->getMessage());
             redirect('activos/importar');
         }
 
-        $cabeceras = array_map(fn ($header) => trim(strtolower($header)), $cabeceras);
-        $importados = 0;
-        $errores = [];
+        $_SESSION['importacion_activos'] = $preview;
 
-        while (($fila = fgetcsv($archivo, 0, ',')) !== false) {
-            if (count($fila) !== count($cabeceras)) {
-                continue;
-            }
-
-            $registro = array_combine($cabeceras, $fila);
-
-            try {
-                $this->modelo->guardar($this->mapearFilaCsv($registro), [], Auth::id());
-                $importados++;
-            } catch (Throwable $exception) {
-                $errores[] = $exception->getMessage();
-            }
-        }
-
-        fclose($archivo);
-
-        Flash::exito("Se importaron $importados activos.");
-
-        if ($errores) {
-            Flash::advertencia(implode(' | ', array_slice($errores, 0, 4)));
-        }
-
-        redirect('activos');
+        $this->vista('activos', [
+            'modo' => 'importar',
+            'titulo' => 'Importar inventario',
+            'preview' => $preview,
+        ]);
     }
-
     private function catalogos(): array
     {
         return [
@@ -247,6 +250,243 @@ final class ActivoControlador extends Controlador
         return $especificaciones;
     }
 
+    private function prepararImportacionCsv(string $ruta, string $nombreArchivo): array
+    {
+        $archivo = fopen($ruta, 'r');
+
+        if (!$archivo) {
+            throw new \RuntimeException('No se pudo leer el archivo.');
+        }
+
+        $primeraLinea = fgets($archivo) ?: '';
+        rewind($archivo);
+        $delimitador = substr_count($primeraLinea, ';') > substr_count($primeraLinea, ',') ? ';' : ',';
+        $cabeceras = fgetcsv($archivo, 0, $delimitador);
+
+        if (!$cabeceras) {
+            fclose($archivo);
+            throw new \RuntimeException('CSV vacio o sin cabeceras.');
+        }
+
+        $cabeceras = array_map(fn ($cabecera) => $this->normalizarCabecera((string) $cabecera), $cabeceras);
+        $filas = [];
+        $numero = 1;
+
+        while (($fila = fgetcsv($archivo, 0, $delimitador)) !== false) {
+            $numero++;
+
+            if (implode('', array_map('trim', $fila)) === '') {
+                continue;
+            }
+
+            $registro = [];
+
+            foreach ($cabeceras as $indice => $cabecera) {
+                if ($cabecera !== '') {
+                    $registro[$cabecera] = trim((string) ($fila[$indice] ?? ''));
+                }
+            }
+
+            $filas[] = [
+                'numero' => $numero,
+                'datos' => $this->normalizarRegistroImportacion($registro),
+                'errores' => [],
+                'advertencias' => [],
+            ];
+        }
+
+        fclose($archivo);
+
+        return $this->validarImportacion($filas, $nombreArchivo);
+    }
+
+    private function normalizarCabecera(string $cabecera): string
+    {
+        $cabecera = preg_replace('/^\xEF\xBB\xBF/', '', trim($cabecera)) ?? '';
+        $cabecera = strtolower($cabecera);
+
+        if (function_exists('iconv')) {
+            $convertida = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $cabecera);
+            $cabecera = $convertida !== false ? $convertida : $cabecera;
+        }
+
+        $cabecera = trim(preg_replace('/[^a-z0-9]+/', '_', $cabecera) ?? '', '_');
+        $alias = [
+            'codigo' => 'codigo_anterior', 'cod' => 'codigo_anterior', 'item' => 'codigo_anterior',
+            'codigo_activo' => 'codigo_anterior', 'codigo_actual' => 'codigo_anterior',
+            'equipo' => 'nombre_equipo', 'nombre' => 'nombre_equipo', 'nombre_de_equipo' => 'nombre_equipo',
+            'serial' => 'serie', 's_n' => 'serie', 'sn' => 'serie', 'numero_serie' => 'serie',
+            'tipo_activo' => 'tipo', 'tipo_de_equipo' => 'tipo', 'direccion_ip' => 'ip', 'direccion_mac' => 'mac',
+            'chip' => 'telefono', 'linea' => 'telefono', 'chip_de_linea' => 'telefono', 'numero_telefono' => 'telefono',
+            'imei' => 'imei1', 'imei_1' => 'imei1', 'imei_2' => 'imei2',
+            'fecha_de_compra' => 'fecha_compra', 'fecha_entrega' => 'fecha_compra',
+            'n_factura' => 'factura', 'numero_factura' => 'factura',
+            'fin_de_garantia' => 'fin_garantia', 'vencimiento_garantia' => 'fin_garantia',
+        ];
+
+        return $alias[$cabecera] ?? $cabecera;
+    }
+
+    private function normalizarRegistroImportacion(array $registro): array
+    {
+        $campos = [
+            'tipo', 'codigo_anterior', 'marca', 'modelo', 'serie', 'area', 'ubicacion', 'nombre_equipo',
+            'ip', 'mac', 'imei1', 'imei2', 'telefono', 'fecha_compra', 'factura', 'proveedor',
+            'costo', 'fin_garantia', 'observaciones',
+        ];
+        $datos = [];
+
+        foreach ($campos as $campo) {
+            $datos[$campo] = trim((string) ($registro[$campo] ?? ''));
+        }
+
+        $datos['tipo'] = $this->normalizarTipoImportacion($datos['tipo']);
+        $datos['fecha_compra'] = $this->normalizarFechaImportacion($datos['fecha_compra']);
+        $datos['fin_garantia'] = $this->normalizarFechaImportacion($datos['fin_garantia']);
+        $datos['costo'] = str_replace(',', '.', $datos['costo']);
+
+        return $datos;
+    }
+
+    private function normalizarTipoImportacion(string $tipo): string
+    {
+        $alias = [
+            'CPU' => 'PC', 'TORRE' => 'PC', 'PC' => 'PC', 'LAPTOP' => 'Laptop', 'NOTEBOOK' => 'Laptop',
+            'CELULAR' => 'Celular', 'TELEFONO' => 'Celular', 'MOVIL' => 'Celular',
+            'MONITOR' => 'Monitor', 'PANTALLA' => 'Monitor', 'RADIO' => 'Radio',
+            'IMPRESORA' => 'Impresora', 'PRINTER' => 'Impresora', 'SIM' => 'SIM', 'CHIP' => 'SIM',
+        ];
+
+        return $alias[strtoupper(trim($tipo))] ?? trim($tipo);
+    }
+
+    private function normalizarFechaImportacion(string $fecha): string
+    {
+        $fecha = trim($fecha);
+
+        if ($fecha === '') {
+            return '';
+        }
+
+        if (is_numeric($fecha) && (float) $fecha > 20000) {
+            return (new \DateTimeImmutable('1899-12-30'))->modify('+'.(int) $fecha.' days')->format('Y-m-d');
+        }
+
+        foreach (['Y-m-d', 'd/m/Y', 'd-m-Y', 'm/d/Y'] as $formato) {
+            $fechaObjeto = \DateTimeImmutable::createFromFormat($formato, $fecha);
+
+            if ($fechaObjeto instanceof \DateTimeImmutable) {
+                return $fechaObjeto->format('Y-m-d');
+            }
+        }
+
+        return $fecha;
+    }
+
+    private function validarImportacion(array $filas, string $nombreArchivo): array
+    {
+        $errores = 0;
+        $advertencias = 0;
+        $vistos = ['codigo_anterior' => [], 'serie' => [], 'imei1' => [], 'telefono' => []];
+
+        foreach ($filas as $indice => $fila) {
+            $datos = $fila['datos'];
+
+            if ($datos['tipo'] === '') {
+                $filas[$indice]['errores'][] = 'Falta tipo.';
+            } elseif (!$this->buscarPorNombre('tipos_activo', $datos['tipo'])) {
+                $filas[$indice]['errores'][] = 'Tipo no existe: '.$datos['tipo'].'.';
+            }
+
+            foreach (['codigo_anterior' => 'Sin codigo anterior.', 'marca' => 'Sin marca.', 'area' => 'Sin area.'] as $campo => $mensaje) {
+                if (($datos[$campo] ?? '') === '') {
+                    $filas[$indice]['advertencias'][] = $mensaje;
+                }
+            }
+
+            foreach (array_keys($vistos) as $campo) {
+                $valor = strtoupper(preg_replace('/\s+/', '', trim($datos[$campo] ?? '')) ?? '');
+
+                if ($valor === '') {
+                    continue;
+                }
+
+                if (isset($vistos[$campo][$valor])) {
+                    $filas[$indice]['errores'][] = 'Duplicado en archivo: '.$campo.'.';
+                }
+
+                $vistos[$campo][$valor] = true;
+
+                if ($this->existeActivoImportado($campo, $datos[$campo])) {
+                    $filas[$indice]['errores'][] = 'Ya existe en sistema: '.$campo.'.';
+                }
+            }
+
+            $errores += count($filas[$indice]['errores']);
+            $advertencias += count($filas[$indice]['advertencias']);
+        }
+
+        return [
+            'archivo' => $nombreArchivo,
+            'bloqueado' => $errores > 0,
+            'resumen' => [
+                'total' => count($filas),
+                'validas' => count(array_filter($filas, fn ($fila) => empty($fila['errores']))),
+                'errores' => $errores,
+                'advertencias' => $advertencias,
+            ],
+            'filas' => $filas,
+        ];
+    }
+
+    private function existeActivoImportado(string $campo, string $valor): bool
+    {
+        $valor = trim($valor);
+
+        if ($valor === '') {
+            return false;
+        }
+
+        $columnas = [
+            'codigo_anterior' => 'codigo_anterior',
+            'serie' => 'numero_serie',
+            'imei1' => 'imei1',
+            'telefono' => 'numero_telefono',
+        ];
+
+        if (!isset($columnas[$campo])) {
+            return false;
+        }
+
+        $consulta = BD::pdo()->prepare("SELECT COUNT(*) FROM activos WHERE activo = 1 AND {$columnas[$campo]} = ?");
+        $consulta->execute([$valor]);
+
+        return (int) $consulta->fetchColumn() > 0;
+    }
+
+    private function guardarImportacionValidada(array $filas): array
+    {
+        $importados = 0;
+        $errores = [];
+
+        foreach ($filas as $fila) {
+            if (!empty($fila['errores'])) {
+                continue;
+            }
+
+            try {
+                $datos = $this->mapearFilaCsv($fila['datos']);
+                $id = $this->modelo->guardar($datos, [], Auth::id());
+                Auditoria::registrar('Inventario', 'IMPORTAR', 'activo', $id, null, $datos);
+                $importados++;
+            } catch (Throwable $exception) {
+                $errores[] = 'Fila '.$fila['numero'].': '.$exception->getMessage();
+            }
+        }
+
+        return [$importados, $errores];
+    }
+
     private function mapearFilaCsv(array $registro): array
     {
         $tipo = $this->buscarPorNombre('tipos_activo', $registro['tipo'] ?? '');
@@ -259,29 +499,28 @@ final class ActivoControlador extends Controlador
         $area = $this->buscarOCrear('areas', $registro['area'] ?? '');
 
         return [
-            'codigo_anterior' => $registro['codigo_anterior'] ?? '',
+            'codigo_anterior' => trim($registro['codigo_anterior'] ?? ''),
             'tipo_activo_id' => $tipo,
             'marca_id' => $marca,
             'modelo_id' => $this->buscarModelo($marca, $registro['modelo'] ?? ''),
             'estado_id' => $this->buscarPorCodigo('estados_activo', 'DISPONIBLE'),
             'area_actual_id' => $area,
             'ubicacion_id' => $this->buscarUbicacion($area, $registro['ubicacion'] ?? ''),
-            'numero_serie' => $registro['serie'] ?? '',
-            'nombre_equipo' => $registro['nombre_equipo'] ?? '',
-            'direccion_ip' => $registro['ip'] ?? '',
-            'direccion_mac' => $registro['mac'] ?? '',
-            'imei1' => $registro['imei1'] ?? '',
-            'imei2' => $registro['imei2'] ?? '',
-            'numero_telefono' => $registro['telefono'] ?? '',
-            'fecha_compra' => $registro['fecha_compra'] ?? '',
-            'numero_factura' => $registro['factura'] ?? '',
+            'numero_serie' => trim($registro['serie'] ?? ''),
+            'nombre_equipo' => trim($registro['nombre_equipo'] ?? ''),
+            'direccion_ip' => trim($registro['ip'] ?? ''),
+            'direccion_mac' => trim($registro['mac'] ?? ''),
+            'imei1' => trim($registro['imei1'] ?? ''),
+            'imei2' => trim($registro['imei2'] ?? ''),
+            'numero_telefono' => trim($registro['telefono'] ?? ''),
+            'fecha_compra' => trim($registro['fecha_compra'] ?? ''),
+            'numero_factura' => trim($registro['factura'] ?? ''),
             'proveedor_id' => $this->buscarOCrear('proveedores', $registro['proveedor'] ?? ''),
-            'costo' => $registro['costo'] ?? '',
-            'fin_garantia' => $registro['fin_garantia'] ?? '',
-            'observaciones' => $registro['observaciones'] ?? '',
+            'costo' => trim($registro['costo'] ?? ''),
+            'fin_garantia' => trim($registro['fin_garantia'] ?? ''),
+            'observaciones' => trim($registro['observaciones'] ?? ''),
         ];
     }
-
     private function buscarPorNombre(string $tabla, string $nombre): ?int
     {
         if (trim($nombre) === '') {
