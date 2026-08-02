@@ -11,7 +11,11 @@ function config(string $clave, mixed $default = null): mixed
 
 function url(string $ruta = ''): string
 {
-    $base = rtrim((string) config('aplicacion.url_base'), '/');
+    $base = str_replace('\\', '/', rtrim((string) config('aplicacion.url_base'), '/'));
+
+    if ($base === '.' || $base === '/') {
+        $base = '';
+    }
 
     return $base.($ruta !== '' ? '/'.ltrim($ruta, '/') : '');
 }
@@ -27,11 +31,14 @@ function recurso(string $ruta): string
         'img/solandra-logo.png' => 'solandra-logo.png',
     ];
 
-    if (!is_file($publico.'/recursos/'.$ruta) && isset($alternativos[$ruta]) && is_file($publico.'/'.$alternativos[$ruta])) {
-        return url($alternativos[$ruta]);
+    if (isset($alternativos[$ruta]) && is_file($publico.'/'.$alternativos[$ruta])) {
+        return url($alternativos[$ruta]).'?v='.filemtime($publico.'/'.$alternativos[$ruta]);
     }
 
-    return url('recursos/'.$ruta);
+    $archivo = $publico.'/recursos/'.$ruta;
+    $version = is_file($archivo) ? '?v='.filemtime($archivo) : '';
+
+    return url('recursos/'.$ruta).$version;
 }
 
 function e(mixed $valor): string
