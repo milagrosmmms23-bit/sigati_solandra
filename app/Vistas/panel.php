@@ -4,6 +4,7 @@ $porEstado = $porEstado ?? [];
 $porTipo = $porTipo ?? [];
 $porArea = $porArea ?? [];
 $recientes = $recientes ?? [];
+$alertas = $alertas ?? [];
 
 $total = max(1, (int) ($resumen['total_activos'] ?? 0));
 
@@ -13,7 +14,8 @@ $cards = [
     ['Disponibles', $resumen['activos_disponibles'] ?? 0, 'Listos para entregar', 'green'],
     ['En mantenimiento', $resumen['activos_mantenimiento'] ?? 0, 'Atencion tecnica', 'orange'],
     ['Trabajadores', $resumen['total_trabajadores'] ?? 0, 'Personal activo', 'purple'],
-    ['Prestamos/asignaciones', $resumen['asignaciones_activas'] ?? 0, 'Actas vigentes', 'cyan'],
+    ['Actas vigentes', $resumen['asignaciones_activas'] ?? 0, 'Asignaciones activas', 'cyan'],
+    ['Mantenimientos abiertos', $resumen['mantenimientos_abiertos'] ?? 0, 'Pendientes por cerrar', 'orange'],
 ];
 ?>
 
@@ -41,6 +43,30 @@ $cards = [
         </article>
     <?php endforeach; ?>
 </div>
+
+<section class="panel operations-panel">
+    <div class="panel-head">
+        <div>
+            <h3>Alertas operativas</h3>
+            <p>Puntos que conviene revisar para mantener el inventario confiable.</p>
+        </div>
+        <a href="<?= url('activos/importar') ?>">Importar Excel</a>
+    </div>
+
+    <div class="alert-grid">
+        <?php foreach ($alertas as $alerta): ?>
+            <a class="alert-card tone-<?= e($alerta['tono']) ?>" href="<?= url($alerta['link']) ?>">
+                <span><?= number_format((int) $alerta['total']) ?></span>
+                <strong><?= e($alerta['titulo']) ?></strong>
+                <p><?= e($alerta['detalle']) ?></p>
+            </a>
+        <?php endforeach; ?>
+
+        <?php if (!$alertas): ?>
+            <div class="empty">No hay alertas disponibles.</div>
+        <?php endif; ?>
+    </div>
+</section>
 
 <div class="dashboard-grid">
     <section class="panel">
