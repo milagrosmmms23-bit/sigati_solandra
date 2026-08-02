@@ -59,6 +59,210 @@ final class BD
     }
 }
 
+
+final class LectorExcel
+{
+    public static function leerPrimeraHoja(string $ruta): array
+    {
+        $hojas = self::leerHojas($ruta);
+        return $hojas ? reset($hojas) : [];
+    }
+
+    public static function leerHojas(string $ruta): array
+    {
+        if (!class_exists(\ZipArchive::class)) {
+            throw new \RuntimeException('La extension zip de PHP no esta activa.');
+        }
+
+        $zip = new \ZipArchive();
+
+        if ($zip->open($ruta) !== true) {
+            throw new \RuntimeException('No se pudo abrir el archivo Excel.');
+        }
+
+        $textosCompartidos = self::leerTextosCompartidos($zip);
+        $rutas = self::rutasHojas($zip);
+        $hojas = [];
+
+        foreach ($rutas as $nombreHoja => $rutaHoja) {
+            $contenidoHoja = $zip->getFromName($rutaHoja);
+
+            if ($contenidoHoja === false) {
+                continue;
+            }
+
+            $hojas[$nombreHoja] = self::leerFilasHoja($contenidoHoja, $textosCompartidos);
+        }
+
+        $zip->close();
+
+        if (!$hojas) {
+            throw new \RuntimeException('El Excel no tiene hojas para importar.');
+        }
+
+        return $hojas;
+    }
+
+    private static function rutasHojas(\ZipArchive $zip): array
+    {
+        $workbook = $zip->getFromName('xl/workbook.xml');
+        $rels = $zip->getFromName('xl/_rels/workbook.xml.rels');
+
+        if ($workbook === false || $rels === false) {
+            return self::rutasHojasBasicas($zip);
+        }
+
+        $xmlWorkbook = simplexml_load_string($workbook);
+        $xmlRels = simplexml_load_string($rels);
+
+        if (!$xmlWorkbook || !$xmlRels) {
+            return self::rutasHojasBasicas($zip);
+        }
+
+        $relaciones = [];
+
+        foreach ($xmlRels->Relationship as $relacion) {
+            $id = (string) $relacion['Id'];
+            $target = str_replace('\\', '/', (string) $relacion['Target']);
+            $relaciones[$id] = str_starts_with($target, 'xl/') ? $target : 'xl/'.ltrim($target, '/');
+        }
+
+        $rutas = [];
+
+        foreach ($xmlWorkbook->sheets->sheet as $sheet) {
+            $nombre = trim((string) $sheet['name']);
+            $relacion = $sheet->attributes('http://schemas.openxmlformats.org/officeDocument/2006/relationships');
+            $id = (string) ($relacion['id'] ?? '');
+
+            if ($nombre !== '' && isset($relaciones[$id])) {
+                $rutas[$nombre] = $relaciones[$id];
+            }
+        }
+
+        return $rutas ?: self::rutasHojasBasicas($zip);
+    }
+
+    private static function rutasHojasBasicas(\ZipArchive $zip): array
+    {
+        $rutas = [];
+
+        for ($indice = 0; $indice < $zip->numFiles; $indice++) {
+            $nombre = $zip->getNameIndex($indice);
+
+            if (preg_match('#^xl/worksheets/sheet(\d+)\.xml$#', $nombre, $coincidencias)) {
+                $rutas['Hoja '.$coincidencias[1]] = $nombre;
+            }
+        }
+
+        ksort($rutas);
+        return $rutas;
+    }
+
+    private static function leerFilasHoja(string $contenidoHoja, array $textosCompartidos): array
+    {
+        $xml = simplexml_load_string($contenidoHoja);
+
+        if (!$xml) {
+            return [];
+        }
+
+        $filas = [];
+
+        foreach ($xml->sheetData->row as $filaXml) {
+            $valores = [];
+            $maxColumna = -1;
+
+            foreach ($filaXml->c as $celdaXml) {
+                $columna = self::columnaDesdeReferencia((string) $celdaXml['r']);
+                $maxColumna = max($maxColumna, $columna);
+                $valores[$columna] = self::valorCelda($celdaXml, $textosCompartidos);
+            }
+
+            if ($maxColumna < 0) {
+                continue;
+            }
+
+            $fila = [];
+
+            for ($columna = 0; $columna <= $maxColumna; $columna++) {
+                $fila[] = trim((string) ($valores[$columna] ?? ''));
+            }
+
+            if (implode('', $fila) !== '') {
+                $filas[] = $fila;
+            }
+        }
+
+        return $filas;
+    }
+
+    private static function leerTextosCompartidos(\ZipArchive $zip): array
+    {
+        $contenido = $zip->getFromName('xl/sharedStrings.xml');
+
+        if ($contenido === false) {
+            return [];
+        }
+
+        $xml = simplexml_load_string($contenido);
+
+        if (!$xml) {
+            return [];
+        }
+
+        $textos = [];
+
+        foreach ($xml->si as $item) {
+            $partes = [];
+
+            if (isset($item->t)) {
+                $partes[] = (string) $item->t;
+            }
+
+            foreach ($item->r as $fragmento) {
+                $partes[] = (string) $fragmento->t;
+            }
+
+            $textos[] = implode('', $partes);
+        }
+
+        return $textos;
+    }
+
+    private static function valorCelda(\SimpleXMLElement $celda, array $textosCompartidos): string
+    {
+        $tipo = (string) $celda['t'];
+
+        if ($tipo === 'inlineStr') {
+            return (string) ($celda->is->t ?? '');
+        }
+
+        $valor = (string) ($celda->v ?? '');
+
+        if ($tipo === 's') {
+            return $textosCompartidos[(int) $valor] ?? '';
+        }
+
+        if ($tipo === 'b') {
+            return $valor === '1' ? 'SI' : 'NO';
+        }
+
+        return $valor;
+    }
+
+    private static function columnaDesdeReferencia(string $referencia): int
+    {
+        preg_match('/^[A-Z]+/i', $referencia, $matches);
+        $letras = strtoupper($matches[0] ?? 'A');
+        $columna = 0;
+
+        for ($indice = 0; $indice < strlen($letras); $indice++) {
+            $columna = ($columna * 26) + (ord($letras[$indice]) - 64);
+        }
+
+        return max(0, $columna - 1);
+    }
+}
 final class Flash
 {
     public static function add(string $tipo, string $mensaje): void

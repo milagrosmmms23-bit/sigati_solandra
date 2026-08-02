@@ -10,7 +10,7 @@ $columnas = [
 <div class="page-actions">
     <div>
         <h2>Importar inventario</h2>
-        <p>Primero analiza tu CSV, corrige observaciones y luego confirma la carga.</p>
+        <p>Primero analiza tu Excel o CSV, corrige observaciones y luego confirma la carga.</p>
     </div>
     <a class="btn btn-light" href="<?= url('activos') ?>">Volver</a>
 </div>
@@ -19,10 +19,10 @@ $columnas = [
     <form class="form-card compact-card" method="post" enctype="multipart/form-data" action="<?= url('activos/importar') ?>">
         <?= csrf_field() ?>
         <h3>Seleccionar archivo</h3>
-        <p>Sube un CSV separado por comas o punto y coma.</p>
+        <p>Sube un Excel .xlsx o un CSV separado por comas o punto y coma.</p>
         <label class="file-drop">
-            <input type="file" name="csv" accept=".csv,text/csv" required>
-            <span>Arrastra o selecciona tu archivo CSV</span>
+            <input type="file" name="csv" accept=".xlsx,.csv,text/csv" required>
+            <span>Arrastra o selecciona tu archivo Excel o CSV</span>
             <small>Maximo recomendado: 2,000 filas por carga</small>
         </label>
         <button class="btn btn-primary btn-block" type="submit">Analizar archivo</button>
@@ -62,7 +62,7 @@ $columnas = [
         </div>
 
         <?php if ($preview['bloqueado']): ?>
-            <div class="notice danger">Hay errores que corregir en el CSV. No se guardo nada todavia.</div>
+            <div class="notice danger">Hay errores que corregir en el archivo. No se guardo nada todavia.</div>
         <?php else: ?>
             <div class="notice success">El archivo esta listo para importar.</div>
         <?php endif; ?>

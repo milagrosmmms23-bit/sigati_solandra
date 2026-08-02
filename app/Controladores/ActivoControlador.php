@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controladores;
 
-use App\Nucleo\{Auth, Auditoria, Controlador, Csrf, BD, Flash};
+use App\Nucleo\{Auth, Auditoria, Controlador, Csrf, BD, Flash, LectorExcel};
 use App\Modelos\{Activo, Catalogo};
 use Throwable;
 
@@ -175,12 +175,19 @@ final class ActivoControlador extends Controlador
         }
 
         if (empty($_FILES['csv']['tmp_name'])) {
-            Flash::error('Selecciona un archivo CSV.');
+            Flash::error('Selecciona un archivo CSV o Excel.');
             redirect('activos/importar');
         }
 
+        $nombreArchivo = $_FILES['csv']['name'] ?? 'inventario.csv';
+        $extension = strtolower(pathinfo($nombreArchivo, PATHINFO_EXTENSION));
+
         try {
-            $preview = $this->prepararImportacionCsv($_FILES['csv']['tmp_name'], $_FILES['csv']['name'] ?? 'inventario.csv');
+            $preview = match ($extension) {
+                'csv', 'txt' => $this->prepararImportacionCsv($_FILES['csv']['tmp_name'], $nombreArchivo),
+                'xlsx' => $this->prepararImportacionExcel($_FILES['csv']['tmp_name'], $nombreArchivo),
+                default => throw new \RuntimeException('Formato no permitido. Usa CSV o XLSX.'),
+            };
         } catch (Throwable $exception) {
             Flash::error($exception->getMessage());
             redirect('activos/importar');
@@ -300,6 +307,95 @@ final class ActivoControlador extends Controlador
         return $this->validarImportacion($filas, $nombreArchivo);
     }
 
+    private function prepararImportacionExcel(string $ruta, string $nombreArchivo): array
+    {
+        $hojasExcel = LectorExcel::leerHojas($ruta);
+        $camposReconocidos = [
+            'tipo', 'codigo_anterior', 'marca', 'modelo', 'serie', 'area', 'ubicacion', 'nombre_equipo',
+            'ip', 'mac', 'imei1', 'imei2', 'telefono', 'fecha_compra', 'factura', 'proveedor',
+            'costo', 'fin_garantia', 'observaciones',
+        ];
+        $filas = [];
+
+        foreach ($hojasExcel as $nombreHoja => $filasExcel) {
+            if (!$this->hojaExcelImportable((string) $nombreHoja)) {
+                continue;
+            }
+            $cabeceras = null;
+            $filaCabecera = null;
+
+            foreach ($filasExcel as $indice => $filaExcel) {
+                $posiblesCabeceras = array_map(fn ($cabecera) => $this->normalizarCabecera((string) $cabecera), $filaExcel);
+                $reconocidas = count(array_intersect($posiblesCabeceras, $camposReconocidos));
+
+                if ($reconocidas >= 2) {
+                    $cabeceras = $posiblesCabeceras;
+                    $filaCabecera = $indice;
+                    break;
+                }
+            }
+
+            if ($cabeceras === null || $filaCabecera === null) {
+                continue;
+            }
+
+            foreach (array_slice($filasExcel, $filaCabecera + 1) as $indice => $filaExcel) {
+                if (implode('', array_map('trim', $filaExcel)) === '') {
+                    continue;
+                }
+
+                $registro = [];
+
+                foreach ($cabeceras as $columna => $cabecera) {
+                    if ($cabecera !== '') {
+                        $registro[$cabecera] = trim((string) ($filaExcel[$columna] ?? ''));
+                    }
+                }
+
+                if (empty($registro['tipo'])) {
+                    $registro['tipo'] = $this->tipoDesdeNombreHoja((string) $nombreHoja);
+                }
+
+                $filas[] = [
+                    'numero' => ($filaCabecera + $indice + 2).' / '.$nombreHoja,
+                    'datos' => $this->normalizarRegistroImportacion($registro),
+                    'errores' => [],
+                    'advertencias' => [],
+                ];
+            }
+        }
+
+        if (!$filas) {
+            throw new \RuntimeException('No se encontraron hojas con cabeceras de inventario.');
+        }
+
+        return $this->validarImportacion($filas, $nombreArchivo);
+    }
+
+    private function hojaExcelImportable(string $nombreHoja): bool
+    {
+        $nombre = strtoupper($nombreHoja);
+
+        return str_contains($nombre, 'PC')
+            || str_contains($nombre, 'LAPTOP')
+            || str_contains($nombre, 'CEL')
+            || str_contains($nombre, 'MONITOR')
+            || str_contains($nombre, 'RADIO')
+            || str_contains($nombre, 'IMPRES');
+    }
+    private function tipoDesdeNombreHoja(string $nombreHoja): string
+    {
+        $nombre = strtoupper($nombreHoja);
+
+        return match (true) {
+            str_contains($nombre, 'CEL') => 'Celular',
+            str_contains($nombre, 'MONITOR') => 'Monitor',
+            str_contains($nombre, 'RADIO') => 'Radio',
+            str_contains($nombre, 'IMPRES') => 'Impresora',
+            str_contains($nombre, 'SIM') || str_contains($nombre, 'CHIP') => 'SIM',
+            default => '',
+        };
+    }
     private function normalizarCabecera(string $cabecera): string
     {
         $cabecera = preg_replace('/^\xEF\xBB\xBF/', '', trim($cabecera)) ?? '';
@@ -314,10 +410,18 @@ final class ActivoControlador extends Controlador
         $alias = [
             'codigo' => 'codigo_anterior', 'cod' => 'codigo_anterior', 'item' => 'codigo_anterior',
             'codigo_activo' => 'codigo_anterior', 'codigo_actual' => 'codigo_anterior',
+            'cod_monitor' => 'codigo_anterior',
+            'codigo_serie' => 'codigo_anterior',
             'equipo' => 'nombre_equipo', 'nombre' => 'nombre_equipo', 'nombre_de_equipo' => 'nombre_equipo',
+            'nombre_del_dispositivo' => 'nombre_equipo',
+            'nombre_dispositivo' => 'nombre_equipo',
+            'nombre_del_equipo' => 'nombre_equipo',
             'serial' => 'serie', 's_n' => 'serie', 'sn' => 'serie', 'numero_serie' => 'serie',
-            'tipo_activo' => 'tipo', 'tipo_de_equipo' => 'tipo', 'direccion_ip' => 'ip', 'direccion_mac' => 'mac',
+            'tipo_activo' => 'tipo', 'tipo_de_equipo' => 'tipo',
+            'tipo_equipo' => 'tipo', 'direccion_ip' => 'ip', 'direccion_mac' => 'mac',
             'chip' => 'telefono', 'linea' => 'telefono', 'chip_de_linea' => 'telefono', 'numero_telefono' => 'telefono',
+            'n_celular' => 'telefono',
+            'n_telefono' => 'telefono',
             'imei' => 'imei1', 'imei_1' => 'imei1', 'imei_2' => 'imei2',
             'fecha_de_compra' => 'fecha_compra', 'fecha_entrega' => 'fecha_compra',
             'n_factura' => 'factura', 'numero_factura' => 'factura',
