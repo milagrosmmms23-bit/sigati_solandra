@@ -110,6 +110,8 @@ $router->get('/activos/{id}', [ActivoControlador::class, 'ver']);
 // Trabajadores
 $router->get('/trabajadores', [TrabajadorControlador::class, 'listado']);
 $router->get('/trabajadores/crear', [TrabajadorControlador::class, 'crear']);
+$router->get('/trabajadores/importar', [TrabajadorControlador::class, 'formularioImportacion']);
+$router->post('/trabajadores/importar', [TrabajadorControlador::class, 'importarArchivo']);
 $router->post('/trabajadores', [TrabajadorControlador::class, 'guardar']);
 $router->get('/trabajadores/{id}/editar', [TrabajadorControlador::class, 'editar']);
 $router->post('/trabajadores/{id}', [TrabajadorControlador::class, 'actualizar']);

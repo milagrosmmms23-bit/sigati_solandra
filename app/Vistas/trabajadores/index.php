@@ -4,7 +4,10 @@
             <p>Personas que pueden recibir activos tecnologicos.</p>
         </div>
 
-        <a class="btn btn-primary" href="<?= url('trabajadores/crear') ?>">+ Nuevo trabajador</a>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+            <a class="btn btn-light" href="<?= url('trabajadores/importar') ?>">Importar</a>
+            <a class="btn btn-primary" href="<?= url('trabajadores/crear') ?>">+ Nuevo trabajador</a>
+        </div>
     </div>
 
     <form class="filter-panel" method="get">

@@ -9,6 +9,7 @@ $registro = $registro ?? null;
 $parciales = [
     'listado' => 'index',
     'formulario' => 'formulario',
+    'importar' => 'importar',
 ];
 
 $parcial = $parciales[$modo] ?? $parciales['listado'];
