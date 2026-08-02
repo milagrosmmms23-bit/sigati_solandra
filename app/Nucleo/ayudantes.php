@@ -17,7 +17,11 @@ function url(string $ruta = ''): string
         $base = '';
     }
 
-    return $base.($ruta !== '' ? '/'.ltrim($ruta, '/') : '');
+    if ($ruta === '') {
+        return $base !== '' ? $base : '/';
+    }
+
+    return $base.'/'.ltrim($ruta, '/');
 }
 
 function recurso(string $ruta): string
