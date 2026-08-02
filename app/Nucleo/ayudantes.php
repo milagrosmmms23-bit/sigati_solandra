@@ -18,7 +18,20 @@ function url(string $ruta = ''): string
 
 function recurso(string $ruta): string
 {
-    return url('recursos/'.ltrim($ruta, '/'));
+    $ruta = ltrim($ruta, '/');
+    $publico = dirname(__DIR__, 2).'/public';
+
+    $alternativos = [
+        'css/app.css' => 'app.css',
+        'js/app.js' => 'app.js',
+        'img/solandra-logo.png' => 'solandra-logo.png',
+    ];
+
+    if (!is_file($publico.'/recursos/'.$ruta) && isset($alternativos[$ruta]) && is_file($publico.'/'.$alternativos[$ruta])) {
+        return url($alternativos[$ruta]);
+    }
+
+    return url('recursos/'.$ruta);
 }
 
 function e(mixed $valor): string
