@@ -313,7 +313,11 @@ final class ActivoControlador extends Controlador
         $camposReconocidos = [
             'tipo', 'codigo_anterior', 'marca', 'modelo', 'serie', 'area', 'ubicacion', 'nombre_equipo',
             'ip', 'mac', 'imei1', 'imei2', 'telefono', 'fecha_compra', 'factura', 'proveedor',
-            'costo', 'fin_garantia', 'observaciones',
+            'costo', 'fin_garantia', 'observaciones', 'estado_excel', 'responsable_actual', 'cargo',
+            'estado_facturacion', 'sistema_operativo', 'procesador', 'ram', 'ssd', 'almacenamiento',
+            'accesorios', 'conectividad', 'frecuencia', 'toner', 'fecha_mantenimiento',
+            'pc_laptop_asociada', 'uso', 'tamano', 'monitor_1_marca', 'monitor_1_modelo', 'monitor_1_serie',
+            'monitor_2_marca', 'monitor_2_modelo', 'monitor_2_serie',
         ];
         $filas = [];
 
@@ -409,6 +413,7 @@ final class ActivoControlador extends Controlador
         $cabecera = trim(preg_replace('/[^a-z0-9]+/', '_', $cabecera) ?? '', '_');
         $alias = [
             'codigo' => 'codigo_anterior', 'cod' => 'codigo_anterior', 'item' => 'codigo_anterior',
+            'c_digo' => 'codigo_anterior', 'tem' => 'codigo_anterior',
             'codigo_activo' => 'codigo_anterior', 'codigo_actual' => 'codigo_anterior',
             'cod_monitor' => 'codigo_anterior',
             'codigo_serie' => 'codigo_anterior',
@@ -418,14 +423,33 @@ final class ActivoControlador extends Controlador
             'nombre_del_equipo' => 'nombre_equipo',
             'serial' => 'serie', 's_n' => 'serie', 'sn' => 'serie', 'numero_serie' => 'serie',
             'tipo_activo' => 'tipo', 'tipo_de_equipo' => 'tipo',
-            'tipo_equipo' => 'tipo', 'direccion_ip' => 'ip', 'direccion_mac' => 'mac',
+            'tipo_equipo' => 'tipo', 'rea' => 'area', 'direccion_ip' => 'ip', 'direccion_mac' => 'mac',
+            'estado' => 'estado_excel',
+            'estado_de_facturacion' => 'estado_facturacion',
+            'estado_de_facturaci_n' => 'estado_facturacion',
+            'asignado' => 'responsable_actual',
+            'asignado_a' => 'responsable_actual',
+            'asignado_al_colaborador' => 'responsable_actual',
+            'encargado' => 'responsable_actual',
+            'responsable' => 'responsable_actual',
             'chip' => 'telefono', 'linea' => 'telefono', 'chip_de_linea' => 'telefono', 'numero_telefono' => 'telefono',
             'n_celular' => 'telefono',
             'n_telefono' => 'telefono',
             'imei' => 'imei1', 'imei_1' => 'imei1', 'imei_2' => 'imei2',
             'fecha_de_compra' => 'fecha_compra', 'fecha_entrega' => 'fecha_compra',
+            'fecha_de_entrega' => 'fecha_compra',
+            'fecha_mantenimiento' => 'fecha_mantenimiento',
             'n_factura' => 'factura', 'numero_factura' => 'factura',
             'fin_de_garantia' => 'fin_garantia', 'vencimiento_garantia' => 'fin_garantia',
+            'so' => 'sistema_operativo',
+            's_o' => 'sistema_operativo',
+            'disco' => 'ssd',
+            'disco_duro' => 'ssd',
+            'toner_tinta' => 'toner',
+            't_ner' => 'toner',
+            'tama_o' => 'tamano',
+            'pc_laptop' => 'pc_laptop_asociada',
+            'monitor_2' => 'monitor_2_serie',
         ];
 
         return $alias[$cabecera] ?? $cabecera;
@@ -436,7 +460,11 @@ final class ActivoControlador extends Controlador
         $campos = [
             'tipo', 'codigo_anterior', 'marca', 'modelo', 'serie', 'area', 'ubicacion', 'nombre_equipo',
             'ip', 'mac', 'imei1', 'imei2', 'telefono', 'fecha_compra', 'factura', 'proveedor',
-            'costo', 'fin_garantia', 'observaciones',
+            'costo', 'fin_garantia', 'observaciones', 'estado_excel', 'responsable_actual', 'cargo',
+            'estado_facturacion', 'sistema_operativo', 'procesador', 'ram', 'ssd', 'almacenamiento',
+            'accesorios', 'conectividad', 'frecuencia', 'toner', 'fecha_mantenimiento',
+            'pc_laptop_asociada', 'uso', 'tamano', 'monitor_1_marca', 'monitor_1_modelo', 'monitor_1_serie',
+            'monitor_2_marca', 'monitor_2_modelo', 'monitor_2_serie',
         ];
         $datos = [];
 
@@ -506,6 +534,14 @@ final class ActivoControlador extends Controlador
                 if (($datos[$campo] ?? '') === '') {
                     $filas[$indice]['advertencias'][] = $mensaje;
                 }
+            }
+
+            if (($datos['responsable_actual'] ?? '') !== '') {
+                $filas[$indice]['advertencias'][] = 'Responsable del Excel guardado como referencia; la asignacion formal se generara en el modulo Asignaciones.';
+            }
+
+            if (($datos['estado_excel'] ?? '') !== '' && !$this->codigoEstadoDesdeExcel($datos['estado_excel'])) {
+                $filas[$indice]['advertencias'][] = 'Estado no reconocido: '.$datos['estado_excel'].'. Se importara como Disponible.';
             }
 
             foreach (array_keys($vistos) as $campo) {
@@ -580,7 +616,7 @@ final class ActivoControlador extends Controlador
 
             try {
                 $datos = $this->mapearFilaCsv($fila['datos']);
-                $id = $this->modelo->guardar($datos, [], Auth::id());
+                $id = $this->modelo->guardar($datos, $this->especificacionesImportacion($fila['datos']), Auth::id());
                 Auditoria::registrar('Inventario', 'IMPORTAR', 'activo', $id, null, $datos);
                 $importados++;
             } catch (Throwable $exception) {
@@ -624,6 +660,74 @@ final class ActivoControlador extends Controlador
             'fin_garantia' => trim($registro['fin_garantia'] ?? ''),
             'observaciones' => trim($registro['observaciones'] ?? ''),
         ];
+    }
+    private function especificacionesImportacion(array $registro): array
+    {
+        $campos = [
+            'estado_excel' => 'Estado en Excel',
+            'estado_facturacion' => 'Estado de facturacion',
+            'responsable_actual' => 'Responsable en Excel',
+            'cargo' => 'Cargo',
+            'sistema_operativo' => 'Sistema operativo',
+            'procesador' => 'Procesador',
+            'ram' => 'RAM',
+            'ssd' => 'SSD',
+            'almacenamiento' => 'Almacenamiento',
+            'accesorios' => 'Accesorios',
+            'conectividad' => 'Conectividad',
+            'frecuencia' => 'Frecuencia',
+            'toner' => 'Toner',
+            'fecha_mantenimiento' => 'Fecha de mantenimiento',
+            'pc_laptop_asociada' => 'PC/Laptop asociada',
+            'uso' => 'Uso',
+            'tamano' => 'Tamano',
+            'monitor_1_marca' => 'Monitor 1 marca',
+            'monitor_1_modelo' => 'Monitor 1 modelo',
+            'monitor_1_serie' => 'Monitor 1 serie',
+            'monitor_2_marca' => 'Monitor 2 marca',
+            'monitor_2_modelo' => 'Monitor 2 modelo',
+            'monitor_2_serie' => 'Monitor 2 serie',
+        ];
+        $especificaciones = [];
+
+        foreach ($campos as $campo => $etiqueta) {
+            $valor = trim((string) ($registro[$campo] ?? ''));
+
+            if ($valor !== '') {
+                $especificaciones[$etiqueta] = $campo === 'fecha_mantenimiento'
+                    ? $this->normalizarFechaImportacion($valor)
+                    : $valor;
+            }
+        }
+
+        return $especificaciones;
+    }
+    private function buscarEstadoImportacion(string $estadoExcel): int
+    {
+        return $this->buscarPorCodigo('estados_activo', $this->codigoEstadoDesdeExcel($estadoExcel) ?: 'DISPONIBLE');
+    }
+
+    private function codigoEstadoDesdeExcel(string $estadoExcel): ?string
+    {
+        $estado = strtoupper(trim($estadoExcel));
+
+        if ($estado === '') {
+            return 'DISPONIBLE';
+        }
+
+
+        return match ($estado) {
+            'ASIGNADO' => 'ASIGNADO',
+            'OPERATIVO', 'OPERATIVA', 'BUENO', 'EN STOCK', 'CELL NUEVO', 'NUEVO CELULAR' => 'DISPONIBLE',
+            'EN T.I', 'EN TI', 'MANTENIMIENTO', 'EN MANTENIMIENTO' => 'MANTENIMIENTO',
+            'REPARACION', 'EN REPARACION' => 'REPARACION',
+            'ALMACEN', 'EN ALMACEN' => 'ALMACEN',
+            'BAJA', 'DADO DE BAJA' => 'BAJA',
+            'PERDIDO', 'EXTRAVIADO' => 'EXTRAVIADO',
+            'ROBADO' => 'ROBADO',
+            'EN LIMA', 'EN SOFI', 'TRANSITO', 'EN TRANSITO' => 'TRANSITO',
+            default => null,
+        };
     }
     private function buscarPorNombre(string $tabla, string $nombre): ?int
     {

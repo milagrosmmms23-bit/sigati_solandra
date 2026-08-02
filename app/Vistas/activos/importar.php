@@ -3,8 +3,10 @@ $preview = $preview ?? null;
 $mostrar = static fn ($valor): string => htmlspecialchars((string) ($valor ?? ''), ENT_QUOTES, 'UTF-8');
 $columnas = [
     'tipo' => 'Tipo', 'codigo_anterior' => 'Codigo', 'marca' => 'Marca', 'modelo' => 'Modelo',
-    'serie' => 'Serie', 'area' => 'Area', 'ubicacion' => 'Ubicacion', 'nombre_equipo' => 'Nombre equipo',
-    'imei1' => 'IMEI', 'telefono' => 'Telefono', 'observaciones' => 'Observaciones',
+    'serie' => 'Serie', 'estado_excel' => 'Estado Excel', 'area' => 'Area',
+    'responsable_actual' => 'Responsable Excel', 'nombre_equipo' => 'Nombre equipo',
+    'imei1' => 'IMEI', 'telefono' => 'Telefono', 'ram' => 'RAM', 'ssd' => 'SSD',
+    'procesador' => 'Procesador', 'accesorios' => 'Accesorios', 'observaciones' => 'Observaciones',
 ];
 ?>
 <div class="page-actions">
@@ -32,10 +34,10 @@ $columnas = [
         <h3>Columnas aceptadas</h3>
         <div class="code-block">
             tipo, codigo_anterior, marca, modelo, serie, area, ubicacion, nombre_equipo, ip, mac,
-            imei1, imei2, telefono, fecha_compra, factura, proveedor, costo, fin_garantia, observaciones
+            imei1, imei2, telefono, fecha_compra, factura, proveedor, costo, fin_garantia, observaciones, estado, asignado, cargo, sistema_operativo, procesador, ram, ssd, accesorios, conectividad, frecuencia, toner, pc_laptop_asociada
         </div>
         <div class="notice">
-            Tambien reconoce nombres parecidos: codigo, item, serial, chip_de_linea, imei, fecha_entrega y numero_factura.
+            Tambien reconoce tu Excel 2026: PC_Laptops, Celulares, Monitores, Radios e Impresoras. El responsable del Excel se guarda como referencia; las actas se generan desde Asignaciones.
         </div>
     </section>
 </div>
