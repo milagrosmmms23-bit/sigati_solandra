@@ -9,6 +9,7 @@ $parciales = [
     'listado' => 'index',
     'detalle' => 'detalle',
     'formulario' => 'formulario',
+    'importar' => 'importar',
 ];
 
 $parcial = $parciales[$modo] ?? $parciales['listado'];

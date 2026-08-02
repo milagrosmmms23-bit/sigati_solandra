@@ -4,7 +4,10 @@
             <p>Actas de entrega de equipos a trabajadores.</p>
         </div>
 
-        <a class="btn btn-primary" href="<?= url('asignaciones/crear') ?>">+ Nueva asignacion</a>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+            <a class="btn btn-light" href="<?= url('asignaciones/importar') ?>">Importar</a>
+            <a class="btn btn-primary" href="<?= url('asignaciones/crear') ?>">+ Nueva asignacion</a>
+        </div>
     </div>
 
     <section class="panel table-panel">

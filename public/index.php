@@ -119,6 +119,8 @@ $router->post('/trabajadores/{id}', [TrabajadorControlador::class, 'actualizar']
 // Asignaciones
 $router->get('/asignaciones', [AsignacionControlador::class, 'listado']);
 $router->get('/asignaciones/crear', [AsignacionControlador::class, 'crear']);
+$router->get('/asignaciones/importar', [AsignacionControlador::class, 'formularioImportacion']);
+$router->post('/asignaciones/importar', [AsignacionControlador::class, 'importarArchivo']);
 $router->post('/asignaciones', [AsignacionControlador::class, 'guardar']);
 $router->get('/asignaciones/{id}/imprimir', [AsignacionControlador::class, 'imprimir']);
 $router->get('/asignaciones/{id}/pdf', [AsignacionControlador::class, 'pdf']);
