@@ -97,6 +97,9 @@ require __DIR__.'/imprimir/estilos.php';
 
 $logoSrc = '';
 $logos = [
+    dirname(__DIR__, 2).'/public/solandra-logo.png',
+    dirname(__DIR__, 2).'/public/solandra-logo.jpg',
+    dirname(__DIR__, 2).'/public/solandra-logo.jpeg',
     dirname(__DIR__, 2).'/recursos/img/solandra-logo.png',
     dirname(__DIR__, 2).'/recursos/img/solandra-logo.jpg',
     dirname(__DIR__, 2).'/recursos/img/solandra-logo.jpeg',
