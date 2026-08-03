@@ -122,6 +122,8 @@ $router->get('/asignaciones', [AsignacionControlador::class, 'listado']);
 $router->get('/asignaciones/crear', [AsignacionControlador::class, 'crear']);
 $router->get('/asignaciones/importar', [AsignacionControlador::class, 'formularioImportacion']);
 $router->post('/asignaciones/importar', [AsignacionControlador::class, 'importarArchivo']);
+$router->get('/asignaciones/regularizar-excel', [AsignacionControlador::class, 'regularizarExcel']);
+$router->post('/asignaciones/regularizar-excel', [AsignacionControlador::class, 'confirmarRegularizacionExcel']);
 $router->post('/asignaciones', [AsignacionControlador::class, 'guardar']);
 $router->get('/asignaciones/{id}/imprimir', [AsignacionControlador::class, 'imprimir']);
 $router->get('/asignaciones/{id}/pdf', [AsignacionControlador::class, 'pdf']);

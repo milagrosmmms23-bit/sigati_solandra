@@ -82,6 +82,47 @@ final class AsignacionControlador extends Controlador
         ]);
     }
 
+    public function regularizarExcel(): void
+    {
+        $preview = $this->prepararRegularizacionExcel();
+        $_SESSION['regularizacion_excel'] = $preview;
+
+        $this->vista('asignaciones', [
+            'modo' => 'regularizar',
+            'titulo' => 'Regularizar responsables del Excel',
+            'preview' => $preview,
+        ]);
+    }
+
+    public function confirmarRegularizacionExcel(): void
+    {
+        Csrf::verificar();
+
+        if (isset($_POST['cancelar'])) {
+            unset($_SESSION['regularizacion_excel']);
+            Flash::advertencia('Regularizacion cancelada.');
+            redirect('asignaciones');
+        }
+
+        $preview = $_SESSION['regularizacion_excel'] ?? $this->prepararRegularizacionExcel();
+
+        if (!$preview || !empty($preview['bloqueado'])) {
+            Flash::error('Hay errores que corregir antes de crear las actas.');
+            redirect('asignaciones/regularizar-excel');
+        }
+
+        [$creadas, $trabajadoresCreados, $errores] = $this->guardarRegularizacionExcel($preview['grupos']);
+        unset($_SESSION['regularizacion_excel']);
+
+        Flash::exito("Se crearon $creadas actas. Trabajadores creados: $trabajadoresCreados.");
+
+        if ($errores) {
+            Flash::advertencia(implode(' | ', array_slice($errores, 0, 4)));
+        }
+
+        redirect('asignaciones');
+    }
+
     public function importarArchivo(): void
     {
         Csrf::verificar();
@@ -195,6 +236,200 @@ final class AsignacionControlador extends Controlador
         $pdf->setPaper('A4');
         $pdf->render();
         $pdf->stream($asignacion['numero_asignacion'].'.pdf', ['Attachment' => true]);
+    }
+
+    private function prepararRegularizacionExcel(): array
+    {
+        $filas = [];
+        $grupos = [];
+        $errores = 0;
+        $advertencias = 0;
+        $candidatos = $this->modelo->candidatosDesdeExcel();
+        $activosVistos = [];
+
+        foreach ($candidatos as $indice => $candidato) {
+            $responsable = $this->limpiarTexto((string) $candidato['responsable_excel']);
+            $trabajador = $this->buscarTrabajadorFlexible($responsable);
+            $filaErrores = [];
+            $filaAdvertencias = [];
+
+            if ($responsable === '') {
+                $filaErrores[] = 'Responsable vacio.';
+            }
+
+            if (($candidato['codigo_estado'] ?? '') !== 'DISPONIBLE') {
+                $filaErrores[] = 'Activo no disponible: '.$candidato['nombre_estado'].'.';
+            }
+
+            if (!empty($candidato['tiene_acta_vigente'])) {
+                $filaErrores[] = 'Ya tiene acta vigente.';
+            }
+
+            if (isset($activosVistos[$candidato['activo_id']])) {
+                $filaErrores[] = 'Activo repetido en la regularizacion.';
+            }
+
+            if (!$trabajador && $responsable !== '') {
+                $filaAdvertencias[] = 'Se creara trabajador automaticamente.';
+            }
+
+            if (empty($candidato['area_actual_id'])) {
+                $filaAdvertencias[] = 'Activo sin area; el acta quedara sin area.';
+            }
+
+            $activosVistos[$candidato['activo_id']] = true;
+            $fila = [
+                'numero' => $indice + 1,
+                'responsable' => $responsable,
+                'trabajador_id' => $trabajador['id'] ?? null,
+                'trabajador_existente' => (bool) $trabajador,
+                'activo_id' => (int) $candidato['activo_id'],
+                'codigo_activo' => $candidato['codigo_activo'],
+                'codigo_anterior' => $candidato['codigo_anterior'],
+                'equipo' => trim(($candidato['nombre_tipo'] ?? '').' '.($candidato['nombre_marca'] ?? '').' '.($candidato['nombre_modelo'] ?? '')),
+                'serie' => $candidato['numero_serie'] ?: ($candidato['imei1'] ?: ($candidato['numero_telefono'] ?: '-')),
+                'area_id' => (int) ($candidato['area_actual_id'] ?? 0) ?: null,
+                'area' => $candidato['nombre_area'] ?: '-',
+                'estado' => $candidato['nombre_estado'],
+                'errores' => $filaErrores,
+                'advertencias' => $filaAdvertencias,
+            ];
+
+            if (!$filaErrores) {
+                $claveGrupo = $this->clavePersona($responsable);
+                $grupos[$claveGrupo]['responsable'] = $responsable;
+                $grupos[$claveGrupo]['trabajador_id'] = $fila['trabajador_id'];
+                $grupos[$claveGrupo]['trabajador_existente'] = $fila['trabajador_existente'];
+                $grupos[$claveGrupo]['area_id'] ??= $fila['area_id'];
+                $grupos[$claveGrupo]['elementos'][] = [
+                    'activo_id' => $fila['activo_id'],
+                    'condicion' => 'Buen estado',
+                ];
+            }
+
+            $errores += count($filaErrores);
+            $advertencias += count($filaAdvertencias);
+            $filas[] = $fila;
+        }
+
+        return [
+            'archivo' => 'Datos internos importados desde Excel',
+            'bloqueado' => $errores > 0,
+            'resumen' => [
+                'filas' => count($filas),
+                'asignaciones' => count($grupos),
+                'activos' => array_sum(array_map(fn ($grupo) => count($grupo['elementos']), $grupos)),
+                'trabajadores_nuevos' => count(array_filter($grupos, fn ($grupo) => empty($grupo['trabajador_existente']))),
+                'errores' => $errores,
+                'advertencias' => $advertencias,
+            ],
+            'filas' => $filas,
+            'grupos' => array_values($grupos),
+        ];
+    }
+
+    private function guardarRegularizacionExcel(array $grupos): array
+    {
+        $creadas = 0;
+        $trabajadoresCreados = 0;
+        $errores = [];
+
+        foreach ($grupos as $grupo) {
+            try {
+                $trabajadorId = (int) ($grupo['trabajador_id'] ?? 0);
+
+                if (!$trabajadorId) {
+                    $trabajadorId = $this->crearTrabajadorDesdeResponsable($grupo['responsable'], $grupo['area_id'] ?? null);
+                    $trabajadoresCreados++;
+                }
+
+                $this->modelo->crear(
+                    $trabajadorId,
+                    (int) ($grupo['area_id'] ?? 0) ?: null,
+                    'Asignacion regularizada desde Responsable en Excel.',
+                    $grupo['elementos'],
+                    Auth::id()
+                );
+
+                $creadas++;
+            } catch (Throwable $exception) {
+                $errores[] = 'Responsable '.$grupo['responsable'].': '.$exception->getMessage();
+            }
+        }
+
+        return [$creadas, $trabajadoresCreados, $errores];
+    }
+
+    private function crearTrabajadorDesdeResponsable(string $responsable, ?int $areaId): int
+    {
+        [$nombres, $apellidos] = $this->separarNombreResponsable($responsable);
+
+        $trabajador = new Trabajador();
+
+        return $trabajador->guardar([
+            'codigo_trabajador' => $this->generarCodigoRegularizado(),
+            'nombres' => $nombres,
+            'apellidos' => $apellidos,
+            'correo' => '',
+            'telefono' => '',
+            'cargo' => '',
+            'area_id' => $areaId ?: 0,
+        ]);
+    }
+
+    private function generarCodigoRegularizado(): string
+    {
+        $consulta = BD::pdo()->query("SELECT codigo_trabajador FROM trabajadores WHERE codigo_trabajador LIKE 'SOL-REG-%' ORDER BY codigo_trabajador DESC LIMIT 1");
+        $ultimo = (string) ($consulta->fetchColumn() ?: '');
+        $numero = 1;
+
+        if (preg_match('/(\d+)$/', $ultimo, $coincidencias)) {
+            $numero = ((int) $coincidencias[1]) + 1;
+        }
+
+        do {
+            $codigo = 'SOL-REG-'.str_pad((string) $numero, 5, '0', STR_PAD_LEFT);
+            $numero++;
+        } while ($this->existeCodigoTrabajador($codigo));
+
+        return $codigo;
+    }
+
+    private function existeCodigoTrabajador(string $codigo): bool
+    {
+        $consulta = BD::pdo()->prepare('SELECT COUNT(*) FROM trabajadores WHERE codigo_trabajador = ?');
+        $consulta->execute([$codigo]);
+
+        return (int) $consulta->fetchColumn() > 0;
+    }
+
+    private function separarNombreResponsable(string $responsable): array
+    {
+        $responsable = $this->limpiarTexto($responsable);
+
+        if ($responsable === '') {
+            return ['Sin nombre', 'Sin apellido'];
+        }
+
+        if (str_contains($responsable, ',')) {
+            [$apellidos, $nombres] = array_map('trim', explode(',', $responsable, 2));
+            return [$this->formatearNombre($nombres), $this->formatearNombre($apellidos)];
+        }
+
+        $partes = preg_split('/\s+/', $responsable) ?: [];
+
+        if (count($partes) <= 1) {
+            return [$this->formatearNombre($responsable), 'Sin apellido'];
+        }
+
+        if (count($partes) === 2) {
+            return [$this->formatearNombre($partes[0]), $this->formatearNombre($partes[1])];
+        }
+
+        return [
+            $this->formatearNombre(implode(' ', array_slice($partes, 2))),
+            $this->formatearNombre(implode(' ', array_slice($partes, 0, 2))),
+        ];
     }
 
     private function filasDesdeCsv(string $ruta, string $nombreArchivo): array
@@ -551,6 +786,57 @@ final class AsignacionControlador extends Controlador
         $consulta->execute([$nombre, $nombre]);
 
         return $consulta->fetch() ?: null;
+    }
+
+    private function buscarTrabajadorFlexible(string $nombre): ?array
+    {
+        $nombre = $this->limpiarTexto($nombre);
+
+        if ($nombre === '') {
+            return null;
+        }
+
+        $clave = $this->clavePersona($nombre);
+        $consulta = BD::pdo()->prepare(
+            'SELECT id, area_id, CONCAT(nombres, " ", apellidos) nombre_completo
+             FROM trabajadores
+             WHERE activo = 1
+               AND (
+                    UPPER(REPLACE(REPLACE(CONCAT(nombres, apellidos), " ", ""), ".", "")) = ?
+                    OR UPPER(REPLACE(REPLACE(CONCAT(apellidos, nombres), " ", ""), ".", "")) = ?
+               )
+             LIMIT 1'
+        );
+        $consulta->execute([$clave, $clave]);
+
+        return $consulta->fetch() ?: null;
+    }
+
+    private function clavePersona(string $nombre): string
+    {
+        return strtoupper(preg_replace('/[^A-Z0-9]/', '', $this->quitarTildes($nombre)) ?? '');
+    }
+
+    private function formatearNombre(string $valor): string
+    {
+        $valor = trim(preg_replace('/\s+/', ' ', $valor) ?? '');
+
+        if ($valor === '') {
+            return '';
+        }
+
+        return mb_convert_case(mb_strtolower($valor, 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
+    }
+
+    private function quitarTildes(string $valor): string
+    {
+        if (!function_exists('iconv')) {
+            return $valor;
+        }
+
+        $convertido = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $valor);
+
+        return $convertido !== false ? $convertido : $valor;
     }
 
     private function buscarActivo(string $codigo, string $serie): ?array

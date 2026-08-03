@@ -35,6 +35,68 @@ final class Asignacion extends ModeloBase
             ->fetchAll();
     }
 
+    public function candidatosDesdeExcel(): array
+    {
+        return $this->db
+            ->query(
+                "SELECT a.id activo_id, a.codigo_activo, a.codigo_anterior, a.numero_serie, a.imei1,
+                        a.numero_telefono, a.area_actual_id, t.nombre nombre_tipo, b.nombre nombre_marca,
+                        m.nombre nombre_modelo, ar.nombre nombre_area, s.codigo codigo_estado,
+                        s.nombre nombre_estado, resp.valor_especificacion responsable_excel,
+                        EXISTS (
+                            SELECT 1
+                            FROM items_asignacion ia
+                            JOIN asignaciones ag ON ag.id = ia.asignacion_id
+                            WHERE ia.activo_id = a.id
+                              AND ia.devuelto_en IS NULL
+                              AND ag.estado IN ('CONFIRMADA','PARCIAL')
+                        ) tiene_acta_vigente
+                 FROM especificaciones_activo resp
+                 JOIN activos a ON a.id = resp.activo_id
+                 JOIN tipos_activo t ON t.id = a.tipo_activo_id
+                 JOIN estados_activo s ON s.id = a.estado_id
+                 LEFT JOIN marcas b ON b.id = a.marca_id
+                 LEFT JOIN modelos m ON m.id = a.modelo_id
+                 LEFT JOIN areas ar ON ar.id = a.area_actual_id
+                 WHERE a.activo = 1
+                   AND resp.clave_especificacion = 'Responsable en Excel'
+                   AND NULLIF(TRIM(resp.valor_especificacion), '') IS NOT NULL
+                 ORDER BY resp.valor_especificacion, t.nombre, a.codigo_activo"
+            )
+            ->fetchAll();
+    }
+
+    public function candidatosDesdeExcel(): array
+    {
+        return $this->db
+            ->query(
+                "SELECT a.id activo_id, a.codigo_activo, a.codigo_anterior, a.numero_serie, a.imei1,
+                        a.numero_telefono, a.area_actual_id, t.nombre nombre_tipo, b.nombre nombre_marca,
+                        m.nombre nombre_modelo, ar.nombre nombre_area, s.codigo codigo_estado,
+                        s.nombre nombre_estado, resp.valor_especificacion responsable_excel,
+                        EXISTS (
+                            SELECT 1
+                            FROM items_asignacion ia
+                            JOIN asignaciones ag ON ag.id = ia.asignacion_id
+                            WHERE ia.activo_id = a.id
+                              AND ia.devuelto_en IS NULL
+                              AND ag.estado IN ('CONFIRMADA','PARCIAL')
+                        ) tiene_acta_vigente
+                 FROM especificaciones_activo resp
+                 JOIN activos a ON a.id = resp.activo_id
+                 JOIN tipos_activo t ON t.id = a.tipo_activo_id
+                 JOIN estados_activo s ON s.id = a.estado_id
+                 LEFT JOIN marcas b ON b.id = a.marca_id
+                 LEFT JOIN modelos m ON m.id = a.modelo_id
+                 LEFT JOIN areas ar ON ar.id = a.area_actual_id
+                 WHERE a.activo = 1
+                   AND resp.clave_especificacion = 'Responsable en Excel'
+                   AND NULLIF(TRIM(resp.valor_especificacion), '') IS NOT NULL
+                 ORDER BY resp.valor_especificacion, t.nombre, a.codigo_activo"
+            )
+            ->fetchAll();
+    }
+
     public function buscar(int $id): ?array
     {
         $consulta = $this->db->prepare(

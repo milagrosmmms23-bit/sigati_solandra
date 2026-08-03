@@ -10,6 +10,7 @@ $parciales = [
     'detalle' => 'detalle',
     'formulario' => 'formulario',
     'importar' => 'importar',
+    'regularizar' => 'regularizar',
 ];
 
 $parcial = $parciales[$modo] ?? $parciales['listado'];
