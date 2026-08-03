@@ -5,6 +5,7 @@
         </div>
 
         <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+            <a class="btn btn-light" href="<?= url('asignaciones/regularizar-excel') ?>">Regularizar Excel</a>
             <a class="btn btn-light" href="<?= url('asignaciones/importar') ?>">Importar</a>
             <a class="btn btn-primary" href="<?= url('asignaciones/crear') ?>">+ Nueva asignacion</a>
         </div>
