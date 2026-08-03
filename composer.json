@@ -1,13 +1,14 @@
 {
-    "name":  "solandra/sigati",
-    "description":  "SIGATI SOLANDRA - Gestion de activos TI Arequipa",
-    "require":  {
-                    "php":  "\u003e=8.2",
-                    "dompdf/dompdf":  "^3.1",
-                    "chillerlan/php-qrcode":  "^5.0"
-                },
-    "config":  {
-                   "sort-packages":  true
-               },
-    "license":  "proprietary"
+    "name": "solandra/sigati",
+    "description": "SIGATI SOLANDRA - Gestion de activos TI Arequipa",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "chillerlan/php-qrcode": "^5.0",
+        "dompdf/dompdf": "^3.1"
+    },
+    "config": {
+        "sort-packages": true,
+        "vendor-dir": "vendor_src"
+    }
 }

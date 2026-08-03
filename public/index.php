@@ -20,8 +20,16 @@ $root = dirname(__DIR__);
 require $root.'/app/Nucleo/nucleo.php';
 require $root.'/app/Nucleo/ayudantes.php';
 
-if (is_file($root.'/vendor/autoload.php')) {
-    require $root.'/vendor/autoload.php';
+$autoloads = [
+    $root.'/vendor_src/autoload.php',
+    $root.'/vendor/autoload.php',
+];
+
+foreach ($autoloads as $autoload) {
+    if (is_file($autoload)) {
+        require_once $autoload;
+        break;
+    }
 }
 
 $archivosModelos = [

@@ -122,7 +122,6 @@ final class AsignacionControlador extends Controlador
 
         redirect('asignaciones');
     }
-
     public function importarArchivo(): void
     {
         Csrf::verificar();
@@ -219,6 +218,13 @@ final class AsignacionControlador extends Controlador
 
         if (!$asignacion) {
             abort(404);
+        }
+
+        foreach ([dirname(__DIR__, 2).'/vendor_src/autoload.php', dirname(__DIR__, 2).'/vendor/autoload.php'] as $autoload) {
+            if (is_file($autoload)) {
+                require_once $autoload;
+                break;
+            }
         }
 
         if (!class_exists('Dompdf\\Dompdf')) {
@@ -364,9 +370,7 @@ final class AsignacionControlador extends Controlador
     {
         [$nombres, $apellidos] = $this->separarNombreResponsable($responsable);
 
-        $trabajador = new Trabajador();
-
-        return $trabajador->guardar([
+        return (new Trabajador())->guardar([
             'codigo_trabajador' => $this->generarCodigoRegularizado(),
             'nombres' => $nombres,
             'apellidos' => $apellidos,
@@ -431,7 +435,6 @@ final class AsignacionControlador extends Controlador
             $this->formatearNombre(implode(' ', array_slice($partes, 0, 2))),
         ];
     }
-
     private function filasDesdeCsv(string $ruta, string $nombreArchivo): array
     {
         $archivo = fopen($ruta, 'r');
@@ -838,7 +841,6 @@ final class AsignacionControlador extends Controlador
 
         return $convertido !== false ? $convertido : $valor;
     }
-
     private function buscarActivo(string $codigo, string $serie): ?array
     {
         $codigo = $this->limpiarTexto($codigo);
