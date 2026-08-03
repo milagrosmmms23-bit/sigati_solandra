@@ -151,6 +151,23 @@ final class TrabajadorControlador extends Controlador
         ]);
     }
 
+    public function ver(string $id): void
+    {
+        $trabajador = $this->modelo->buscar((int) $id);
+
+        if (!$trabajador) {
+            abort(404, 'Trabajador no encontrado.');
+        }
+
+        $this->vista('trabajadores', [
+            'modo' => 'detalle',
+            'titulo' => trim($trabajador['nombres'].' '.$trabajador['apellidos']),
+            'registro' => $trabajador,
+            'activos' => $this->modelo->activosAsignados((int) $id),
+            'asignaciones' => $this->modelo->asignaciones((int) $id),
+        ]);
+    }
+
     public function actualizar(string $id): void
     {
         Csrf::verificar();

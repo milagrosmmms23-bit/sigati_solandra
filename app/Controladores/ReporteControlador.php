@@ -42,4 +42,40 @@ final class ReporteControlador extends Controlador
         fclose($output);
         exit;
     }
+
+    public function exportarExcel(): never
+    {
+        $filas = (new Activo())->exportar();
+
+        header('Content-Type: application/vnd.ms-excel; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="inventario_solandra_'.date('Ymd_His').'.xls"');
+
+        echo "\xEF\xBB\xBF";
+        echo '<table border="1">';
+
+        if ($filas) {
+            echo '<thead><tr>';
+
+            foreach (array_keys($filas[0]) as $encabezado) {
+                echo '<th>'.e(ucwords(str_replace('_', ' ', $encabezado))).'</th>';
+            }
+
+            echo '</tr></thead><tbody>';
+
+            foreach ($filas as $fila) {
+                echo '<tr>';
+
+                foreach ($fila as $valor) {
+                    echo '<td>'.e($valor ?? '').'</td>';
+                }
+
+                echo '</tr>';
+            }
+
+            echo '</tbody>';
+        }
+
+        echo '</table>';
+        exit;
+    }
 }

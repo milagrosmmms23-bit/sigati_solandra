@@ -30,17 +30,30 @@ $calidadDatos = count($pendientes) === 0
     ? ['Completa', 'success']
     : (count($pendientes) <= 2 ? ['Por completar', 'warning'] : ['Critica', 'danger']);
 
+$especificacionesPorClave = [];
+
+foreach ($registro['especificaciones'] as $especificacion) {
+    $especificacionesPorClave[$especificacion['clave_especificacion']] = $especificacion['valor_especificacion'];
+}
+
+$estadoFacturacion = $especificacionesPorClave['Estado de facturacion']
+    ?? ($registro['numero_factura'] ? 'Con factura' : 'Pendiente');
+
 $generalFields = [
     'Tipo' => $registro['nombre_tipo'],
     'Marca' => $registro['nombre_marca'],
     'Modelo' => $registro['nombre_modelo'],
     'Ubicacion' => $registro['nombre_ubicacion'],
-    'Fecha de compra' => date_pe($registro['fecha_compra']),
-    'Factura' => $registro['numero_factura'],
+    'Registrado' => datetime_pe($registro['creado_en']),
+];
+
+$facturacionFields = [
+    'Estado de facturacion' => $estadoFacturacion,
+    'Numero de factura' => $registro['numero_factura'],
     'Proveedor' => $registro['nombre_proveedor'],
+    'Fecha de compra' => date_pe($registro['fecha_compra']),
     'Costo' => money($registro['costo']),
     'Fin de garantia' => date_pe($registro['fin_garantia']),
-    'Registrado' => datetime_pe($registro['creado_en']),
 ];
 ?>
 
@@ -104,6 +117,7 @@ $generalFields = [
     <section class="panel detail-panel">
         <div class="tabs">
             <button class="active" data-tab="general">Informacion</button>
+            <button data-tab="billing">Facturacion</button>
             <button data-tab="technical">Tecnica</button>
             <button data-tab="history">Historial</button>
             <button data-tab="maintenance">Mantenimiento</button>
@@ -134,6 +148,25 @@ $generalFields = [
                     La ficha tiene los datos clave para busqueda, asignacion y control.
                 </div>
             <?php endif; ?>
+        </div>
+
+        <div class="tab-pane" data-pane="billing">
+            <div class="detail-grid">
+                <?php foreach ($facturacionFields as $label => $valor): ?>
+                    <div>
+                        <span><?= e($label) ?></span>
+                        <strong><?= e($valor ?: '-') ?></strong>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="notes-box">
+                <span>Control sugerido</span>
+                <p>
+                    Usa esta seccion para confirmar si el activo ya tiene factura, proveedor, costo y garantia.
+                    Los activos sin numero de factura apareceran como pendientes en inventario y reportes.
+                </p>
+            </div>
         </div>
 
         <div class="tab-pane" data-pane="technical">

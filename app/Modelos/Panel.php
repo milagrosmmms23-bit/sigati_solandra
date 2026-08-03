@@ -108,6 +108,18 @@ final class Panel extends ModeloBase
                 'link' => 'activos',
             ],
             [
+                'titulo' => 'Activos sin factura',
+                'total' => $this->contar(
+                    "SELECT COUNT(*)
+                     FROM activos
+                     WHERE activo = 1
+                       AND NULLIF(TRIM(numero_factura), '') IS NULL"
+                ),
+                'detalle' => 'Pendientes de completar con numero de factura o sustento de compra.',
+                'tono' => 'warning',
+                'link' => 'activos?facturacion=sin_factura',
+            ],
+            [
                 'titulo' => 'Codigos o series repetidos',
                 'total' => $this->contar(
                     "SELECT COALESCE(SUM(repetidos), 0)

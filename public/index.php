@@ -115,6 +115,7 @@ $router->post('/trabajadores/importar', [TrabajadorControlador::class, 'importar
 $router->post('/trabajadores', [TrabajadorControlador::class, 'guardar']);
 $router->get('/trabajadores/{id}/editar', [TrabajadorControlador::class, 'editar']);
 $router->post('/trabajadores/{id}', [TrabajadorControlador::class, 'actualizar']);
+$router->get('/trabajadores/{id}', [TrabajadorControlador::class, 'ver']);
 
 // Asignaciones
 $router->get('/asignaciones', [AsignacionControlador::class, 'listado']);
@@ -145,6 +146,7 @@ $router->get('/catalogos', [CatalogoControlador::class, 'listado']);
 $router->post('/catalogos/{table}', [CatalogoControlador::class, 'guardar']);
 $router->get('/reportes/inventario', [ReporteControlador::class, 'inventario']);
 $router->get('/reportes/inventario/csv', [ReporteControlador::class, 'exportarCsv']);
+$router->get('/reportes/inventario/excel', [ReporteControlador::class, 'exportarExcel']);
 
 $router->dispatch();
 

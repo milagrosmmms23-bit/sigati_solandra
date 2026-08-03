@@ -19,7 +19,14 @@ final class Activo extends ModeloBase
         $consulta = $this->db->prepare(
             "SELECT a.*, t.nombre nombre_tipo, s.nombre nombre_estado, s.color,
                     b.nombre nombre_marca, m.nombre nombre_modelo, ar.nombre nombre_area,
-                    l.nombre nombre_ubicacion, CONCAT(e.nombres, ' ', e.apellidos) nombre_trabajador
+                    l.nombre nombre_ubicacion, CONCAT(e.nombres, ' ', e.apellidos) nombre_trabajador,
+                    (
+                        SELECT ea.valor_especificacion
+                        FROM especificaciones_activo ea
+                        WHERE ea.activo_id = a.id
+                          AND ea.clave_especificacion = 'Estado de facturacion'
+                        LIMIT 1
+                    ) estado_facturacion
              FROM activos a
              JOIN tipos_activo t ON t.id = a.tipo_activo_id
              JOIN estados_activo s ON s.id = a.estado_id
@@ -115,7 +122,89 @@ final class Activo extends ModeloBase
     public function exportar(): array
     {
         return $this->db
-            ->query('SELECT * FROM vw_inventario_general ORDER BY codigo_activo')
+            ->query(
+                "SELECT
+                    a.codigo_activo,
+                    a.codigo_anterior,
+                    t.nombre tipo,
+                    b.nombre marca,
+                    m.nombre modelo,
+                    a.numero_serie,
+                    a.nombre_equipo,
+                    a.direccion_ip,
+                    a.direccion_mac,
+                    a.imei1,
+                    a.imei2,
+                    a.numero_telefono,
+                    s.nombre estado,
+                    ar.nombre area,
+                    l.nombre ubicacion,
+                    CONCAT(e.nombres, ' ', e.apellidos) responsable,
+                    e.cargo cargo_responsable,
+                    a.numero_factura,
+                    COALESCE(
+                        (
+                            SELECT ea.valor_especificacion
+                            FROM especificaciones_activo ea
+                            WHERE ea.activo_id = a.id
+                              AND ea.clave_especificacion = 'Estado de facturacion'
+                            LIMIT 1
+                        ),
+                        IF(NULLIF(TRIM(a.numero_factura), '') IS NULL, 'Pendiente', 'Con factura')
+                    ) estado_facturacion,
+                    sup.nombre proveedor,
+                    DATE_FORMAT(a.fecha_compra, '%Y-%m-%d') fecha_compra,
+                    a.costo,
+                    DATE_FORMAT(a.fin_garantia, '%Y-%m-%d') fin_garantia,
+                    (
+                        SELECT ea.valor_especificacion
+                        FROM especificaciones_activo ea
+                        WHERE ea.activo_id = a.id
+                          AND ea.clave_especificacion = 'Sistema operativo'
+                        LIMIT 1
+                    ) sistema_operativo,
+                    (
+                        SELECT ea.valor_especificacion
+                        FROM especificaciones_activo ea
+                        WHERE ea.activo_id = a.id
+                          AND ea.clave_especificacion = 'Procesador'
+                        LIMIT 1
+                    ) procesador,
+                    (
+                        SELECT ea.valor_especificacion
+                        FROM especificaciones_activo ea
+                        WHERE ea.activo_id = a.id
+                          AND ea.clave_especificacion = 'RAM'
+                        LIMIT 1
+                    ) ram,
+                    (
+                        SELECT ea.valor_especificacion
+                        FROM especificaciones_activo ea
+                        WHERE ea.activo_id = a.id
+                          AND ea.clave_especificacion IN ('SSD', 'Almacenamiento')
+                        LIMIT 1
+                    ) almacenamiento,
+                    (
+                        SELECT ea.valor_especificacion
+                        FROM especificaciones_activo ea
+                        WHERE ea.activo_id = a.id
+                          AND ea.clave_especificacion = 'Accesorios'
+                        LIMIT 1
+                    ) accesorios,
+                    a.observaciones,
+                    DATE_FORMAT(a.actualizado_en, '%Y-%m-%d %H:%i') actualizado_en
+                 FROM activos a
+                 JOIN tipos_activo t ON t.id = a.tipo_activo_id
+                 JOIN estados_activo s ON s.id = a.estado_id
+                 LEFT JOIN marcas b ON b.id = a.marca_id
+                 LEFT JOIN modelos m ON m.id = a.modelo_id
+                 LEFT JOIN areas ar ON ar.id = a.area_actual_id
+                 LEFT JOIN ubicaciones l ON l.id = a.ubicacion_id
+                 LEFT JOIN trabajadores e ON e.id = a.trabajador_actual_id
+                 LEFT JOIN proveedores sup ON sup.id = a.proveedor_id
+                 WHERE a.activo = 1
+                 ORDER BY t.nombre, a.codigo_activo"
+            )
             ->fetchAll();
     }
 
@@ -140,6 +229,40 @@ final class Activo extends ModeloBase
                 $where[] = "$column = :$clave";
                 $params[$clave] = (int) $filtros[$clave];
             }
+        }
+
+        if (($filtros['responsable'] ?? '') === 'con_responsable') {
+            $where[] = 'a.trabajador_actual_id IS NOT NULL';
+        } elseif (($filtros['responsable'] ?? '') === 'sin_responsable') {
+            $where[] = 'a.trabajador_actual_id IS NULL';
+        }
+
+        if (($filtros['facturacion'] ?? '') === 'con_factura') {
+            $where[] = "NULLIF(TRIM(a.numero_factura), '') IS NOT NULL";
+        } elseif (($filtros['facturacion'] ?? '') === 'sin_factura') {
+            $where[] = "NULLIF(TRIM(a.numero_factura), '') IS NULL";
+        } elseif (($filtros['facturacion'] ?? '') === 'pendiente') {
+            $where[] = "(
+                NULLIF(TRIM(a.numero_factura), '') IS NULL
+                OR EXISTS (
+                    SELECT 1
+                    FROM especificaciones_activo ea
+                    WHERE ea.activo_id = a.id
+                      AND ea.clave_especificacion = 'Estado de facturacion'
+                      AND LOWER(ea.valor_especificacion) LIKE '%pend%'
+                )
+            )";
+        } elseif (($filtros['facturacion'] ?? '') === 'facturado') {
+            $where[] = "(
+                NULLIF(TRIM(a.numero_factura), '') IS NOT NULL
+                OR EXISTS (
+                    SELECT 1
+                    FROM especificaciones_activo ea
+                    WHERE ea.activo_id = a.id
+                      AND ea.clave_especificacion = 'Estado de facturacion'
+                      AND LOWER(ea.valor_especificacion) LIKE '%fact%'
+                )
+            )";
         }
 
         return [implode(' AND ', $where), $params];

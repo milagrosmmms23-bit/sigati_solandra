@@ -26,6 +26,8 @@ final class ActivoControlador extends Controlador
             'tipo_activo_id' => $_GET['tipo_activo_id'] ?? '',
             'estado_id' => $_GET['estado_id'] ?? '',
             'area_id' => $_GET['area_id'] ?? '',
+            'responsable' => $_GET['responsable'] ?? '',
+            'facturacion' => $_GET['facturacion'] ?? '',
         ];
 
         $pagina = max(1, (int) ($_GET['page'] ?? 1));

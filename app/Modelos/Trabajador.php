@@ -29,10 +29,52 @@ final class Trabajador extends ModeloBase
 
     public function buscar(int $id): ?array
     {
-        $consulta = $this->db->prepare('SELECT * FROM trabajadores WHERE id = ?');
+        $consulta = $this->db->prepare(
+            'SELECT e.*, a.nombre nombre_area
+             FROM trabajadores e
+             LEFT JOIN areas a ON a.id = e.area_id
+             WHERE e.id = ?'
+        );
         $consulta->execute([$id]);
 
         return $consulta->fetch() ?: null;
+    }
+
+    public function activosAsignados(int $id): array
+    {
+        $consulta = $this->db->prepare(
+            "SELECT a.*, t.nombre nombre_tipo, s.nombre nombre_estado, b.nombre nombre_marca,
+                    m.nombre nombre_modelo, ar.nombre nombre_area
+             FROM activos a
+             JOIN tipos_activo t ON t.id = a.tipo_activo_id
+             JOIN estados_activo s ON s.id = a.estado_id
+             LEFT JOIN marcas b ON b.id = a.marca_id
+             LEFT JOIN modelos m ON m.id = a.modelo_id
+             LEFT JOIN areas ar ON ar.id = a.area_actual_id
+             WHERE a.activo = 1
+               AND a.trabajador_actual_id = ?
+             ORDER BY t.nombre, a.codigo_activo"
+        );
+        $consulta->execute([$id]);
+
+        return $consulta->fetchAll();
+    }
+
+    public function asignaciones(int $id): array
+    {
+        $consulta = $this->db->prepare(
+            "SELECT ag.*, ar.nombre nombre_area, COUNT(ai.id) total_activos
+             FROM asignaciones ag
+             LEFT JOIN areas ar ON ar.id = ag.area_id
+             LEFT JOIN items_asignacion ai ON ai.asignacion_id = ag.id
+             WHERE ag.trabajador_id = ?
+             GROUP BY ag.id, ar.nombre
+             ORDER BY ag.id DESC
+             LIMIT 20"
+        );
+        $consulta->execute([$id]);
+
+        return $consulta->fetchAll();
     }
 
     public function guardar(array $datos, ?int $id = null): int

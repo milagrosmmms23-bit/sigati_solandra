@@ -9,6 +9,7 @@
     <div class="actions">
         <a class="btn btn-light" href="javascript:window.print()">Imprimir</a>
         <a class="btn btn-primary" href="<?= url('reportes/inventario/csv') ?>">Descargar CSV</a>
+        <a class="btn btn-primary" href="<?= url('reportes/inventario/excel') ?>">Descargar Excel</a>
     </div>
 </div>
 
@@ -28,6 +29,10 @@
     <div>
         <span>Sin area</span>
         <strong><?= count(array_filter($filas, fn ($fila) => empty($fila['area']))) ?></strong>
+    </div>
+    <div>
+        <span>Sin factura</span>
+        <strong><?= count(array_filter($filas, fn ($fila) => empty($fila['numero_factura']))) ?></strong>
     </div>
 </section>
 

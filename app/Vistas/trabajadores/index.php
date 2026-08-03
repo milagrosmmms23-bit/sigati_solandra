@@ -35,7 +35,11 @@
                     <?php foreach ($filas as $trabajador): ?>
                         <tr>
                             <td><strong><?= e($trabajador['codigo_trabajador']) ?></strong></td>
-                            <td><strong><?= e($trabajador['nombres'].' '.$trabajador['apellidos']) ?></strong></td>
+                            <td>
+                                <a class="asset-code" href="<?= url('trabajadores/'.$trabajador['id']) ?>">
+                                    <?= e($trabajador['nombres'].' '.$trabajador['apellidos']) ?>
+                                </a>
+                            </td>
                             <td><?= e($trabajador['cargo'] ?: '-') ?></td>
                             <td><?= e($trabajador['nombre_area'] ?: 'Sin area') ?></td>
                             <td>
@@ -43,6 +47,9 @@
                                 <small><?= e($trabajador['telefono'] ?: '') ?></small>
                             </td>
                             <td class="text-right">
+                                <a class="icon-btn" href="<?= url('trabajadores/'.$trabajador['id']) ?>">
+                                    Ver ficha
+                                </a>
                                 <a class="icon-btn" href="<?= url('trabajadores/'.$trabajador['id'].'/editar') ?>">
                                     Editar
                                 </a>

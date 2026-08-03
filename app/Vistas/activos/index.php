@@ -5,7 +5,8 @@
         </div>
 
         <div class="actions">
-            <a class="btn btn-light" href="<?= url('activos/importar') ?>">Importar CSV</a>
+            <a class="btn btn-light" href="<?= url('reportes/inventario/excel') ?>">Descargar Excel</a>
+            <a class="btn btn-light" href="<?= url('activos/importar') ?>">Importar</a>
             <a class="btn btn-primary" href="<?= url('activos/crear') ?>">+ Nuevo activo</a>
         </div>
     </div>
@@ -56,6 +57,38 @@
             </select>
         </div>
 
+        <div class="field">
+            <label>Responsable</label>
+            <select name="responsable">
+                <option value="">Todos</option>
+                <option value="con_responsable" <?= selected($filtros['responsable'] ?? '', 'con_responsable') ?>>
+                    Con responsable
+                </option>
+                <option value="sin_responsable" <?= selected($filtros['responsable'] ?? '', 'sin_responsable') ?>>
+                    Sin responsable
+                </option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Facturacion</label>
+            <select name="facturacion">
+                <option value="">Todos</option>
+                <option value="facturado" <?= selected($filtros['facturacion'] ?? '', 'facturado') ?>>
+                    Facturado
+                </option>
+                <option value="pendiente" <?= selected($filtros['facturacion'] ?? '', 'pendiente') ?>>
+                    Pendiente
+                </option>
+                <option value="con_factura" <?= selected($filtros['facturacion'] ?? '', 'con_factura') ?>>
+                    Con nro. factura
+                </option>
+                <option value="sin_factura" <?= selected($filtros['facturacion'] ?? '', 'sin_factura') ?>>
+                    Sin nro. factura
+                </option>
+            </select>
+        </div>
+
         <button class="btn btn-dark" type="submit">Filtrar</button>
     </form>
 
@@ -68,6 +101,7 @@
                         <th>Equipo</th>
                         <th>Serie</th>
                         <th>Area / responsable</th>
+                        <th>Facturacion</th>
                         <th>Estado</th>
                         <th>Actualizacion</th>
                         <th></th>
@@ -96,6 +130,10 @@
                                 <?= e($activo['nombre_area'] ?: 'Sin area') ?>
                                 <small><?= e($activo['nombre_trabajador'] ?: 'Sin responsable') ?></small>
                             </td>
+                            <td>
+                                <?= e($activo['estado_facturacion'] ?: ($activo['numero_factura'] ? 'Con factura' : 'Pendiente')) ?>
+                                <small><?= e($activo['numero_factura'] ?: 'Sin nro. factura') ?></small>
+                            </td>
                             <td><?= badge($activo['nombre_estado']) ?></td>
                             <td><?= date_pe($activo['actualizado_en'] ?: $activo['creado_en']) ?></td>
                             <td class="text-right">
@@ -106,7 +144,7 @@
 
                     <?php if (!$resultado['filas']): ?>
                         <tr>
-                            <td colspan="7">
+                            <td colspan="8">
                                 <div class="empty">No se encontraron activos.</div>
                             </td>
                         </tr>
