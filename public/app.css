@@ -531,6 +531,55 @@ textarea {
   align-items: end;
   margin-bottom: 15px;
 }
+.inventory-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.summary-chip {
+  background: #fff;
+  border: 1px solid #e5e9ed;
+  border-left: 4px solid var(--primary);
+  border-radius: 10px;
+  padding: 12px;
+  min-height: 86px;
+}
+.summary-chip span,
+.summary-chip strong,
+.summary-chip small {
+  display: block;
+}
+.summary-chip span {
+  color: #667085;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.summary-chip strong {
+  font-size: 22px;
+  margin-top: 5px;
+}
+.summary-chip small {
+  color: #98a2b3;
+  font-size: 9px;
+  margin-top: 3px;
+}
+.summary-chip.tone-blue {
+  border-left-color: #376bd4;
+}
+.summary-chip.tone-green {
+  border-left-color: var(--success);
+}
+.summary-chip.tone-orange {
+  border-left-color: var(--warning);
+}
+.summary-chip.tone-purple {
+  border-left-color: #7746b5;
+}
+.summary-chip.tone-cyan {
+  border-left-color: #147d8a;
+}
 .field {
   min-width: 145px;
 }

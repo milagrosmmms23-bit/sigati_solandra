@@ -11,13 +11,35 @@
         </div>
     </div>
 
+    <?php
+    $indicadores = [
+        ['Total filtrado', $resumen['total'] ?? 0, 'Activos en esta vista', 'blue'],
+        ['Asignados', $resumen['asignados'] ?? 0, 'Bajo responsabilidad', 'green'],
+        ['Sin responsable', $resumen['sin_responsable'] ?? 0, 'Revisar control', 'orange'],
+        ['Sin factura', $resumen['sin_factura'] ?? 0, 'Pendiente documentario', 'orange'],
+        ['Garantia vencida', $resumen['garantia_vencida'] ?? 0, 'Revisar reposicion', 'purple'],
+        ['Por vencer', $resumen['garantia_por_vencer'] ?? 0, 'Proximos 30 dias', 'cyan'],
+        ['Sin serie/IMEI', $resumen['sin_identificador'] ?? 0, 'Completar ficha', 'orange'],
+    ];
+    ?>
+
+    <div class="inventory-summary">
+        <?php foreach ($indicadores as [$etiqueta, $valor, $detalle, $tono]): ?>
+            <article class="summary-chip tone-<?= e($tono) ?>">
+                <span><?= e($etiqueta) ?></span>
+                <strong><?= number_format((int) $valor) ?></strong>
+                <small><?= e($detalle) ?></small>
+            </article>
+        <?php endforeach; ?>
+    </div>
+
     <form class="filter-panel" method="get">
         <div class="field grow">
             <label>Buscar</label>
             <input
                 name="q"
                 value="<?= e($filtros['q']) ?>"
-                placeholder="Codigo, serie, nombre_equipo, IMEI o telefono"
+                placeholder="Codigo, serie, trabajador, area, factura, IMEI o telefono"
             >
         </div>
 

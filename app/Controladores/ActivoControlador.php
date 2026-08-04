@@ -37,6 +37,7 @@ final class ActivoControlador extends Controlador
             'modo' => 'listado',
             'titulo' => 'Inventario',
             'resultado' => $this->modelo->listar($filtros, $pagina, $porPagina),
+            'resumen' => $this->modelo->resumen($filtros),
             'filtros' => $filtros,
         ] + $this->catalogos());
     }

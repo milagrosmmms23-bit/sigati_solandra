@@ -10,9 +10,10 @@ final class Activo extends ModeloBase
     public function listar(array $filtros, int $pagina, int $porPagina): array
     {
         [$where, $params] = $this->armarFiltros($filtros);
+        $joins = $this->joinsListado();
         $offset = ($pagina - 1) * $porPagina;
 
-        $count = $this->db->prepare("SELECT COUNT(*) FROM activos a WHERE $where");
+        $count = $this->db->prepare("SELECT COUNT(*) FROM activos a $joins WHERE $where");
         $count->execute($params);
         $total = (int) $count->fetchColumn();
 
@@ -28,13 +29,7 @@ final class Activo extends ModeloBase
                         LIMIT 1
                     ) estado_facturacion
              FROM activos a
-             JOIN tipos_activo t ON t.id = a.tipo_activo_id
-             JOIN estados_activo s ON s.id = a.estado_id
-             LEFT JOIN marcas b ON b.id = a.marca_id
-             LEFT JOIN modelos m ON m.id = a.modelo_id
-             LEFT JOIN areas ar ON ar.id = a.area_actual_id
-             LEFT JOIN ubicaciones l ON l.id = a.ubicacion_id
-             LEFT JOIN trabajadores e ON e.id = a.trabajador_actual_id
+             $joins
              WHERE $where
              ORDER BY a.id DESC
              LIMIT $porPagina OFFSET $offset"
@@ -46,6 +41,43 @@ final class Activo extends ModeloBase
             'total' => $total,
             'pagina' => $pagina,
             'paginas' => (int) ceil($total / $porPagina),
+        ];
+    }
+
+    public function resumen(array $filtros): array
+    {
+        [$where, $params] = $this->armarFiltros($filtros);
+        $joins = $this->joinsListado();
+
+        $consulta = $this->db->prepare(
+            "SELECT
+                COUNT(*) total,
+                SUM(CASE WHEN s.codigo = 'ASIGNADO' THEN 1 ELSE 0 END) asignados,
+                SUM(CASE WHEN a.trabajador_actual_id IS NULL THEN 1 ELSE 0 END) sin_responsable,
+                SUM(CASE WHEN NULLIF(TRIM(a.numero_factura), '') IS NULL THEN 1 ELSE 0 END) sin_factura,
+                SUM(CASE WHEN a.fin_garantia IS NOT NULL AND a.fin_garantia < CURDATE() THEN 1 ELSE 0 END) garantia_vencida,
+                SUM(CASE WHEN a.fin_garantia IS NOT NULL AND a.fin_garantia BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) garantia_por_vencer,
+                SUM(CASE
+                    WHEN LOWER(t.nombre) LIKE '%cel%' AND NULLIF(TRIM(a.imei1), '') IS NULL THEN 1
+                    WHEN LOWER(t.nombre) NOT LIKE '%cel%' AND NULLIF(TRIM(a.numero_serie), '') IS NULL THEN 1
+                    ELSE 0
+                END) sin_identificador
+             FROM activos a
+             $joins
+             WHERE $where"
+        );
+        $consulta->execute($params);
+
+        $resumen = $consulta->fetch() ?: [];
+
+        return [
+            'total' => (int) ($resumen['total'] ?? 0),
+            'asignados' => (int) ($resumen['asignados'] ?? 0),
+            'sin_responsable' => (int) ($resumen['sin_responsable'] ?? 0),
+            'sin_factura' => (int) ($resumen['sin_factura'] ?? 0),
+            'garantia_vencida' => (int) ($resumen['garantia_vencida'] ?? 0),
+            'garantia_por_vencer' => (int) ($resumen['garantia_por_vencer'] ?? 0),
+            'sin_identificador' => (int) ($resumen['sin_identificador'] ?? 0),
         ];
     }
 
@@ -214,8 +246,31 @@ final class Activo extends ModeloBase
         $params = [];
 
         if ($filtros['q'] ?? '') {
-            $where[] = '(a.codigo_activo LIKE :q OR a.codigo_anterior LIKE :q OR a.numero_serie LIKE :q OR a.nombre_equipo LIKE :q OR a.imei1 LIKE :q OR a.numero_telefono LIKE :q)';
-            $params['q'] = '%'.$filtros['q'].'%';
+            $camposBusqueda = [
+                'a.codigo_activo',
+                'a.codigo_anterior',
+                'a.numero_serie',
+                'a.nombre_equipo',
+                'a.imei1',
+                'a.numero_telefono',
+                'a.numero_factura',
+                't.nombre',
+                'b.nombre',
+                'm.nombre',
+                'ar.nombre',
+                'l.nombre',
+                'sup.nombre',
+                'CONCAT(e.nombres, CHAR(32), e.apellidos)',
+            ];
+            $condicionesBusqueda = [];
+
+            foreach ($camposBusqueda as $indice => $campo) {
+                $parametro = 'q'.$indice;
+                $condicionesBusqueda[] = "$campo LIKE :$parametro";
+                $params[$parametro] = '%'.$filtros['q'].'%';
+            }
+
+            $where[] = '('.implode(' OR ', $condicionesBusqueda).')';
         }
 
         $allowedFilters = [
@@ -266,6 +321,18 @@ final class Activo extends ModeloBase
         }
 
         return [implode(' AND ', $where), $params];
+    }
+
+    private function joinsListado(): string
+    {
+        return "JOIN tipos_activo t ON t.id = a.tipo_activo_id
+                JOIN estados_activo s ON s.id = a.estado_id
+                LEFT JOIN marcas b ON b.id = a.marca_id
+                LEFT JOIN modelos m ON m.id = a.modelo_id
+                LEFT JOIN areas ar ON ar.id = a.area_actual_id
+                LEFT JOIN ubicaciones l ON l.id = a.ubicacion_id
+                LEFT JOIN trabajadores e ON e.id = a.trabajador_actual_id
+                LEFT JOIN proveedores sup ON sup.id = a.proveedor_id";
     }
 
     private function insertar(array $datos, int $usuarioId): int
